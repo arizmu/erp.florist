@@ -16,12 +16,15 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         try {
-            $query = CategoryBarang::create($request->all());
+            $query = CategoryBarang::create([
+                'category_name' => $request->category,
+                'comment' => $request->comment
+            ]);
             return response()->json([
                 'code' => 201,
                 'status' => 'success',
                 'message' => 'Store data is successfully',
-                'data' => ''
+                'data' => $query
             ], 201);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage());

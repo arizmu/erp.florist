@@ -1,4 +1,6 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
+const { addIconSelectors } = require("@iconify/tailwind");
+const { addDynamicIconSelectors } = require("@iconify/tailwind")
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -21,7 +23,9 @@ export default {
     },
     plugins: [
         require("flyonui"),
-        require("flyonui/plugin")
+        require("flyonui/plugin"),
+        addIconSelectors(["mdi-light", "vscode-icons"]),
+        addDynamicIconSelectors()
     ],
     flyonui: {
         vendors: true // Enable vendor-specific CSS generation

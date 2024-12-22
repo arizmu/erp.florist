@@ -27,34 +27,46 @@
                     Managemen Inventaris
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-blue-100 rounded p-5 shadow flex justify-start gap-8 align-middle items-center">
+                    <div
+                        class="bg-emerald-400 rounded p-5  px-10 shadow flex justify-between gap-8 align-middle items-center">
                         <div class="">
-                            <div class="border-2 rounded-full bg-white p-2 border-red-500">
+                            <div class="border-2 rounded-full bg-white p-2 border-green-300">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                    class="size-15 text-red-500">
+                                    class="size-15 text-green-300">
                                     <path fill-rule="evenodd"
                                         d="M15.22 6.268a.75.75 0 0 1 .968-.431l5.942 2.28a.75.75 0 0 1 .431.97l-2.28 5.94a.75.75 0 1 1-1.4-.537l1.63-4.251-1.086.484a11.2 11.2 0 0 0-5.45 5.173.75.75 0 0 1-1.199.19L9 12.312l-6.22 6.22a.75.75 0 0 1-1.06-1.061l6.75-6.75a.75.75 0 0 1 1.06 0l3.606 3.606a12.695 12.695 0 0 1 5.68-4.974l1.086-.483-4.251-1.632a.75.75 0 0 1-.432-.97Z"
                                         clip-rule="evenodd" />
                                 </svg>
                             </div>
                         </div>
-                        <div class="flex flex-col">
-                            <span style="font-size: 32pt" class="font-semibold">45</span>
-                            <span class="text-gray-500 font-semibold">hello world</span>
+                        <div class="flex flex-col text-right">
+                            <span class="font-bold font-muse text-orange-50" style="font-size: 32pt;">
+                                10
+                            </span>
+                            <span class="text-gray-50 font-semibold font-muse">
+                                Faktur Masuk
+                            </span>
                         </div>
                     </div>
-                    <div class="bg-blue-100 rounded p-5 shadow flex justify-start gap-8 align-middle items-center">
+                    <div
+                        class="bg-orange-300 rounded p-5  px-10 shadow flex justify-between gap-8 align-middle items-center">
                         <div class="">
-                            <div class="border-2 rounded-full bg-white p-2 border-yellow-500 text-yellow-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-15">
-                                    <path fill-rule="evenodd" d="M1.72 5.47a.75.75 0 0 1 1.06 0L9 11.69l3.756-3.756a.75.75 0 0 1 .985-.066 12.698 12.698 0 0 1 4.575 6.832l.308 1.149 2.277-3.943a.75.75 0 1 1 1.299.75l-3.182 5.51a.75.75 0 0 1-1.025.275l-5.511-3.181a.75.75 0 0 1 .75-1.3l3.943 2.277-.308-1.149a11.194 11.194 0 0 0-3.528-5.617l-3.809 3.81a.75.75 0 0 1-1.06 0L1.72 6.53a.75.75 0 0 1 0-1.061Z" clip-rule="evenodd" />
-                                  </svg>
+                            <div class="border-2 rounded-full bg-white p-2 border-red-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-15 text-red-600">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m9 13.5 3 3m0 0 3-3m-3 3v-6m1.06-4.19-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
+                                </svg>
 
                             </div>
                         </div>
-                        <div class="flex flex-col">
-                            <span style="font-size: 32pt" class="font-semibold">45</span>
-                            <span class="text-gray-500 font-semibold">hello world</span>
+                        <div class="flex flex-col text-right">
+                            <span class="font-bold font-muse text-orange-50" style="font-size: 32pt;">
+                                10
+                            </span>
+                            <span class="text-gray-50 font-semibold font-muse">
+                                Total Barang
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -130,7 +142,8 @@
                                                 class="icon-[tabler--pencil] size-5"></span></button>
                                         <button class="btn btn-circle btn-text btn-sm" aria-label="Action button"><span
                                                 class="icon-[tabler--trash] size-5"></span></button>
-                                        <button class="btn btn-circle btn-text btn-sm" aria-label="Action button"><span
+                                        <button class="btn btn-circle btn-text btn-sm"
+                                            aria-label="Action button"><span
                                                 class="icon-[tabler--dots-vertical] size-5"></span></button>
                                     </td>
                                 </tr>
@@ -189,7 +202,8 @@
                 <div class="card-footer text-center">
                     <div class="grid grid-cols-2 gap-4 p-4">
                         <button class="btn btn-outline btn-primary w-auto">Filter</button>
-                        <button class="btn btn-outline btn-error w-auto">Produksi Baru</button>
+                        <a href="{{ route("inventory.form") }}" class="btn btn-outline btn-error w-auto">Penerimaan
+                            Barang</a>
                     </div>
                 </div>
             </div>

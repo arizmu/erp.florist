@@ -14,7 +14,7 @@
         <div class="py-4">
             <div class="flex flex-wrap gap-4 md:flex-col">
                 <a href="{{ route("barang.index") }}"
-                    class="flex gap-4 bg-gray-100 p-4 py-3 rounded-md hover:bg-blue-300">
+                    class="flex gap-4 bg-gray-100 p-4 py-3 rounded-md hover:bg-blue-100">
                     <span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
@@ -25,7 +25,7 @@
                     <span class="font-muse text-md">Data Barang</span>
                 </a>
                 <a href="{{ route("category.index") }}"
-                    class="flex gap-4 bg-gray-100 p-4 py-3 rounded-md hover:bg-blue-300">
+                    class="flex gap-4 bg-gray-100 p-4 py-3 rounded-md hover:bg-blue-100">
                     <span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
@@ -36,7 +36,7 @@
                     <span class="font-muse text-md">Kategori Barang</span>
                 </a>
                 <a href="{{ route("satuan.index") }}"
-                    class="flex gap-4 bg-gray-100 p-4 py-3 rounded-md hover:bg-blue-300">
+                    class="flex gap-4 bg-gray-100 p-4 py-3 rounded-md hover:bg-blue-100">
                     <span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">

@@ -1,4 +1,21 @@
 <x-base-layout>
+    <div class="breadcrumbs mb-2">
+        <ol>
+            <li>
+                <a href="#"> <span class="icon-[tabler--folder] size-5"></span>Home</a>
+            </li>
+            <li class="breadcrumbs-separator rtl:rotate-180"><span class="icon-[tabler--chevron-right]"></span></li>
+            <li>
+                <a href="#" aria-label="More Pages"><span class="icon-[tabler--dots]"></span></a>
+            </li>
+            <li class="breadcrumbs-separator rtl:rotate-180"><span class="icon-[tabler--chevron-right]"></span></li>
+            <li aria-current="page">
+                <span class="icon-[tabler--file] me-1 size-5"></span>
+                Kategory Barang
+            </li>
+        </ol>
+    </div>
+
     <div class="grid md:grid-cols-5 lg:grid-cols-8 gap-5">
         <div class="md:col-span-3 lg:col-span-6">
             <div class="card">

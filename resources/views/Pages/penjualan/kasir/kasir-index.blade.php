@@ -17,26 +17,79 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mt-2">
-        <div class="md:col-span-1 lg:col-span-3">
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <div class="grid grid-cols-1 md:grid-cols-4">
-                    <div class="md:col-span-1">
+        <div class="md:col-span-1 lg:col-span-3 order-last md:order-first">
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-7 gap-3">
+                    <div class="md:col-span-1 lg:col-span-2">
                         <div class="relative w-full">
-                            <select class="select select-floating" aria-label="Select floating label" id="selectFloating">
-                              <option>The Godfather</option>
-                              <option>The Shawshank Redemption</option>
-                              <option>Pulp Fiction</option>
-                              <option>The Dark Knight</option>
-                              <option>Schindler's List</option>
+                            <select class="select select-floating" aria-label="Select floating label"
+                                id="selectFloating">
+                                <option>Pilih ...</option>
+                                <option>The Shawshank Redemption</option>
+                                <option>Pulp Fiction</option>
+                                <option>The Dark Knight</option>
+                                <option>Schindler's List</option>
                             </select>
-                            <label class="select-floating-label" for="selectFloating">Pick your favorite Movie</label>
-                          </div>
+                            <label class="select-floating-label" for="selectFloating">Kategory</label>
+                        </div>
                     </div>
-                    <div  class="md:col-span-2">
+                    <div class="md:col-span-2 lg:col-span-4">
                         <div class="relative">
-                            <input type="text" placeholder="John Doe" class="input input-floating peer" id="floatingInput" />
-                            <label class="input-floating-label" for="floatingInput">Full name</label>
-                          </div>
+                            <input type="text" placeholder="masukkan pencarian..." class="input input-floating peer"
+                                id="floatingInput" />
+                            <label class="input-floating-label" for="floatingInput">
+                                Search
+                            </label>
+                        </div>
+                    </div>
+                    <div class="md:col-span-3 lg:col-span-1">
+                        <button class="btn btn-outline btn-primary w-full">
+                            Filter
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
+                <div class="card shadow-lg">
+                    <figure>
+                        <img src="https://cdn.flyonui.com/fy-assets/components/card/image-7.png" alt="headphone" />
+                    </figure>
+                    <div class="card-body">
+                        <h5 class="card-title text-orange-400 text-2xl font-space" style="margin-top: -10pt">
+                            Product Name
+                        </h5>
+                        <div class="py-3 flex flex-col gap-1 mb-2">
+                            <div class="flex gap-3 align-middle">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                                <span class="font-semibold">Rp. 100.000</span>
+                            </div>
+                            <div class="flex gap-3 align-middle">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M4.098 19.902a3.75 3.75 0 0 0 5.304 0l6.401-6.402M6.75 21A3.75 3.75 0 0 1 3 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 0 0 3.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88M6.75 17.25h.008v.008H6.75v-.008Z" />
+                                </svg>
+                                <span class="font-semibold">10 PCS</span>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2 md:justify-start justify-center flex-wrap">
+                            <button class="btn btn-error btn-soft">Costume</button>
+                            <button class="btn btn-primary btn-soft">Add to cart</button>
+                            <button class="btn btn-info btn-soft">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -49,7 +102,7 @@
                     </div>
                 </div>
                 <hr class="border-gray-300" />
-                <div class="overflow-auto p-6" style="max-height: 600px">
+                <div class="overflow-auto p-6" style="max-height: 700px; height: 500px;">
                     <div class="space-y-4">
                         <div class="grid grid-cols-3 items-start gap-4">
                             <div class="col-span-2 flex items-start gap-4">
@@ -102,7 +155,6 @@
                                 </button>
                             </div>
                         </div>
-
 
                         <div class="grid grid-cols-3 items-start gap-4">
                             <div class="col-span-2 flex items-start gap-4">
@@ -477,7 +529,7 @@
                                 class="ml-auto">$125.00</span></li>
                     </ul>
                     <button type="button"
-                        class="mt-6 text-sm font-semibold px-6 py-3 w-full bg-blue-600 hover:bg-blue-700 text-white rounded-md tracking-wide">
+                        class="btn btn-error btn-soft mt-3 w-full">
                         Proses Pembayaran
                     </button>
                 </div>

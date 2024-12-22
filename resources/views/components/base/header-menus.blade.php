@@ -62,7 +62,7 @@
                 Manajemen Inventaris
             </h4>
             <div class="flex flex-col gap-1 font-space">
-                <a class="flex gap-3 p-2 hover:text-blue-400" href="{{ route('inveotry.index') }}">
+                <a class="flex gap-3 p-2 hover:text-blue-400" href="{{ route('inventory.index') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
