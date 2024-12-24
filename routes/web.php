@@ -42,6 +42,7 @@ Route::prefix('produksi')->group(function () {
     Route::controller(ProduksiController::class)->group(function () {
         Route::get('/poduksi-index', 'index')->name('produksi.index');
         Route::get('/poduksi-form-baru', 'produksi_baru')->name('produksi.baru.index');
+        Route::get('/get-bahan-baku', 'getBahanBaku');
     });
 });
 
@@ -50,6 +51,9 @@ Route::prefix('inventory')->group(function() {
         Route::get('invetory-data', 'index')->name('inventory.index');
         Route::get('invetory-form', 'formInventory')->name('inventory.form');
         Route::get('get-barang-data', 'getBarang');
+        Route::post('inventory-store-data', 'storeInvetory');
+        Route::get('get-inventory-data', 'IndexJsonInventory');
+        Route::get('get-detail-inventory', 'detailInventory');
     });
 });
 

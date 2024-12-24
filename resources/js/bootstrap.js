@@ -22,3 +22,6 @@ window.notifier = notifier;
 
 import Swal from 'sweetalert2';
 window.Swal = Swal;
+
+import {v4 as uuidv4} from 'uuid';
+window.uuid = uuidv4;

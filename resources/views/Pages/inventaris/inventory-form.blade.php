@@ -207,9 +207,20 @@
                     tanggal_penerimaan: '',
                     nomor_faktur: '',
                     comment: '',
-                    recordInvetory() {
+                    async recordInvetory() {
                         if (this.items.length === 0) {
-                            alert('The data is empty.');
+                            notifier.warning('Empty data items.', {
+                                labels: {
+                                    warning: "Opps."
+                                },
+                                durations: {
+                                    warning: 2000
+                                },
+                                icons: {
+                                    prefix: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-15"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />`,
+                                    suffix: '</svg>'
+                                }
+                            })
                             return;
                         }
                         this.isSubmitting = true;
@@ -220,7 +231,30 @@
                             'comment': this.comment,
                             'items': this.items
                         }
-                        console.log(data);
+                        const url = `/inventory/inventory-store-data`;
+                        try {
+                            const response = await axios.post(url, data);
+                            this.items = [];
+                            this.supplier = '';
+                            this.tanggal_penerimaan = '';
+                            this.nomor_faktur = '';
+                            this.comment = '';
+                            this.isSubmitting = false;
+                            notifier.success('Data has been saved.', {
+                                labels: {
+                                    success: "Success"
+                                },
+                                durations: {
+                                    success: 2000
+                                },
+                                icons: {
+                                    prefix: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-15"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />`,
+                                    suffix: '</svg>'
+                                }
+                            });
+                        } catch (error) {
+                            console.error(error);
+                        }
                     },
 
                     items: [],
@@ -231,6 +265,21 @@
                             'nama_barang': data.nama_barang,
                             'stock': this.jumlahItem[data.id],
                         }
+                        if (objectData.stock <= 0 || objectData.stock == null) {
+                            notifier.warning('Stock is empty.', {
+                                labels: {
+                                    warning: "Opps."
+                                },
+                                durations: {
+                                    warning: 2000
+                                },
+                                icons: {
+                                    prefix: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-15"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />`,
+                                    suffix: '</svg>'
+                                }
+                            })
+                            return;
+                        }
                         let findData = this.items.find(index => index.id === objectData.id);
                         if (!findData) {
                             this.items.unshift(objectData);
@@ -239,7 +288,18 @@
                             oldIndex.stock = objectData.stock
                         }
                         this.jumlahItem = []
-
+                        notifier.success('item added success.', {
+                            labels: {
+                                success: "OK"
+                            },
+                            durations: {
+                                success: 2000
+                            },
+                            icons: {
+                                prefix: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-15"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />`,
+                                suffix: '</svg>'
+                            }
+                        })
                     },
                     deleteItem(key) {
                         this.items = this.items.filter(index => index.id !== key);

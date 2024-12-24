@@ -13,8 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('barangs', function (Blueprint $table) {
-            // $table->bigInteger('stock')->after('')
+        Schema::table('inventories', function (Blueprint $table) {
+            $table->dropColumn('title_inventory');
+            $table->text('comment')->after('supplier');
+            $table->string('factur_number')->after('status');
         });
     }
 
@@ -23,8 +25,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('barangs', function (Blueprint $table) {
-            //
+        Schema::table('inventories', function (Blueprint $table) {
+            $table->string('title_inventory')->after('id');
+            $table->dropColumn('comment');
+            $table->dropColumn('factur_number');
         });
     }
 };

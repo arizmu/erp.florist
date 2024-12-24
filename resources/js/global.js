@@ -10,3 +10,10 @@ function formatTanggal(input) {
     return `${day}-${month}-${year} ${hours}:${minutes}`;
 }
 window.formatTanggal = formatTanggal;
+
+function formatRupiah(input) {
+    const number = parseFloat(input);
+    if (isNaN(number)) return input; // Return input if it's not a valid number
+    return number.toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+window.formatRupiah = formatRupiah;

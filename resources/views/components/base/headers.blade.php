@@ -18,7 +18,7 @@
                     Enterprise Resource Planning
                 </span>
                 <span class="text-2xl">
-                    Naira Gift Florist
+                    Naira Gift
                 </span>
             </div>
         </a>
@@ -230,19 +230,20 @@
     <div
         class="modal-dialog overlay-open:mt-12 overlay-open:opacity-100 overlay-open:duration-500 transition-all ease-out modal-dialog-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title font-space text-blue-400">Menus Navigation</h3>
-                <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3" aria-label="Close"
-                    data-overlay="#open-menu-navigation-modal">
-                    <span class="icon-[tabler--x] size-4"></span>
-                </button>
-            </div>
+            <div class="modal-header border-b">
+                <h3 class="font-space text-lg font-semibold md:px-4">
+                    Menu Navigation
+                </h3>
+              </div>
             <x-base.header-menus/>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-soft btn-secondary" data-overlay="#open-menu-navigation-modal">
-                    Close Navigation
-                </button>
-                {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
+            <div class="modal-footer flex justify-center py-4">
+                {{-- <div class="mt-4" style="margin-bottom: -10pt">
+                    <button type="button" class="btn btn-soft btn-secondary" data-overlay="#open-menu-navigation-modal">
+                        Close Navigation
+                    </button>
+                </div> --}}
+
+                <span class="text-gray-300">all navigation menus</span>
             </div>
         </div>
     </div>
