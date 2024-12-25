@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\invetory\InventoryController;
+use App\Http\Controllers\management\PegawaiController;
 use App\Http\Controllers\Penjualan\KasirController;
 use App\Http\Controllers\Products\BarangController;
 use App\Http\Controllers\Products\CategoryController;
@@ -61,5 +62,15 @@ Route::prefix('transaksi')->group(function() {
     Route::controller(KasirController::class)->group(function() {
         Route::get('/', 'index')->name('transaksi.index');
         Route::get('/kasir', 'kasir')->name('kasir.index');
+    });
+});
+
+Route::prefix('management')->group(function() {
+    Route::controller(PegawaiController::class)->group(function() {
+        Route::get('pegawai', 'index')->name('pegawai.index');
+        Route::post('pegawai-store', 'store');
+        Route::get('pegawai-fetch-data', 'dataJson');
+        Route::post('pegawai-updated', 'updated');
+        Route::post('pegawai-deleted', 'destroy');
     });
 });
