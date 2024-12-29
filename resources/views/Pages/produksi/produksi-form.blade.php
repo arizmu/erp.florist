@@ -23,9 +23,9 @@
                     <div class="card-header flex justify-between items-center">
                         <div class="flex gap-4 justify-start">
                             <span class="icon-[tabler--album] size-8 text-info"></span>
-                            <span class="card-title font-semibold font-space text-gray-500"
-                                style="font-size: 17pt">Bahan
-                                Baku</span>
+                            <span class="card-title font-semibold font-space text-gray-500" style="font-size: 17pt">
+                                Cari Barang...
+                            </span>
                         </div>
                         <div class="card-actions flex gap-0.5 sm:gap-3 flex-nowrap">
                             <div class="tooltip">
@@ -220,9 +220,10 @@
                             <div class="border rounded-lg p-4">
                                 <div class="mb-3 grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div class="relative">
-                                        <input type="text" placeholder="John Doe"
-                                            class="input input-floating peer" id="floatingInput" />
-                                        <label class="input-floating-label" for="floatingInput">Produk Title</label>
+                                        <input x-model="detail.title_product" type="text"
+                                            placeholder="nama bucket" class="input input-floating peer"
+                                            id="" />
+                                        <label class="input-floating-label" for="">Produk Title</label>
                                     </div>
                                     {{-- <div class="relative">
                                         <select class="select select-floating" aria-label="Select floating label"
@@ -237,32 +238,33 @@
                                     </div> --}}
 
                                     <div class="relative">
-                                        <input type="text" class="input input-floating peer"
-                                            placeholder="YYYY-MM-DD to YYYY-MM-DD" id="flatpickr-range" />
+                                        <input x-model="detail.estimasi" type="text"
+                                            class="input input-floating peer" placeholder="YYYY-MM-DD to YYYY-MM-DD"
+                                            id="flatpickr-range" />
                                         <label class="input-floating-label" for="floatingInput">Estimasi</label>
                                     </div>
                                 </div>
                                 <div class="relative mb-3">
-                                    <textarea class="textarea textarea-floating peer" placeholder="" id="textareaFloating"></textarea>
+                                    <textarea x-model="detail.comment" class="textarea textarea-floating peer" placeholder="" id="textareaFloating"></textarea>
                                     <label class="textarea-floating-label" for="textareaFloating">Comment</label>
                                 </div>
                                 <div class="relative">
-                                    <select class="select select-floating" aria-label="Select floating label"
-                                        id="selectFloating">
-                                        <option>The Godfather</option>
-                                        <option>The Shawshank Redemption</option>
-                                        <option>Pulp Fiction</option>
-                                        <option>The Dark Knight</option>
-                                        <option>Schindler's List</option>
+                                    <select x-model="detail.crafter" class="select select-floating"
+                                        aria-label="Select floating label" id="">
+                                        <option>Pilih...</option>
+                                        <template x-for="val in pegawai">
+                                            <option :value="val.id" x-text="val.pegawai_name"></option>
+                                        </template>
                                     </select>
                                     <label class="select-floating-label" for="selectFloating">Crafter</label>
                                 </div>
                             </div>
-
-
                             <div class="py-4 flex justify-end gap-4" style="margin-bottom: -20pt">
-                                <button class="btn btn-soft btn-error rounded-full md:w-40">Simapn produksi</button>
-                                <button type="button" x-on:click="clearData" class="btn btn-soft btn-warning rounded-full md:w-40">Clear
+                                <button x-on:click="storeProduction" type="submit"
+                                    class="btn btn-soft btn-error rounded-full md:w-40" :disable="isLoading"
+                                    x-text="isLoading ? 'is loading...':'Simpan produksi'">Simapn produksi</button>
+                                <button type="button" x-on:click="clearData"
+                                    class="btn btn-soft btn-warning rounded-full md:w-40">Clear
                                     data</button>
                             </div>
                         </div>
@@ -343,12 +345,6 @@
 
             function ProductionFrom() {
                 return {
-                    detail: {
-                        title_product:'',
-                        estimasi:'',
-                        comment:'',
-                        crafter:''
-                    },
                     items: [],
                     totalPrice: 0,
                     qty: [],
@@ -442,6 +438,76 @@
                         });
                         this.totalPrice = formatRupiah(total);
                     },
+
+                    isLoading: false,
+                    detail: {
+                        title_product: '',
+                        estimasi: '',
+                        comment: '',
+                        crafter: ''
+                    },
+                    storeProduction() {
+                        // if (this.items.length <= 0) {
+                        //     notifier.warning('Item is empty.')
+                        //     return;
+                        // }
+                        // if (this.detail.title_product === '') {
+                        //     notifier.warning('Product title tidak boleh kosong.')
+                        //     return;
+                        // }
+                        // if (this.detail.crafter === '') {
+                        //     notifier.warning('Crafter tidak boleh kosong.')
+                        //     return;
+                        // }
+                        Swal.fire({
+                            title: "Konfirmasi",
+                            text: "Apakah anda yakin ingin menyimpan data produksi ini?",
+                            icon: "question",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Ya, Simpan!",
+                            cancelButtonText: "Batal"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                Swal.fire({
+                                    icon:'info',
+                                    title: 'Processing...',
+                                    html: 'Mohon tunggu sebentar',
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading()
+                                    }
+                                });
+
+                                // Prepare data
+                                const data = {
+                                    items: this.items,
+                                    detail: this.detail,
+                                    biaya_produksi: this.totalPrice
+                                };
+
+                                // Make API call
+                                axios.post('/produksi/store-produksi', data)
+                                    .then(response => {
+                                        Swal.fire({
+                                            title: "Berhasil!",
+                                            text: "Data produksi berhasil disimpan.",
+                                            icon: "success"
+                                        });
+                                        this.clearData();
+                                    })
+                                    .catch(error => {
+                                        Swal.fire({
+                                            title: "Error!",
+                                            text: "Terjadi kesalahan saat menyimpan data.",
+                                            icon: "error"
+                                        });
+                                    });
+                            }
+                        });
+                    },
+
                     bahanBaku: [],
                     searchBarang: '',
                     isSearch: false,
@@ -462,9 +528,29 @@
                                 this.isSearch = false;
                             });
                     },
+
+                    pegawai: [],
+                    getPegawai() {
+                        const url = "/produksi/produksi-get-user";
+                        axios.get(url).then((res) => {
+                            const data = res.data.data;
+                            this.pegawai = data;
+                        }).catch((error) => {
+                            console.log(error)
+                        });
+                    },
                     clearData() {
                         this.totalPrice = 0;
                         this.items = [];
+                        this.detail = {
+                            title_product: '',
+                            estimasi: '',
+                            comment: '',
+                            crafter: ''
+                        }
+                    },
+                    init() {
+                        this.getPegawai();
                     }
                 }
             }

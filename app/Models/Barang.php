@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\invetory\InventoryDetail;
+use App\Models\Production\ProductionBarangDetail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -20,5 +21,15 @@ class Barang extends Model
     public function inventory_detail(): HasMany
     {
         return $this->hasMany(InventoryDetail::class, 'barang_id', 'id');
+    }
+
+    /**
+     * Get all of the productin_detail for the Barang
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function productin_detail(): HasMany
+    {
+        return $this->hasMany(ProductionBarangDetail::class, 'barang_id', 'id');
     }
 }

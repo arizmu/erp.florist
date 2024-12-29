@@ -91,7 +91,7 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-9 py-3 gap-5">
+    <div class="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-9 py-3 gap-5" x-data="productionIndex">
         <div class="md:col-span-4 lg:col-span-6">
             <div class="card">
                 <div class="card-body">
@@ -100,24 +100,41 @@
                             <thead>
                                 <tr>
                                     <th>Bucket</th>
-                                    <th>Kode Produksi</th>
+                                    <th>Kode</th>
                                     <th>Status</th>
+                                    <th>Biaya Produksi</th>
                                     <th>Tanggal</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>John Doe</td>
-                                    <td></td>
-                                    <td><span class="badge badge-soft badge-success text-xs">Professional</span></td>
-                                    <td class="text-nowrap">March 1, 2024</td>
-                                    <td>
-                                        <button class="btn btn-circle btn-text btn-sm" aria-label="Action button">
-                                            <span class="icon-[tabler--pencil] size-5"></span>
-                                        </button>
-                                    </td>
-                                </tr>
+                                <template x-for="item in data">
+                                    <tr>
+                                        <td x-text="item.production_title"></td>
+                                        <td x-text="item.code_production"></td>
+                                        <td>
+                                            <span class="badge badge-soft badge-warning text-xs"
+                                                x-show="!item.production_status">PRODUCTION</span>
+                                            <span class="badge badge-soft badge-success text-xs"
+                                                x-show="item.production_status">COMPLATE</span>
+                                        </td>
+                                        <td>Rp. <span x-text="formatRupiah(item.production_cost) ?? 00"></span></td>
+                                        <td class="text-nowrap" x-text="formatTanggalNoTime(item.created_at)">March 1,
+                                            2024</td>
+                                        <td>
+                                            <button type="button" x-on:click="toDistribusi(item.id)"
+                                                class="btn btn-circle btn-info btn-soft" aria-label="Action button"
+                                                x-show="item.production_status">
+                                                <span class="icon-[tabler--arrow-back-up-double] size-5"></span>
+                                            </button>
+                                            <button type="button" x-on:click="toComplate(item.id)"
+                                                class="btn btn-circle btn-warning btn-soft" aria-label="Action button"
+                                                x-show="!item.production_status">
+                                                <span class="icon-[tabler--checks] size-5"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </template>
                             </tbody>
                         </table>
                     </div>
@@ -182,10 +199,116 @@
                 <div class="card-footer text-center">
                     <div class="grid grid-cols-2 gap-4 p-4">
                         <button class="btn btn-outline btn-primary w-auto">Filter</button>
-                        <a href="{{ route('produksi.baru.index') }}" class="btn btn-outline btn-error w-auto">Produksi Baru</a>
+                        <a href="{{ route("produksi.baru.index") }}" class="btn btn-outline btn-error w-auto">Produksi
+                            Baru</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @push("js")
+        <script>
+            function productionIndex() {
+                return {
+                    data: [],
+                    getData() {
+                        const url = "/produksi/get-data-produksi";
+                        axios.get(url).then(res => {
+                            const data = res.data.data;
+                            this.data = data;
+                        }).catch(erres => {
+
+                        }).finally(() => {
+
+                        })
+                    },
+                    toComplate(index) {
+                        Swal.fire({
+                            title: "Konfirmasi",
+                            text: "Apakah bucket selesai produksi ?",
+                            icon: "question",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Ya, Selesai",
+                            cancelButtonText: "Batal"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Processing...',
+                                    html: 'Mohon tunggu sebentar',
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading()
+                                    }
+                                });
+
+                                axios.get(`/produksi/to-complate/${index}`)
+                                    .then(response => {
+                                        Swal.fire({
+                                            title: "Berhasil!",
+                                            text: "Data produksi berhasil diupdated.",
+                                            icon: "success"
+                                        });
+                                    })
+                                    .catch(error => {
+                                        Swal.fire({
+                                            title: "Error!",
+                                            text: "Terjadi kesalahan saat update data.",
+                                            icon: "error"
+                                        });
+                                    }).finally(() => {
+                                        this.getData()
+                                    });
+                            }
+                        });
+                    },
+                    toDistribusi(index) {
+                        Swal.fire({
+                            title: "Konfirmasi",
+                            text: "Yakin ingin distribusi produk kedaftar penjualan ?",
+                            icon: "info",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Ya, Proses",
+                            cancelButtonText: "Batal"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Processing...',
+                                    html: 'Mohon tunggu sebentar',
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading()
+                                    }
+                                });
+
+                                axios.get(`/produksi/distribution-to-product/${index}`)
+                                    .then(response => {
+                                        Swal.fire({
+                                            title: "Berhasil!",
+                                            text: "Distrubiton product successfully..",
+                                            icon: "success"
+                                        });
+                                    })
+                                    .catch(error => {
+                                        Swal.fire({
+                                            title: "Error!",
+                                            text: "Distribusi gagal diproses.",
+                                            icon: "error"
+                                        });
+                                    });
+                            }
+                        });
+                    },
+                    init() {
+                        this.getData()
+                    }
+                }
+            }
+        </script>
+    @endpush
 </x-base-layout>

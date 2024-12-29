@@ -1,22 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Penjualan;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Product\Product;
 use Illuminate\Http\Request;
 
-class KasirController extends Controller
+class ProductController extends Controller
 {
     public function index() {
-        return view('Pages.penjualan.transaksi-index');
+        return view('Pages.produk-data.produk-index');
     }
-
-    public function kasir()
-    {
-        return view('Pages.penjualan.kasir.kasir-index');
-    }
-
 
     public function proudctJson() {
         $query = Product::query();

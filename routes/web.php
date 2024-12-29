@@ -1,10 +1,13 @@
 <?php
 
+use App\Http\Controllers\AppSettingController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\invetory\InventoryController;
+use App\Http\Controllers\JenisProductController;
 use App\Http\Controllers\management\PegawaiController;
 use App\Http\Controllers\Penjualan\KasirController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Products\BarangController;
 use App\Http\Controllers\Products\CategoryController;
 use App\Http\Controllers\Products\SatuanController;
@@ -44,6 +47,11 @@ Route::prefix('produksi')->group(function () {
         Route::get('/poduksi-index', 'index')->name('produksi.index');
         Route::get('/poduksi-form-baru', 'produksi_baru')->name('produksi.baru.index');
         Route::get('/get-bahan-baku', 'getBahanBaku');
+        Route::get('/produksi-get-user', 'getPegawai');
+        Route::post('/store-produksi', 'store');
+        Route::get('/get-data-produksi', 'productionJson');
+        Route::get('/to-complate/{key}', 'toComplate');
+        Route::get('/distribution-to-product/{key}', 'distributionToProduct');
     });
 });
 
@@ -62,6 +70,7 @@ Route::prefix('transaksi')->group(function() {
     Route::controller(KasirController::class)->group(function() {
         Route::get('/', 'index')->name('transaksi.index');
         Route::get('/kasir', 'kasir')->name('kasir.index');
+        Route::get('/product-json', 'proudctJson');
     });
 });
 
@@ -73,4 +82,19 @@ Route::prefix('management')->group(function() {
         Route::post('pegawai-updated', 'updated');
         Route::post('pegawai-deleted', 'destroy');
     });
+    Route::controller(AppSettingController::class)->group(function() {
+        Route::get('/app-setting', 'index')->name('app-setting.index');
+    });
+});
+
+Route::prefix('product')->controller(ProductController::class)->group(function() {
+    Route::get('/', 'index')->name('product.index');
+    Route::get('/product-json', 'proudctJson');
+});
+
+Route::prefix('jenis-product')->controller(JenisProductController::class)->group(function() {
+    Route::get('/', 'index')->name('jenis.product.index');
+    Route::get('load-json-data', 'dataJson');
+    Route::post('/store-data', 'store');
+    Route::get('/delete-data/{key}', 'destroy');
 });
