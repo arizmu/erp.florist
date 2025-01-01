@@ -44,8 +44,8 @@ Route::prefix('master-barang')->group(function () {
 
 Route::prefix('produksi')->group(function () {
     Route::controller(ProduksiController::class)->group(function () {
-        Route::get('/poduksi-index', 'index')->name('produksi.index');
-        Route::get('/poduksi-form-baru', 'produksi_baru')->name('produksi.baru.index');
+        Route::get('/produksi-index', 'index')->name('produksi.index');
+        Route::get('/produksi-form-baru', 'produksi_baru')->name('produksi.baru.index');
         Route::get('/get-bahan-baku', 'getBahanBaku');
         Route::get('/produksi-get-user', 'getPegawai');
         Route::post('/store-produksi', 'store');

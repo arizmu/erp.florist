@@ -53,7 +53,7 @@
     @stack('css')
 </head>
 
-<body class="bg-slate-100">
+<body class="dark light:bg-slate-100">
     <div class="">
         <x-base.headers />
         <div class="p-6 py-4 lg:px-24 md:px-12 min-h-screen top-6">

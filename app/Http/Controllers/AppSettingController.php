@@ -9,6 +9,6 @@ class AppSettingController extends Controller
 {
     public function index()
     {
-        //
+        return view('Pages.setting-index');
     }
 }
