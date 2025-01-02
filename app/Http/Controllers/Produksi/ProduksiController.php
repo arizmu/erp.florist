@@ -13,7 +13,6 @@ use App\Models\production\ProductionOtherDetail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
 
 class ProduksiController extends Controller
 {

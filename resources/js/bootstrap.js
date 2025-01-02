@@ -25,3 +25,4 @@ window.Swal = Swal;
 
 import {v4 as uuidv4} from 'uuid';
 window.uuid = uuidv4;
+

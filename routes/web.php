@@ -84,6 +84,8 @@ Route::prefix('management')->group(function() {
     });
     Route::controller(AppSettingController::class)->group(function() {
         Route::get('/app-setting', 'index')->name('app-setting.index');
+        Route::get('/app-set-get', 'appFirst');
+        Route::post('/app-set-store', 'storeOrUpdate');
     });
 });
 
