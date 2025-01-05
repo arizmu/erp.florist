@@ -5,3 +5,4 @@ teknology yang digunakan :
 -   Alpine Js
 -   Mysql
 -   Web server - Laragon
+-   Spatie Laravel PDF - 

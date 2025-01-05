@@ -78,6 +78,8 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::post('/on-proses', 'prosesTransaksi');
             Route::get('/kasir-proses-bayar/{transaksiKey}', 'prosesBayar')->name('kasir.proses.bayar');
             Route::get('/kasir-transaksi-detail/{transaksiKey}', 'transaksiDetail')->name('kasir.transaksi.detail');
+            Route::post('kasir-proses-bayar-post/{key}', 'prosesBayarPost');
+            Route::get('/cetak-invoice/{transaksi_id}/{invoice_id}', 'invoice');
         });
     });
 

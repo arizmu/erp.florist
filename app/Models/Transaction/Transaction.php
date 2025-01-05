@@ -21,7 +21,7 @@ class Transaction extends Model
 
     public function payment()
     {
-        return $this->hasOne(PaymentTransaction::class, 'transaction_id', 'id');
+        return $this->hasMany(PaymentTransaction::class, 'transaction_id', 'id');
     }
 
     public function costumer()

@@ -90,56 +90,70 @@ class KasirController extends Controller
 
     public function prosesBayar($key)
     {
-        $query = Transaction::with('details', 'costumer','payment')->find($key);
+        $query = Transaction::with('details', 'costumer', 'payment')->find($key);
+
         return view('Pages.penjualan.kasir.kasir-pembayaran', [
             'data' => $query,
             'key' => $key
         ]);
     }
-
-    public function prosesBayarPost(Request $request)
+    public function prosesBayarPost(Request $request, $key)
     {
+        // add-validation
+
+        //
+
         DB::beginTransaction();
         try {
-            $transaksi = Transaction::find($request['transaction_id']);
+            $transaksi = Transaction::find($key);
+
             $totalPayment = $transaksi->total_payment;
             $totalPaid = $transaksi->total_paid;
             $totalUpaid = $transaksi->total_unpaid;
             $metodePayment = $request['metode_bayar'];
             $cashMoney = $request['jumlah_bayar'];
             $cashBack = $request['kembali'];
-            $costumerId = '';
 
-            // check payment
-            $checkPayment = $transaksi->payment;
-            if ($checkPayment == true) {
-                // store payment
-                PaymentTransaction::create([
-                    'factur_number' => $this->generateFactur(),
-                    'transaction_id' => $transaksi->id,
-                    'payment_date' => Carbon::now()->format('Y-m-d H:i:s'),
-                    'payment_method' => $metodePayment,
-                    'total_payment' => $totalPayment,
-                    'total_paid' => $cashMoney,
-                    'total_cashback' => $cashBack,
-                    'total_unpaid' => $cashBack
-                ]);
-            } else {
-                // store costumer
+            $checkCostumer = $transaksi->costumer_id;
+            if ($checkCostumer == null) {
                 $getCs = $request['costumer'];
                 $costumer = [
-                    'name' => $getCs['name'],
+                    'name' => $getCs['nama'],
                     'no_telp' => $getCs['telpon'],
                     'alamat' => $getCs['alamat'],
-                    'jenis_kelamain' => 'L',
+                    // 'jenis_kelamain' => 'L',
                     'email' => '',
                     'status' => false
                 ];
-                $querycostumer = Costumer::creted($costumer);
+                $querycostumer = Costumer::create($costumer);
                 $costumerId = $querycostumer->id;
+            } else {
+                $costumerId = $transaksi->costumer_id;
+            }
 
-                // store payment
-                PaymentTransaction::create([
+            $hitungTotalTerbayar = $totalPaid + $cashMoney;
+            $hitungTotalPiutang = $totalPayment - $hitungTotalTerbayar;
+
+            $checkPayment = $transaksi->payment;
+            if ($checkPayment) {
+                $paymentQuery = PaymentTransaction::create([
+                    'factur_number' => $this->generateFactur(),
+                    'transaction_id' => $transaksi->id,
+                    'payment_method' => $metodePayment,
+                    'total_payment' => $totalPayment,
+                    'total_paid' => $cashMoney,
+                    'total_unpaid' => $hitungTotalPiutang > 0 ? $hitungTotalPiutang : 0,
+                    'total_cashback' => $cashBack,
+                ]);
+
+                $transaksi->update([
+                    'costumer_id' => $transaksi->costumer_id ?? $costumerId,
+                    'total_paid' => $hitungTotalTerbayar >= $totalPayment ? $totalPayment : $hitungTotalTerbayar,
+                    'total_unpaid' => $hitungTotalPiutang > 0 ? $hitungTotalPiutang : 0,
+                    'status_transaction' => $cashMoney >= $totalPayment ? 's' : 'p',
+                ]);
+            } else {
+                $paymentQuery =  PaymentTransaction::create([
                     'factur_number' => $this->generateFactur(),
                     'transaction_id' => $transaksi->id,
                     'payment_method' => $metodePayment,
@@ -148,22 +162,26 @@ class KasirController extends Controller
                     'total_cashback' => $cashBack,
                     'total_unpaid' => $cashBack,
                 ]);
+
+                $transaksi->update([
+                    'costumer_id' => $transaksi->costumer_id ?? $costumerId,
+                    'total_paid' => $cashMoney >= $totalPayment ? $totalPayment : $cashMoney,
+                    'total_unpaid' => $hitungTotalPiutang > 0 ? $hitungTotalPiutang : 0,
+                    'costumer_id' => $querycostumer->id,
+                    'status_transaction' => $cashMoney >= $totalPayment ? 's' : 'p',
+                ]);
             }
-            // update transaction
-            $transaksi->update([
-                'costumer_id' => $transaksi->costumer_id ?? $costumerId,
-                'total_paid' => $cashMoney >= $totalPayment ? $totalPayment : $cashMoney,
-                'total_unpaid' => $cashMoney >= $totalPayment ? 0 : $totalPayment - $cashMoney,
-                'costumer_id' => $querycostumer->id,
-                'status_transaction' => $cashMoney >= $totalPayment ? 's' : 'p',
-            ]);
+
+
 
             DB::commit();
             return response()->json([
                 'status' => 'success',
                 'code' => 200,
-                'message' => 'Data fetch successfully',
+                'message' => 'proses pembayaran berhasil',
                 'data' => [
+                    'transaksi_id' => $transaksi->id,
+                    'payment_id' => $paymentQuery->id,
                     'factur_number' => $this->generateFactur(),
                 ]
             ], 200);
@@ -172,7 +190,7 @@ class KasirController extends Controller
             return response()->json([
                 'status' => 'error',
                 'code' => 500,
-                'message' => 'Data fetch failed',
+                'message' => 'proses pembayaran gagal',
                 'details' => $th->getMessage()
             ], 500);
         }
@@ -193,5 +211,13 @@ class KasirController extends Controller
     public function transaksiDetail($key)
     {
         return view('Pages.penjualan.kasir.kasir-detail', compact('key'));
+    }
+
+    public function invoice($transaksi_id, $invoice_id)
+    {
+        $queryTransaksi = Transaction::with(['details', 'costumer', 'payment' => function ($query) use ($invoice_id) {
+            $query->where('id', $invoice_id);
+        }])->find($transaksi_id);
+        return view('Pages.penjualan.invoice', ['data' => $queryTransaksi]);
     }
 }
