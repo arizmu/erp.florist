@@ -104,7 +104,8 @@
                 <hr class="border-gray-300" />
                 <div class="overflow-auto p-6" style="max-height: 700px; height: 500px;">
                     <div class="space-y-4 mb-28">
-                        <div x-show="!items || items.length === 0" class="text-center text-md text-gray-300 font-medium font-space">
+                        <div x-show="!items || items.length === 0"
+                            class="text-center text-md text-gray-300 font-medium font-space">
                             Empty data.
                         </div>
                         <template x-for="item in items">
@@ -173,18 +174,53 @@
                             </span>
                         </li>
                     </ul>
-                    <button type="button" class="btn btn-error btn-soft mt-3 w-full" :disabled="isLoadTrasaction" x-text="isLoadTrasaction ? 'Processing...':'Proses Pembayaran'" x-on:click="transaksiProsses">
+                    <button type="button" class="btn btn-error btn-soft mt-3 w-full" :disabled="isLoadTrasaction"
+                        x-text="isLoadTrasaction ? 'Processing...':'Proses Transaksi'" x-on:click="transaksiProsses">
                         Proses Pembayaran
                     </button>
                 </div>
             </div>
         </div>
+
+
+        <button type="button" class="btn btn-primary hidden" aria-haspopup="dialog" aria-expanded="false"
+            aria-controls="modal-static-proses-bayar" data-overlay="#modal-static-proses-bayar"
+            id="open-modal-pembayaran">open-mdoal-proses-bayar</button>
+
+        <div id="modal-static-proses-bayar"
+            class="overlay modal overlay-open:opacity-100 hidden [--overlay-backdrop:static]" role="dialog"
+            tabindex="-1" data-overlay-keyboard="false">
+            <div class="modal-dialog overlay-open:opacity-100">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Dialog Title</h3>
+                        <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3"
+                            aria-label="Close" data-overlay="#modal-static-proses-bayar">
+                            <span class="icon-[tabler--x] size-4"></span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        This is some placeholder content to show the scrolling behavior for modals. Instead of repeating
+                        the text in the
+                        modal, we use an inline style to set a minimum height, thereby extending the length of the
+                        overall modal and
+                        demonstrating the overflow scrolling. When content becomes longer than the height of the
+                        viewport, scrolling
+                        will move the modal as needed.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-soft btn-secondary"
+                            data-overlay="#modal-static-proses-bayar">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    @push("js")
+    @push('js')
         <script>
             window.addEventListener('load', function() {
-                // Range Date Picker
                 flatpickr('#flatpickr-range', {
                     mode: 'range'
                 })
@@ -192,7 +228,7 @@
 
             function kasirIndex() {
                 return {
-                    isLoadTrasaction : false,
+                    isLoadTrasaction: false,
                     transaksiProsses() {
                         if (this.items.length <= 0) {
                             notifier.warning('Item is empty.')
@@ -202,14 +238,59 @@
                             notifier.warning('Product title tidak boleh kosong.')
                             return;
                         }
+                        Swal.fire({
+                            title: "Informasi",
+                            text: "Yakin, ingin proses transaksi ini ?",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Ya, Proses Transaksi!",
+                            cancelButtonText: "Tidak!",
+                        }).then(async (result) => {
+                            if (result.isConfirmed) {
+                                this.isLoadTrasaction = true;
+                                try {
+                                    const url = '/transaksi/on-proses';
+                                    const data = {
+                                        'items': this.items,
+                                        'subtotal': this.subtotalGet
+                                    }
+                                    const response = await axios.post(url, data);
+                                    const result = response.data.data;
+                                    const key = result.transaction_id;
+                                    
+                                    this.isLoadTrasaction = false;
+                                    this.resetItems();
 
-                        this.isLoadTrasaction = true;
-                        console.log('hello');
+                                    Swal.fire({
+                                        title: "Payment",
+                                        text: "Lanjutkan untuk proses pembayaran",
+                                        icon: "info",
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#3085d6",
+                                        cancelButtonColor: "#d33",
+                                        confirmButtonText: "Proses pembayaran!"
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.href = `/transaksi/kasir-proses-bayar/${key}`;
+                                        }
+                                    });
+                                } catch (error) {
+                                    this.isLoadTrasaction = false;
+                                    console.log(error);
+                                }
+
+
+                            }
+                        });
+
 
                     },
 
                     items: [],
-                    subtotal: '',
+                    subtotal: 0,
+                    subtotalGet: 0,
                     addItem(index) {
                         const data = {
                             'product_id': index.id,
@@ -247,7 +328,7 @@
                     },
                     reduceQty(key) {
                         const data = this.items.find(index => index.product_id === key);
-                        if (data['product_qty'] <=1) {
+                        if (data['product_qty'] <= 1) {
                             notifier.alert('Jumlah item tidak boleh kurang dari 1.')
                             return;
                         }
@@ -260,7 +341,8 @@
                         this.items.forEach(element => {
                             subtotalBelanja += parseFloat(element.total_price);
                         });
-                        this.subtotal = formatRupiah(subtotalBelanja.toFixed(0)) ?? '--';
+                        this.subtotalGet = subtotalBelanja;
+                        this.subtotal = formatRupiah(subtotalBelanja.toFixed(0)) ?? '0';
                     },
 
                     dataTable: [],
@@ -272,6 +354,11 @@
                         }).catch(err => {
                             console.log(err);
                         })
+                    },
+
+                    resetItems() {
+                        this.items = [];
+                        this.subtotal = '';
                     },
                     init() {
                         this.getProduct()

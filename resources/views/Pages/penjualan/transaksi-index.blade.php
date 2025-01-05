@@ -89,22 +89,25 @@
                     </div>
                     <div class="col-span-1 md:col-span-2 mt-4">
                         <div class="grid gap-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-6">
+                            <div class="col-span-1 md:col-span-2 lg:col-span-6">
+                                <input type="text" placeholder="Type here" class="input-lg input" />
+                            </div>
                             <div class="col-span-1 md:col-span-1 lg:col-span-3">
                                 <input type="text" class="input" placeholder="YYYY-MM-DD to YYYY-MM-DD"
                                     id="flatpickr-range" />
                             </div>
                             <div class="col-span-1 md:col-span-1 lg:col-span-2">
                                 <select class="select appearance-none" aria-label="select">
-                                    <option disabled selected>Pilih ...</option>
-                                    <option>The Godfather</option>
-                                    <option>The Shawshank Redemption</option>
-                                    <option>Pulp Fiction</option>
-                                    <option>The Dark Knight</option>
-                                    <option>Schindler's List</option>
+                                    <option>All</option>
+                                    <option>Draft</option>
+                                    <option>Paid</option>
+                                    <option>Unpaid</option>
                                 </select>
                             </div>
                             <div class="col-span-1 md:col-span-2 lg:col-span-1">
-                                <button class="btn btn-primary w-full">Filter</button>
+                                <button class="btn btn-primary w-full">
+                                    Filter
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -113,19 +116,95 @@
         </div>
     </div>
 
+    <div class="py-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="border-base-content/25 w-full rounded-lg border">
+                    <div class="overflow-x-auto">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Code Transaksi</th>
+                                    <th>Costumer</th>
+                                    <th>Alamat</th>
+                                    <th>Product Qty</th>
+                                    <th>Subtotal</th>
+                                    <th>Paid</th>
+                                    <th>Unpaid</th>
+                                    <th>status</th>
+                                    <th>#</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $no = 1;
+                                @endphp
+                                @foreach ($data as $item)
+                                    <tr>
+                                        <td>{{ $no++ }}</td>
+                                        <td>{{ $item->code }}</td>
+                                        <td>
+                                            {{ $item->costumer->name ?? '[null]' }}
+                                        </td>
+                                        <td class="flex flex-col gap-1">
+                                            <span class="text-wrap"> {{ $item->costumer->alamat ?? '[null]' }}
+                                            </span>
+                                            <span>
+                                                Telpon : {{ $item->costumer->no_telp ?? '[null]' }}
+                                            </span>
+                                        </td>
+                                        <td>{{ $item->details->count() }}</td>
+                                        <td>{{ $item->total_payment }}</td>
+                                        <td>{{ $item->total_paid }}</td>
+                                        <td>{{ $item->total_unpaid }}</td>
+                                        <td>
+                                            @if ($item->status_transaction == 'd')
+                                                <span class="badge badge-soft badge-secondary">Draft</span>
+                                            @endif
+                                            @if ($item->status_transaction == 's')
+                                                <span class="badge badge-soft badge-success">
+                                                    Paid
+                                                </span>
+                                            @endif
+                                            @if ($item->status_transaction == 'p')
+                                                <span class="badge badge-soft badge-warning">
+                                                    Unpaid
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($item->status_transaction == 'd' || $item->status_transaction == 'p')
+                                                <a href="{{route('kasir.proses.bayar', $item->id)}}" class="btn btn-soft btn-circle btn-primary">
+                                                    <span class="icon-[uiw--pay]"></span>
+                                                </a>
+                                            @endif
+                                            <a href="{{route('kasir.transaksi.detail', $item->id)}}" class="btn btn-soft btn-circle btn-info">
+                                                <span class="icon-[lets-icons--view-alt-light]"></span>
+                                            </a>
+                                            @if ($item->status_transaction == 'd')
+                                                <button class="btn btn-soft btn-circle btn-error">
+                                                    <span class="icon-[tabler--trash]"></span>
+                                                </button>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div>
-        hllo
-    </div>
-
-    @push("js")
-        <script>
-            window.addEventListener('load', function() {
-                // Range Date Picker
-                flatpickr('#flatpickr-range', {
-                    mode: 'range'
+        @push('js')
+            <script>
+                window.addEventListener('load', function() {
+                    // Range Date Picker
+                    flatpickr('#flatpickr-range', {
+                        mode: 'range'
+                    })
                 })
-            })
-        </script>
-    @endpush
+            </script>
+        @endpush
 </x-base-layout>

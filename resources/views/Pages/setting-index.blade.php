@@ -16,7 +16,7 @@
         </ol>
     </div>
     <div x-data="settingIndex()" class="py-4">
-        <div class="card">
+        <div class="card bg-slate-50 dark:bg-gray-800">
             <div class="card-body">
                 <div class="p-4 md:px-60 lg:px-72">
                     <h5 class="card-title mb-2.5">Konfigurasi Aplikasi</h5>
@@ -53,8 +53,8 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="lg:col-span-1 flex items-center justify-center flex-col gap-2">
-                            <figure class="w-64 h-64">
+                        <div class="lg:col-span-1 flex item-center flex-col gap-4 py-6">
+                            <figure class="">
                                 <img class="rounded-lg"
                                     src="https://cdn.flyonui.com/fy-assets/components/card/image-9.png"
                                     alt="Watch" />

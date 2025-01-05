@@ -215,7 +215,7 @@
                     </a>
                 </li>
                 <li class="dropdown-footer gap-2">
-                    <a class="btn btn-error btn-soft btn-block" href="#">
+                    <a class="btn btn-error btn-soft btn-block" href="{{ route('logout') }}">
                         <span class="icon-[tabler--logout]"></span>
                         Sign out
                     </a>
@@ -234,8 +234,8 @@
                 <h3 class="font-space text-lg font-semibold md:px-4">
                     Menu Navigation
                 </h3>
-              </div>
-            <x-base.header-menus/>
+            </div>
+            <x-base.header-menus />
             <div class="modal-footer flex justify-center py-4">
                 {{-- <div class="mt-4" style="margin-bottom: -10pt">
                     <button type="button" class="btn btn-soft btn-secondary" data-overlay="#open-menu-navigation-modal">
