@@ -1,5 +1,6 @@
 @import 'flatpickr';
 @import 'awesome-notifications/dist/style.css';
+@import "apexcharts/src/assets/apexcharts.css";
 
 
 @tailwind base;

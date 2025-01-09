@@ -1,6 +1,4 @@
 <x-base-layout>
-
-
     <div class="breadcrumbs mb-2">
         <ol>
             <li>
@@ -37,7 +35,7 @@
                             <template x-for="item in productData">
                                 <div class="card shadow-lg">
                                     <figure>
-                                        <img src="https://cdn.flyonui.com/fy-assets/components/card/image-7.png"
+                                        <img :src="item.img"
                                             alt="headphone" />
                                     </figure>
                                     <div class="card-body">
@@ -48,11 +46,13 @@
                                         <div class="py-3 flex flex-col gap-1 mb-2 text-xs">
                                             <div class="flex gap-3 align-middle">
                                                 <span class="icon-[tabler--moneybag] size-4"></span>
-                                                <span class="font-semibold">Rp. <span x-text="formatRupiah(item.price)"></span></span>
+                                                <span class="font-semibold">Rp. <span
+                                                        x-text="formatRupiah(item.price)"></span></span>
                                             </div>
                                             <div class="flex gap-3 align-middle">
                                                 <span class="icon-[tabler--clipboard-check] size-4"></span>
-                                                <span class="font-semibold"><span x-text="item.qty ?? '0'"></span> PCS</span>
+                                                <span class="font-semibold"><span x-text="item.qty ?? '0'"></span>
+                                                    PCS</span>
                                             </div>
                                         </div>
 
@@ -128,68 +128,90 @@
                             <span class="icon-[tabler--x] size-4"></span>
                         </button>
                     </div>
-                    <div class="modal-body flex flex-col gap-4">
-                        <div class="w-auto">
-                            <label class="label label-text" for=""> Bucket Name </label>
-                            <input type="text" x-model="xform.bucket" readonly class="input" />
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <form x-on:submit.prevent="store()" enctype="multipart/form-data">
+                        <div class="modal-body flex flex-col gap-4">
                             <div class="w-auto">
-                                <label class="label label-text" for=""> Quantity </label>
-                                <input type="text" x-model="xform.qty" readonly class="input" />
+                                <label class="label label-text" for=""> Bucket Name </label>
+                                <input type="text" x-model="xform.bucket" readonly class="input" />
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="w-auto">
+                                    <label class="label label-text" for=""> Quantity </label>
+                                    <input type="text" x-model="xform.qty" class="input" />
+                                </div>
+                                <div class="w-auto">
+                                    <label class="label label-text" for=""> Cost Production </label>
+                                    <input type="text" x-model="xform.cost_production" readonly class="input" />
+                                </div>
                             </div>
                             <div class="w-auto">
-                                <label class="label label-text" for=""> Cost Production </label>
-                                <input type="text" x-model="xform.cost_production" readonly class="input" />
+                                <label class="label label-text" for=""> Price </label>
+                                <input type="text" x-model="xform.price" class="input" />
+                            </div>
+                            <div class="w-auto">
+                                <label class="label label-text" for=""> Foto Product </label>
+                                <input type="file" x-ref="file" @change="file_upload" class="input" />
                             </div>
                         </div>
-                        <div class="w-auto">
-                            <label class="label label-text" for=""> Price </label>
-                            <input type="text" x-model="xform.price" readonly class="input" />
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-soft btn-secondary"
+                                data-overlay="#modal-edit-product-data">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-soft btn-secondary"
-                            data-overlay="#modal-edit-product-data">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
-    @push("js")
+    @push('js')
         <script>
             function productIndex() {
                 return {
+                    file:'',
                     xform: {
+                        product_id: '',
                         bucket: '',
                         qty: '',
-                        cost_production :'',
+                        cost_production: '',
                         price: '',
-                        imgUrl: ''
+                        img_file: ''
                     },
                     openEdit(index) {
                         this.xform.bucket = index.product_name
                         this.xform.qty = index.qty
                         this.xform.cost_production = formatRupiah(index.cost_production)
                         this.xform.price = formatRupiah(index.price)
-                        this.xform.imgUrl = index.img
-
-                        console.log(this.xform);
+                        this.xform.img_file = index.img
+                        this.xform.product_id = index.id
 
                         const openModal = document.getElementById('modal-edit-prouduct');
                         openModal.click();
-                        // console.log(index);
                     },
 
+                    file_upload(e) {
+                        this.file = e.target.files[0];
+                        this.xform.img_file = this.file;
+                    },
+
+                    async store() {
+                        const data = this.xform;
+                        console.log(this.xform);
+                        const url = `/product/update-product-data/${this.xform.product_id}`;
+                        const response = await axios.post(url, data, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            }
+                        })
+                        console.log(response.data);
+                    },
                     productData: [],
                     loadJson() {
                         const url = `/product/product-json`;
                         axios.get(url).then((res) => {
                             const data = res.data.data.data
                             this.productData = data;
-                            console.log(data);
+                            // console.log(data);
                         }).catch((err) => {
                             console.log(err);
 

@@ -109,6 +109,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
     Route::prefix('product')->controller(ProductController::class)->group(function () {
         Route::get('/', 'index')->name('product.index');
         Route::get('/product-json', 'proudctJson');
+        Route::post('/update-product-data/{key}', 'update');
     });
 
     Route::prefix('jenis-product')->controller(JenisProductController::class)->group(function () {

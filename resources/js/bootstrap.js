@@ -26,3 +26,10 @@ window.Swal = Swal;
 import {v4 as uuidv4} from 'uuid';
 window.uuid = uuidv4;
 
+import flatpickr from "flatpickr";
+window.flatpickr = flatpickr;
+
+import Chart from 'chart.js/auto';
+import { getRelativePosition } from 'chart.js/helpers';
+window.Chart = Chart;
+
