@@ -15,7 +15,7 @@
                     <span class="icon-[tabler--basket-check] size-6"></span>
                     <span class="">Transaksi Penjualan</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
+                {{-- <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -23,7 +23,7 @@
                     </svg>
 
                     <span class="">Pre-Order</span>
-                </a>
+                </a> --}}
             </div>
         </div>
         <div class="flex gap-4 flex-col">
@@ -72,11 +72,21 @@
 
                     <span class="">Invetory Masuk</span>
                 </a>
+
+                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                    href="{{ route('inventory.form') }}">
+                    <span class="icon-[basil--history-outline] size-6" style="width: 24px; height: 24px;"></span>
+                    <span class="">
+                        History
+                        <span class="badge badge-error badge-soft">Son...</span>
+                    </span>
+                </a>
             </div>
         </div>
         <div class="flex gap-4 flex-col">
             <h4 class="font-semibold  text-gray-500" style="--fw:500">
                 Manajemen Jasa
+                <span class="badge badge-error badge-soft">Son...</span>
             </h4>
             <div class="flex flex-col gap-1 border-l px-2">
                 <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
@@ -88,7 +98,8 @@
 
                     <span class="">Jasa Produksi</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
+                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                    href="{{ route('ref-jasa.index') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -101,7 +112,7 @@
         </div>
         <div class="flex gap-4 flex-col">
             <h4 class="font-semibold  text-gray-500" style="--fw:500">
-                Manajemen Pelaporan
+                Manajemen Pelaporan <span class="badge badge-error badge-soft">Son...</span>
             </h4>
             <div class="flex flex-col gap-1 border-l px-2">
                 <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
@@ -135,7 +146,7 @@
         </div>
         <div class="flex gap-4 flex-col">
             <h4 class="font-semibold  text-gray-500" style="--fw:500">
-                Manajemen Barang
+                Manajemen Barang <span></span>
             </h4>
             <div class="flex flex-col gap-1 border-l px-2">
                 <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
@@ -158,7 +169,7 @@
                     </svg>
                     <span class="">Category</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                {{-- <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
                     href="{{ route('satuan.index') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
@@ -167,7 +178,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
                     </svg>
                     <span class="">Satuan</span>
-                </a>
+                </a> --}}
             </div>
         </div>
         <div class="flex gap-4 flex-col">
@@ -177,7 +188,7 @@
             <div class="flex flex-col gap-1 border-l px-2">
                 <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
                     href="{{ route('pegawai.index') }}">
-                   <span class="size-6 icon-[ph--folder-user]"></span>
+                    <span class="size-6 icon-[ph--folder-user]"></span>
                     <span class="">Pegawai</span>
                 </a>
                 <a href="{{ route('user.index') }}"
@@ -186,12 +197,9 @@
                     <span class="">Pengguna</span>
                 </a>
                 <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 9v3.75m0-10.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.25-8.25-3.286Zm0 13.036h.008v.008H12v-.008Z" />
-                    </svg>
-                    <span class="">Role & Permission</span>
+                    <span class="icon-[mdi--shield-lock-outline] size-8"></span>
+                    <span class="">Role & Permission
+                        <span class="badge badge-error badge-soft">Son...</span></span>
                 </a>
                 <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
                     href="{{ route('app-setting.index') }}">

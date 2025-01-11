@@ -66,8 +66,8 @@
                                                 <span class="size-5 icon-[tabler--eye-search]"></span>
                                             </button>
 
-                                            <button
-                                                class="btn btn-error btn-sm rounded-full btn-soft">Re-Production</button>
+                                            {{-- <button
+                                                class="btn btn-error btn-sm rounded-full btn-soft">Re-Production</button> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -112,7 +112,7 @@
         </div>
 
         {{-- modal open --}}
-        <button type="button" class="btn btn-primary" aria-haspopup="dialog" aria-expanded="false"
+        <button type="button" class="btn btn-primary hidden" aria-haspopup="dialog" aria-expanded="false"
             aria-controls="modal-edit-product-data" data-overlay="#modal-edit-product-data"
             id="modal-edit-prouduct">Open modal</button>
 

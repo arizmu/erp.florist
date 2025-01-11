@@ -16,33 +16,72 @@
         </ol>
     </div>
 
-    <div
-        class="grid md:grid-cols-3 gap-6 min-h-[164px] mt-2 mb-2 py-8 p-16 bg-gradient-to-r from-blue-700 to-blue-400 font-sans overflow-hidden rounded">
-        <div class="md:col-span-2">
-            <h1 class="text-3xl font-bold text-white">Welcome to ReadymadeUI!</h1>
-            <p class="text-base text-gray-200 mt-4">Best tailwind css readymade UI plateform</p>
-
-            <button type="button"
-                class="py-3 px-6 text-sm font-semibold bg-white text-blue-600 hover:bg-slate-100 rounded-md mt-8">Get
-                Started</button>
-        </div>
-
-        <div class="relative max-md:hidden">
-            <img src="https://readymadeui.com/signin-image.webp" alt="Banner Image"
-                class="w-full right-4 top-[-13px] md:absolute skew-x-[-16deg] rotate-0 object-cover" />
+    <div class="bg-gradient-to-r from-pink-500 to-purple-500 p-8 font-sans rounded-xl mt-4">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-bold text-white mb-8 font-muse">Dashboard</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div
+                        class="flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full p-3 w-16 h-16">
+                        <svg class="h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="mt-4">
+                        <p class="text-lg font-semibold text-gray-800">Total Users</p>
+                        <p class="text-sm text-gray-500 mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                            metus mi consectetur felis turpis vitae ligula.</p>
+                        <p class="text-gray-600 text-sm mt-2">1,200</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div
+                        class="flex items-center justify-center bg-gradient-to-r from-green-500 to-teal-500 rounded-full p-3 w-16 h-16">
+                        <svg class="h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="mt-4">
+                        <p class="text-lg font-semibold text-gray-800">Revenue</p>
+                        <p class="text-sm text-gray-500 mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                            metus mi consectetur felis turpis vitae ligula.</p>
+                        <p class="text-gray-600 text-sm mt-2">$50,000</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div
+                        class="flex items-center justify-center bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full p-3 w-16 h-16">
+                        <svg class="h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="mt-4">
+                        <p class="text-lg font-semibold text-gray-800">Issues</p>
+                        <p class="text-sm text-gray-500 mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                            metus mi consectetur felis turpis vitae ligula.</p>
+                        <p class="text-gray-600 text-sm mt-2">5</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="py-2">
+    {{-- <div class="py-2">
         <div class="card">
             <div class="card-body">
-                {{-- {!! $name !!} --}}
+                {!! $name !!}
                 <canvas id="chart" class="w-full">
                     hello
                 </canvas>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     @push('js')
         <script>

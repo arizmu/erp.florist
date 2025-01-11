@@ -16,7 +16,7 @@
         </ol>
     </div>
 
-    <div class="grid md:grid-cols-5 lg:grid-cols-8 gap-5">
+    <div class="grid md:grid-cols-5 lg:grid-cols-8 gap-5" x-data="satuanIndex">
         <div class="md:col-span-3 lg:col-span-6">
             <div class="card">
                 <div class="card-body">
@@ -25,24 +25,29 @@
                         <div class="md:col-span-2 lg:col-span-3 ">
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="flex flex-col gap-4">
-                                        <div class="relative w-auto">
-                                            <input type="text" placeholder="John Doe"
-                                                class="input input-floating peer" id="floatingInput" />
-                                            <label class="input-floating-label" for="floatingInput">Satuan</label>
+                                    <form @submit.prevent="!isUpdated ? storeSatuan : udpateSatuan">
+                                        <div class="flex flex-col gap-4">
+                                            <div class="relative w-auto">
+                                                <input x-model="xform.satuan" type="text" placeholder="satuan..."
+                                                    required class="input input-floating peer" id="" />
+                                                <label class="input-floating-label" for="">Satuan</label>
+                                            </div>
+                                            <div class="relative w-auto">
+                                                <textarea x-model="xform.comment" class="textarea textarea-floating peer" placeholder="comment..." id=""></textarea>
+                                                <label class="textarea-floating-label" for="">
+                                                    Comment
+                                                </label>
+                                            </div>
+                                            <div class="flex justify-between gap-2">
+                                                <button type="reset"
+                                                    class="btn btn-outline btn-warning">Reset</button>
+                                                <button :disabled="isSubmitting" type="submit"
+                                                    class="btn btn-outline btn-primary"
+                                                    x-text="isSubmitting ? 'Load...':'Submit'">
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div class="relative w-auto">
-                                            <textarea class="textarea textarea-floating peer" placeholder="Hello!!!" id="textareaFloating"></textarea>
-                                            <label class="textarea-floating-label" for="textareaFloating">
-                                                Comment
-                                            </label>
-                                        </div>
-                                        <div class="flex justify-between">
-
-                                            <button class="btn btn-outline btn-warning">Reset Form</button>
-                                            <button class="btn btn-outline btn-primary">Simpan Baru</button>
-                                        </div>
-                                    </div>
+                                    </form>
                                 </div>
                             </div>
 
@@ -54,222 +59,25 @@
                                         <tr>
                                             <th>Satuan</th>
                                             <th>Comment</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
-                                            <th>Actions</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td class="text-nowrap">John Doe</td>
-                                            <td>johndoe@example.com</td>
-                                            <td><span class="badge badge-soft badge-success text-xs">Professional</span>
-                                            </td>
-                                            <td class="text-nowrap">March 1, 2024</td>
-                                            <td>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--pencil] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--trash] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--dots-vertical] size-5"></span></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-nowrap">Jane Smith</td>
-                                            <td>janesmith@example.com</td>
-                                            <td><span class="badge badge-soft badge-error text-xs">Rejected</span></td>
-                                            <td class="text-nowrap">March 2, 2024</td>
-                                            <td>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--pencil] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--trash] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--dots-vertical] size-5"></span></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-nowrap">Alice Johnson</td>
-                                            <td>alicejohnson@example.com</td>
-                                            <td><span class="badge badge-soft badge-info text-xs">Applied</span></td>
-                                            <td class="text-nowrap">March 3, 2024</td>
-                                            <td>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--pencil] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--trash] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--dots-vertical] size-5"></span></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-nowrap">Bob Brown</td>
-                                            <td>bobrown@example.com</td>
-                                            <td><span class="badge badge-soft badge-primary text-xs">Current</span></td>
-                                            <td class="text-nowrap">March 4, 2024</td>
-                                            <td>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--pencil] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--trash] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--dots-vertical] size-5"></span></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-nowrap">John Doe</td>
-                                            <td>johndoe@example.com</td>
-                                            <td><span class="badge badge-soft badge-success text-xs">Professional</span>
-                                            </td>
-                                            <td class="text-nowrap">March 1, 2024</td>
-                                            <td>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--pencil] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--trash] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--dots-vertical] size-5"></span></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-nowrap">Jane Smith</td>
-                                            <td>janesmith@example.com</td>
-                                            <td><span class="badge badge-soft badge-error text-xs">Rejected</span></td>
-                                            <td class="text-nowrap">March 2, 2024</td>
-                                            <td>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--pencil] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--trash] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--dots-vertical] size-5"></span></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-nowrap">Alice Johnson</td>
-                                            <td>alicejohnson@example.com</td>
-                                            <td><span class="badge badge-soft badge-info text-xs">Applied</span></td>
-                                            <td class="text-nowrap">March 3, 2024</td>
-                                            <td>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--pencil] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--trash] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--dots-vertical] size-5"></span></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-nowrap">Bob Brown</td>
-                                            <td>bobrown@example.com</td>
-                                            <td><span class="badge badge-soft badge-primary text-xs">Current</span>
-                                            </td>
-                                            <td class="text-nowrap">March 4, 2024</td>
-                                            <td>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--pencil] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--trash] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--dots-vertical] size-5"></span></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-nowrap">John Doe</td>
-                                            <td>johndoe@example.com</td>
-                                            <td><span
-                                                    class="badge badge-soft badge-success text-xs">Professional</span>
-                                            </td>
-                                            <td class="text-nowrap">March 1, 2024</td>
-                                            <td>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--pencil] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--trash] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--dots-vertical] size-5"></span></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-nowrap">Jane Smith</td>
-                                            <td>janesmith@example.com</td>
-                                            <td><span class="badge badge-soft badge-error text-xs">Rejected</span></td>
-                                            <td class="text-nowrap">March 2, 2024</td>
-                                            <td>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--pencil] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--trash] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--dots-vertical] size-5"></span></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-nowrap">Alice Johnson</td>
-                                            <td>alicejohnson@example.com</td>
-                                            <td><span class="badge badge-soft badge-info text-xs">Applied</span></td>
-                                            <td class="text-nowrap">March 3, 2024</td>
-                                            <td>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--pencil] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--trash] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--dots-vertical] size-5"></span></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-nowrap">Bob Brown</td>
-                                            <td>bobrown@example.com</td>
-                                            <td><span class="badge badge-soft badge-primary text-xs">Current</span>
-                                            </td>
-                                            <td class="text-nowrap">March 4, 2024</td>
-                                            <td>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--pencil] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--trash] size-5"></span></button>
-                                                <button class="btn btn-circle btn-text btn-sm"
-                                                    aria-label="Action button"><span
-                                                        class="icon-[tabler--dots-vertical] size-5"></span></button>
-                                            </td>
-                                        </tr>
+                                        <template x-for="item in datas">
+                                            <tr>
+                                                <td x-text="item.nama_satuan"></td>
+                                                <td x-text="item.comment"></td>
+                                                <td>
+                                                    <button x-on:click="satuanDelete(item.id)" type="button" class="btn btn-sm btn-circle btn-soft btn-error">
+                                                        <span class="icon-[oui--trash]"
+                                                            style="width: 16px; height: 16px;"></span>
+                                                    </button>
+                                                    <button x-on:click="getSatuan(item)" type="button" class="btn btn-sm btn-circle btn-soft btn-info">
+                                                        <span class="icon-[hugeicons--pencil-edit-02] size-4"></span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </template>
                                     </tbody>
                                 </table>
                             </div>
@@ -282,4 +90,75 @@
             <x-panel.panel-product />
         </div>
     </div>
+
+    @push('js')
+        <script>
+            function satuanIndex() {
+                return {
+                    datas: [],
+                    xform: {
+                        id: '',
+                        satuan: '',
+                        comment: ''
+                    },
+                    isSubmitting: false,
+                    isUpdated: false,
+                    
+                    async satuanDelete(key) {
+                        const url = `/master-barang/satuan-delete/${key}`;
+                        const response = await axios.post(url);
+                        const res = response.data;
+                        this.init()
+                    },
+
+                    getSatuan(index) {
+                        this.isUpdated = true;
+                        this.xform = {
+                            id: index.id,
+                            satuan: index.nama_satuan,
+                            comment: index.comment
+                        }
+                    },
+
+                    async udpateSatuan() {
+                        this.isSubmitting = true;
+                        const url = `/master-barang/satuan-update/${this.xform.id}`;
+                        const response = await axios.post(url, this.xform);
+                        const res = response.data;
+                        this.getData()
+                        this.isSubmitting = false;
+                        this.isUpdated = false;
+                        this.init();
+                    },
+
+                    async storeSatuan() {
+                        this.isSubmitting = true;
+                        const url = `/master-barang/satuan-store`;
+                        const response = await axios.post(url, this.xform);
+                        const res = response.data;
+                        this.init()
+                    },
+                    async getData() {
+                        const url = `/master-barang/satuan-get-json`;
+                        const response = await axios.get(url);
+                        const data = response.data.data.data;
+                        this.datas = data;
+                    },
+                    reseFrom() {
+                        this.xform = {
+                            id: '',
+                            satuan: '',
+                            comment: ''
+                        }
+                    },
+                    init() {
+                        this.getData()
+                        this.isSubmitting = false;
+                        this.isUpdated = false;
+                        this.reseFrom();
+                    }
+                }
+            }
+        </script>
+    @endpush
 </x-base-layout>

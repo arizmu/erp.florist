@@ -79,10 +79,10 @@
                                 </div>
                             </div>
                             <div class="flex gap-2 justify-center md:justify-between flex-wrap">
-                                <button class="btn btn-error rounded-full btn-soft btn-sm">
+                                {{-- <button class="btn btn-error rounded-full btn-soft btn-sm">
                                     <span class="icon-[tabler--brand-stackoverflow] size-5"></span>
                                     Costume
-                                </button>
+                                </button> --}}
                                 <button type="button" x-on:click="addItem(item)"
                                     class="btn btn-primary rounded-full btn-soft btn-sm">
                                     <span class="icon-[tabler--shopping-bag-plus] size-5"></span>

@@ -12,6 +12,7 @@ use App\Http\Controllers\Products\BarangController;
 use App\Http\Controllers\Products\CategoryController;
 use App\Http\Controllers\Products\SatuanController;
 use App\Http\Controllers\Produksi\ProduksiController;
+use App\Http\Controllers\RJasaCraftingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,6 +38,10 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         });
         Route::controller(SatuanController::class)->group(function () {
             Route::get('/satuan-data', 'index')->name('satuan.index');
+            Route::get('/satuan-get-json', 'dataJson');
+            Route::post('/satuan-store', 'store');
+            Route::post('/satuan-update/{key}', 'update');
+            Route::post('/satuan-delete/{key}', 'hapus');
         });
         Route::controller(BarangController::class)->group(function () {
             Route::get('/barang-list', 'index')->name('barang.index');
@@ -117,5 +122,16 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         Route::get('load-json-data', 'dataJson');
         Route::post('/store-data', 'store');
         Route::get('/delete-data/{key}', 'destroy');
+    });
+
+    Route::group([
+        'controller' => RJasaCraftingController::class,
+        'prefix' => 'ref-jasa'
+    ], function () {
+        Route::get('/', 'index')->name('ref-jasa.index');
+        Route::post('/store-data', 'store');
+        Route::post('/update-data/{key}', 'update');
+        Route::post('/delete-data/{key}', 'delete');
+        Route::get('/get-data-json', 'getJson');
     });
 });

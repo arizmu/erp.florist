@@ -35,7 +35,7 @@
                     </span>
                     <span class="font-muse text-md">Kategori Barang</span>
                 </a>
-                <a href="{{ route("satuan.index") }}"
+                {{-- <a href="{{ route("satuan.index") }}"
                     class="flex gap-4 bg-gray-100 p-4 py-3 rounded-md hover:bg-blue-100">
                     <span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -45,7 +45,7 @@
                         </svg>
                     </span>
                     <span class="font-muse text-md">Satuan Barang</span>
-                </a>
+                </a> --}}
             </div>
         </div>
     </div>
