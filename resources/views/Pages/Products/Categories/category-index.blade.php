@@ -25,8 +25,14 @@
                     <div class="grid grid-cols-1 lg:grid-cols-9 gap-5 py-4">
                         <div class="md:col-span-2 lg:col-span-3 ">
                             <div class="card">
+                                <div class="card-header flex justify-start gap-4">
+                                    <span class="icon-[tabler--align-box-top-right]"
+                                        style="width: 24px; height: 24px;"></span>
+                                    <span x-text="isUpdated ? 'Form Updated':'Form Input'"
+                                        class="text-lg font-semibold"></span>
+                                </div>
                                 <div class="card-body">
-                                    <form @submit.prevent="categoryStore">
+                                    <form @submit.prevent="isUpdated ? updateCategory:categoryStore">
                                         <div class="flex flex-col gap-4">
                                             <div class="relative w-auto">
                                                 <input type="text" placeholder="John Doe"
@@ -40,13 +46,18 @@
                                                     Comment
                                                 </label>
                                             </div>
-                                            <div class="flex justify-start flex-warp gap-2 w-full">
-                                                <button type="reset" class="btn btn-warning btn-soft">Reset</button>
+                                            <div class="flex justify-start flex-wrap gap-2 w-full">
                                                 <button type="submit" :disabled="isSubmitting"
-                                                    class="btn btn-primary btn-soft"
-                                                    x-text="isSubmitting ? 'Loading...'
-                                                    :'Simpan'">
-                                                    Simpan
+                                                    class="btn btn-primary rounded-full px-5 btn-soft">
+                                                    <span class="icon-[proicons--save] size-6"></span></span>
+                                                    <span
+                                                        x-text="isSubmitting ? 'Loading...'
+                                                    :'Simpan'">Simpan</span>
+                                                </button>
+                                                <button type="button" @click="resetForm"
+                                                    class="btn rounded-full px-5 btn-warning btn-soft">
+                                                    <span class="icon-[fluent--arrow-reset-20-filled] size-6"></span>
+                                                    <span>Reset</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -56,6 +67,21 @@
 
                         </div>
                         <div class="lg:col-span-6">
+                            <div class="border rounded-lg mb-5 p-4">
+                                <div class="flex flex-start flex-wrap gap-4">
+                                    <select x-model="range" class="select max-w-20 appearance-none rounded-full" aria-label="select">
+                                        <option value="15">15</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                    <input type="text" class="input rounded-full max-w-72" x-model="search">
+                                    <button x-on:click="searchAct" type="button"
+                                        class="btn btn-soft btn-primary btn-circle">
+                                        <span class="icon-[mingcute--search-ai-line] size-5"></span>
+                                    </button>
+                                </div>
+                            </div>
                             <div class="w-full overflow-x-auto border rounded-lg">
                                 <table class="table">
                                     <thead>
@@ -71,12 +97,13 @@
                                                 <td class="text-nowrap" x-text="value.category_name">category name</td>
                                                 <td x-text="value.comment">comment...</td>
                                                 <td>
-                                                    <button class="btn btn-circle btn-text btn-sm"
+                                                    <button type="button" @click="getEdit(value)"
+                                                        class="btn btn-circle btn-warning btn-sm btn-soft"
                                                         aria-label="Action button"><span
-                                                            class="icon-[tabler--pencil] size-5"></span>
+                                                            class="icon-[mdi--circle-edit-outline] size-5"></span>
                                                     </button>
                                                     <button x-on:click="deleteCategory(value.id)"
-                                                        class="btn btn-circle btn-text btn-sm"
+                                                        class="btn btn-circle btn-error btn-sm btn-soft"
                                                         aria-label="Action button"><span
                                                             class="icon-[tabler--trash] size-5"></span>
                                                     </button>
@@ -84,9 +111,15 @@
                                                 </td>
                                             </tr>
                                         </template>
-
                                     </tbody>
                                 </table>
+                            </div>
+                            <div>
+                                <nav class="flex justify-between items-center gap-x-1 mt-4">
+                                    <button type="button" class="btn btn-soft rounded-full">Previous</button>
+
+                                    <button type="button" class="btn btn-soft rounded-full">Next</button>
+                                </nav>
                             </div>
                         </div>
                     </div>
@@ -97,7 +130,7 @@
             <x-panel.panel-product />
         </div>
     </div>
-    @push("js")
+    @push('js')
         <script>
             function KategoriBarang() {
                 return {
@@ -107,7 +140,41 @@
                         category: '',
                         comment: ''
                     },
+                    range: 15,
                     isSubmitting: false,
+                    isUpdated: false,
+                    search: '',
+                    async searchAct() {
+                        try {
+                            const url = `/master-barang/category-json?search=${this.search}&range=${this.range}`;
+                            const response = await axios.get(url);
+                            const data = response.data.data.data;
+                            this.datatable = data;
+                        } catch (error) {
+                            console.error("Error fetching data:", error);
+                        }
+                    },
+
+                    async updateCategory() {
+                        this.isSubmitting = true;
+                        try {
+                            const url = `/master-barang/category-updated/${this.xform.code}`;
+                            const response = await axios.post(url, this.xform);
+                            this.getData();
+                            this.resetForm();
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    },
+
+                    getEdit(item) {
+                        this.isUpdated = true;
+                        this.xform.code = item.id;
+                        this.xform.category = item.category_name;
+                        this.xform.comment = item.comment;
+                        console.log(this.xform);
+                    },
+
                     async categoryStore() {
                         this.isSubmitting = true;
                         var token = document.querySelector('meta[name="csrf-token"]').content;
@@ -146,6 +213,7 @@
                         const table = arrayData.data;
                         this.datatable = table;
                     },
+
                     deleteCategory(key) {
                         const keyid = key;
 
@@ -170,6 +238,17 @@
                             }
                         )
                     },
+
+                    resetForm() {
+                        this.xform = {
+                            code: '',
+                            category: '',
+                            comment: ''
+                        }
+                        this.isUpdated = false;
+                        this.isSubmitting = false;
+                    },
+
                     init() {
                         this.getData();
                     }

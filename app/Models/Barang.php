@@ -6,6 +6,7 @@ use App\Models\invetory\InventoryDetail;
 use App\Models\Production\ProductionBarangDetail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Barang extends Model
@@ -31,5 +32,16 @@ class Barang extends Model
     public function productin_detail(): HasMany
     {
         return $this->hasMany(ProductionBarangDetail::class, 'barang_id', 'id');
+    }
+
+
+    /**
+     * Get the category that owns the Barang
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(CategoryBarang::class, 'category_barang_id', 'id');
     }
 }

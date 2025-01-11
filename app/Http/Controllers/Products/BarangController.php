@@ -62,12 +62,16 @@ class BarangController extends Controller
 
     public function barangJson()
     {
-        $query = Barang::paginate(15);
+        $query = Barang::with('category')->paginate(15);
         return response()->json([
             'code' => 200,
             'status' => 'Ok',
             'message' => 'Data fetch successfully',
             'data' => $query
         ]);
+    }
+
+    public function getSatuan() {
+        
     }
 }

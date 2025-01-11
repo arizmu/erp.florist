@@ -20,30 +20,26 @@
         <div class="md:col-span-3 lg:col-span-6">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title mb-2.5">Master Barang</h5>
+                    <h5 class="card-title mb-2.5 text-orange-500">
+                        <span class="icon-[tabler--align-box-top-right]" style="width: 24px; height: 24px;"></span>
+                        Master Barang
+                    </h5>
                     <div class="grid grid-cols-1 lg:grid-cols-9 gap-5 py-4">
                         <div class="md:col-span-2 lg:col-span-3 ">
                             <div class="card">
+                                <div class="card-header flex gap-4 items-center align-middle">
+                                    <span class="icon-[material-symbols--trackpad-input-3-outline-sharp] size-6"></span>
+                                    <h3 class="font-semibold text-lg font-space"
+                                        x-text="isUpdated ? 'Form Updated':'Form Input'"></h3>
+                                </div>
                                 <div class="card-body">
-                                    <form @submit.prevent="storeCategory">
+                                    <form @submit.prevent="storeBarang">
                                         <div class="flex flex-col gap-4">
                                             <div class="relative w-auto">
                                                 <input x-model="sForm.nama_barang" type="text" placeholder=""
                                                     class="input input-floating peer" id="" />
                                                 <label class="input-floating-label" for="">Category
                                                     Name</label>
-                                            </div>
-                                            <div class="relative w-auto">
-                                                <select x-model="sForm.category_id" class="select select-floating"
-                                                    aria-label="Select floating label" id="">
-                                                    <option>Pilih ...</option>
-                                                    <template x-for="value in category">
-                                                        <option :value="value.id" x-text="value.category_name">
-                                                        </option>
-                                                    </template>
-                                                </select>
-                                                <label class="select-floating-label text-blue-500"
-                                                    for="">Kategori</label>
                                             </div>
                                             <div class="relative w-auto">
                                                 <select x-model="sForm.satuan_id" class="select select-floating"
@@ -54,34 +50,55 @@
                                                     for="">Satuan</label>
                                             </div>
                                             <div class="relative w-auto">
+                                                <select x-model="sForm.category_id" class="select select-floating"
+                                                    aria-label="Select floating label" id="">
+                                                    <option>Pilih ...</option>
+                                                    <template x-for="value in category" :key="value.id">
+                                                        <option :value="value.id" x-text="value.category_name">
+                                                        </option>
+                                                    </template>
+                                                </select>
+                                                <label class="select-floating-label text-blue-500"
+                                                    for="">Kategori</label>
+                                            </div>
+                                            <div class="relative w-auto">
                                                 <textarea x-model="sForm.comment" class="textarea textarea-floating peer" placeholder="Hello!!!" id=""></textarea>
                                                 <label class="textarea-floating-label" for="">Comment</label>
                                             </div>
-                                            <div class="flex justify-between">
-
-                                                <button type="reset"
-                                                    class="btn btn-outline btn-warning w-auto btn-soft">
-                                                    Reset
+                                            <div class="flex justify-between flex-wrap gap-4">
+                                                <button type="button" x-on:click="resetForm"
+                                                    class="btn btn-outline btn-warning rounded-full w-auto btn-soft px-5 ">
+                                                    <span class="icon-[ic--twotone-reset-tv]"
+                                                        style="width: 24px; height: 24px;"></span>
+                                                    <span>Reset</span>
                                                 </button>
-                                                <button type="submit"
-                                                    class="btn btn-outline btn-primary w-auto btn-soft">
-                                                    Save
-                                                </button>
+                                                <button type="submit" :disabled="isAction"
+                                                    class="btn btn-outline btn-primary w-auto btn-soft rounded-full px-5">
+                                                    <span class="icon-[proicons--save]"
+                                                        style="width: 24px; height: 24px;"></span>
+                                                    <span class="" x-text="isAction ? 'Load...':'Submit'"></span>
                                                 </button>
                                             </div>
                                         </div>
                                     </form>
                                 </div>
                             </div>
-
                         </div>
                         <div class="lg:col-span-6">
+                            <div class="mb-3 rounded-lg border p-4 flex justify-start flex-wrap gap-2 md:gap-6 ">
+                                <input type="text" class="input rounded-full max-w-60">
+                                <button class="btn btn-soft btn-primary btn-circle">
+                                    <span class="icon-[mingcute--search-3-line]"
+                                        style="width: 24px; height: 24px;"></span>
+                                </button>
+                            </div>
                             <div class="w-full overflow-x-auto border rounded-lg">
                                 <table class="table">
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Kategori</th>
+                                            <th>Satuan</th>
+                                            <th>Category</th>
                                             <th>stock</th>
                                             <th>Date</th>
                                             <th>Actions</th>
@@ -91,7 +108,8 @@
                                         <template x-for="barang in dataBarang" :key="barang.id">
                                             <tr class="hover:bg-slate-100">
                                                 <td class="text-nowrap" x-text="barang.nama_barang"></td>
-                                                <td x-text="barang.category_barang_id">johndoe@example.com</td>
+                                                <td></td>
+                                                <td x-text="barang.category.category_name">johndoe@example.com</td>
                                                 <td>
                                                     <template x-if="barang.stock > 0">
                                                         <span class="badge badge-soft badge-success text-xs"
@@ -106,25 +124,33 @@
                                                         </span>
                                                     </template>
                                                 </td>
-                                                <td class="text-nowrap" x-text="formatTanggal(barang.updated_at)">
+                                                <td class="text-nowrap" x-text="formatTanggalNoTime(barang.updated_at)">
                                                 </td>
                                                 <td>
-                                                    <button class="btn btn-circle btn-text btn-sm"
-                                                        aria-label="Action button"><span
-                                                            class="icon-[tabler--pencil] size-5"></span></button>
+                                                    <button type="btn" x-on:click="getEdit(barang)"
+                                                        class="btn btn-circle btn-soft btn-sm btn-warning">
+                                                        <span class="icon-[mdi--circle-edit-outline] size-5"></span>
+                                                    </button>
                                                     <button x-on:click="deleteBarang(barang.id)" type="button"
-                                                        class="btn btn-circle btn-text btn-sm"
-                                                        aria-label="Action button"><span
-                                                            class="icon-[tabler--trash] size-5"></span></button>
-                                                    <button class="btn btn-circle btn-text btn-sm"
-                                                        aria-label="Action button"><span
-                                                            class="icon-[tabler--dots-vertical] size-5"></span></button>
+                                                        class="btn btn-error btn-circle btn-soft btn-sm">
+                                                        <span class="icon-[tabler--trash] size-5"></span>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         </template>
                                     </tbody>
                                 </table>
                             </div>
+
+                            <nav class="flex justify-end items-center gap-x-1 mt-4">
+                                <button type="button" class="btn btn-soft btn-sm rounded-full">Previous</button>
+                                {{-- <div class="flex items-center gap-x-1">
+                                  <button type="button" class="btn btn-soft btn-sm btn-circle aria-[current='page']:text-bg-soft-primary">1</button>
+                                  <button type="button" class="btn btn-soft btn-sm btn-circle aria-[current='page']:text-bg-soft-primary" aria-current="page">2</button>
+                                  <button type="button" class="btn btn-soft btn-sm btn-circle aria-[current='page']:text-bg-soft-primary">3</button>
+                                </div> --}}
+                                <button type="button" class="btn btn-soft btn-sm rounded-full">Next</button>
+                            </nav>
                         </div>
                     </div>
                 </div>
@@ -134,10 +160,31 @@
             <x-panel.panel-product />
         </div>
     </div>
-    @push("js")
+    @push('js')
         <script>
             function IndexBarang() {
                 return {
+                    dataBarang: [],
+                    category: [],
+                    sForm: {
+                        id: '',
+                        nama_barang: '',
+                        satuan_id: '',
+                        category_id: '',
+                        satuan_id: '',
+                        comment: '',
+                    },
+                    isAction: false,
+                    isUpdated: false,
+                    getEdit(item) {
+                        this.isUpdated = true;
+                        this.sForm.nama_barang = item.nama_barang;
+                        this.sForm.satuan_id = '';
+                        this.sForm.category_id = item.category_barang_id;
+                        this.sForm.comment = '';
+                        this.sForm.id = item.id;
+                    },
+
                     deleteBarang(key) {
                         let url = `/master-barang/barang-destroy/${key}`;
                         Swal.fire({
@@ -170,7 +217,6 @@
                         });
                     },
 
-                    dataBarang: [],
                     async loadBarang() {
                         try {
                             const response = await axios.get('/master-barang/barang-json');
@@ -180,32 +226,17 @@
                         }
                     },
 
-                    sForm: {
-                        nama_barang: '',
-                        category_id: '',
-                        satuan_id: '',
-                        commnet: '',
-                    },
-                    async storeCategory() {
-                        const postData = await axios.post('/master-barang/barang-store', this.sForm, {
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        }).then((response) => {
-                            console.log(response);
-                            this.sForm = {
-                                nama_barang: '',
-                                category_id: '',
-                                satuan_id: '',
-                                commnet: '',
-                            }
-                        }).catch((errors) => {
-                            console.log(errors);
-                        })
-                        this.loadBarang();
+                    async storeBarang() {
+                        this.isAction = true;
+                        try {
+                            const url = "/master-barang/barang-store"
+                            const response = await axios.post(url, this.sForm);
+                        } catch (error) {
+                            console.log(error);
+                        }
+
                     },
 
-                    category: [],
                     getCagetory() {
                         axios.get("/master-barang/category-json")
                             .then((response) => {
@@ -215,6 +246,20 @@
                             .catch((error) => {
                                 console.log(error);
                             })
+                    },
+
+                    resetForm() {
+                        this.sForm = {
+                            id: '',
+                            nama_barang: '',
+                            satuan_id: '',
+                            category_id: '',
+                            satuan_id: '',
+                            comment: '',
+                        }
+
+                        this.isAction = false;
+                        this.isUpdated = false;
                     },
 
                     init() {

@@ -35,6 +35,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::get('/category-json', 'dataJson');
             Route::post('/category-store', 'store');
             Route::get('/delete-category/{id}', 'destroy');
+            Route::post('/category-updated/{id}', 'updated');
         });
         Route::controller(SatuanController::class)->group(function () {
             Route::get('/satuan-data', 'index')->name('satuan.index');

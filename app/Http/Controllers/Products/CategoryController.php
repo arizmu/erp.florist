@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Products;
 use App\Http\Controllers\Controller;
 use App\Models\CategoryBarang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
@@ -33,7 +34,9 @@ class CategoryController extends Controller
 
     public function dataJson()
     {
-        $query = CategoryBarang::orderBy('created_at', 'desc')->paginate(15);
+        $query = CategoryBarang::when(request()->search, function ($query) {
+            $query->filter(request()->search);
+        })->enable()->orderBy('created_at', 'desc')->paginate(request()->range ? request()->range : 15);
         return response()->json([
             'code' => 200,
             'status' => 'success',
@@ -59,6 +62,33 @@ class CategoryController extends Controller
                 'status' => 'Error',
                 'message' => 'Internal server Error',
                 'data' => []
+            ], 500);
+        }
+    }
+
+    public function updated(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $query = CategoryBarang::find($id);
+            $query->update([
+                'category_name' => $request->category,
+                'comment' => $request->comment
+            ]);
+            DB::commit();
+            return response()->json([
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Updated success!',
+                'data' => $query
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                'code' => 500,
+                'status' => 'success',
+                'message' => 'Data fetched successfully',
+                'details' => $th->getMessage()
             ], 500);
         }
     }

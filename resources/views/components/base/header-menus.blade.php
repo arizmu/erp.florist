@@ -10,12 +10,7 @@
                     <span class="icon-[tabler--device-desktop-check] size-6"></span>
                     <span class="">Kasir</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
-                    href="{{ route('transaksi.index') }}">
-                    <span class="icon-[tabler--basket-check] size-6"></span>
-                    <span class="">Transaksi Penjualan</span>
-                </a>
-                {{-- <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
+                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -23,7 +18,12 @@
                     </svg>
 
                     <span class="">Pre-Order</span>
-                </a> --}}
+                </a>
+                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                    href="{{ route('transaksi.index') }}">
+                    <span class="icon-[tabler--basket-check] size-6"></span>
+                    <span class="">Transaksi Penjualan</span>
+                </a>
             </div>
         </div>
         <div class="flex gap-4 flex-col">
