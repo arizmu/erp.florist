@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Products;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
+use App\Models\SatuanBarang;
 use Illuminate\Http\Request;
 
 class BarangController extends Controller
@@ -72,6 +73,12 @@ class BarangController extends Controller
     }
 
     public function getSatuan() {
-        
+        $query = SatuanBarang::get();
+        return response()->json([
+            'status' => 'success',
+            'code' => 200,
+            'message' => 'data fetch successfully',
+            'data' => $query
+        ]);
     }
 }

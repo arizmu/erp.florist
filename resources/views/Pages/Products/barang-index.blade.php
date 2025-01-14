@@ -45,6 +45,9 @@
                                                 <select x-model="sForm.satuan_id" class="select select-floating"
                                                     aria-label="Select floating label" id="">
                                                     <option>Pilih ...</option>
+                                                    <template x-for="item in satuan">
+                                                        <option :value="item.id" x-text="item.nama_satuan"></option>
+                                                    </template>
                                                 </select>
                                                 <label class="select-floating-label text-blue-500"
                                                     for="">Satuan</label>
@@ -87,9 +90,8 @@
                         <div class="lg:col-span-6">
                             <div class="mb-3 rounded-lg border p-4 flex justify-start flex-wrap gap-2 md:gap-6 ">
                                 <input type="text" class="input rounded-full max-w-60">
-                                <button class="btn btn-soft btn-primary btn-circle">
-                                    <span class="icon-[mingcute--search-3-line]"
-                                        style="width: 24px; height: 24px;"></span>
+                                <button class="btn btn-soft btn-secondary btn-circle">
+                                    <span class="icon-[mingcute--search-3-line] size-5"></span>
                                 </button>
                             </div>
                             <div class="w-full overflow-x-auto border rounded-lg">
@@ -166,6 +168,7 @@
                 return {
                     dataBarang: [],
                     category: [],
+                    satuan:[],
                     sForm: {
                         id: '',
                         nama_barang: '',
@@ -240,12 +243,23 @@
                     getCagetory() {
                         axios.get("/master-barang/category-json")
                             .then((response) => {
-                                console.log(response.data.data.data);
                                 this.category = response.data.data.data;
                             })
                             .catch((error) => {
                                 console.log(error);
                             })
+                    },
+
+                    getSatuan() {
+                        const url = '/master-barang/barang-get-satuan';
+                        response = axios.get(url)
+                        .then((res) => {
+                            const data = res.data.data;
+                            this.satuan = data;
+                        }).catch((err) => {
+                            console.log(err);
+                        });
+                        
                     },
 
                     resetForm() {
@@ -264,6 +278,7 @@
 
                     init() {
                         this.getCagetory()
+                        this.getSatuan()
                         this.loadBarang()
                     }
                 }

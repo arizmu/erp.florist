@@ -7,6 +7,7 @@ use App\Http\Controllers\invetory\InventoryController;
 use App\Http\Controllers\JenisProductController;
 use App\Http\Controllers\management\PegawaiController;
 use App\Http\Controllers\Penjualan\KasirController;
+use App\Http\Controllers\PreoderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Products\BarangController;
 use App\Http\Controllers\Products\CategoryController;
@@ -49,6 +50,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::post('/barang-store', 'store');
             Route::get('/barang-json', 'barangJson');
             Route::get('/barang-destroy/{getId}', 'destory');
+            Route::get('/barang-get-satuan', 'getSatuan');
         });
     });
 
@@ -86,6 +88,9 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::get('/kasir-transaksi-detail/{transaksiKey}', 'transaksiDetail')->name('kasir.transaksi.detail');
             Route::post('kasir-proses-bayar-post/{key}', 'prosesBayarPost');
             Route::get('/cetak-invoice/{transaksi_id}/{invoice_id}', 'invoice');
+        });
+        Route::controller(PreoderController::class)->group(function() {
+            Route::get('/pre-order-form', 'formLayout')->name('preoder.form.layout');
         });
     });
 

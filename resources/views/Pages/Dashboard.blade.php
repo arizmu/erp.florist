@@ -30,7 +30,7 @@
                         </svg>
                     </div>
                     <div class="mt-4">
-                        <p class="text-lg font-semibold text-gray-800">Total Users</p>
+                        <p class="text-lg font-semibold text-gray-800">Total Transasction</p>
                         <p class="text-sm text-gray-500 mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                             metus mi consectetur felis turpis vitae ligula.</p>
                         <p class="text-gray-600 text-sm mt-2">1,200</p>
@@ -62,7 +62,7 @@
                         </svg>
                     </div>
                     <div class="mt-4">
-                        <p class="text-lg font-semibold text-gray-800">Issues</p>
+                        <p class="text-lg font-semibold text-gray-800">Total Production</p>
                         <p class="text-sm text-gray-500 mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                             metus mi consectetur felis turpis vitae ligula.</p>
                         <p class="text-gray-600 text-sm mt-2">5</p>
