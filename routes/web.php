@@ -91,6 +91,10 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         });
         Route::controller(PreoderController::class)->group(function() {
             Route::get('/pre-order-form', 'formLayout')->name('preoder.form.layout');
+            Route::get('/get-material', 'getMaterial');
+            Route::get('/get-crafter', 'getCrafter');
+            Route::get('/get-referensi-jasa', 'getReferensiJasa');
+            Route::post('/pre-order-action', 'preOrderStore');
         });
     });
 
