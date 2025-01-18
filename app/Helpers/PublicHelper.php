@@ -27,7 +27,19 @@ function generateCodeProduction()
 }
 
 
-function generateCodeTransaksi() {
+function generateCodeTransaksi()
+{
     $code = 'TRX' . Carbon::now()->format('ym') . '-' . rand(000000, 999999);
     return $code;
+}
+
+function explodeEstimasi($date)
+{
+    $tanggal = explode("to", $date);
+    $tanggalStart = Carbon::parse($tanggal[0]);
+    $tanggalEnd = count($tanggal) > 1 ? Carbon::parse($tanggal[1]) : $tanggalStart;
+    return [
+        'startDate' => $tanggalStart,
+        'endDate' => $tanggalEnd
+    ];
 }

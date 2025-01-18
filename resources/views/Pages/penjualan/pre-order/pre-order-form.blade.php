@@ -142,42 +142,75 @@
                             </div>
                         </div>
                         <div class="lg:col-span-3">
-                            <div class="border-base-content/25 w-full rounded-lg border">
-                                <div class="overflow-x-auto">
-                                    <table class="table rounded">
-                                        <thead>
-                                            <tr>
-                                                <th>Item Name</th>
-                                                <th>Total</th>
-                                                <th>#</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <template x-for="item in xitems" :key="item.item_code">
-                                                <tr class="hover:bg-slate-100">
-                                                    <td class="flex flex-col gap-1 font-space">
-                                                        <span x-text="item.item_name">Product name</span>
-                                                        <div class="flex gap-2 text-xs text-red-400 dark:text-white">
-                                                            <span x-text="formatRupiah(item.item_price)">
-                                                                Rp. 3.000
-                                                            </span>
-                                                            *
-                                                            <span x-text="item.item_qty">3</span>
-                                                        </div>
-                                                    </td>
-                                                    <td x-text="formatRupiah(item.item_total)">Rp. 9.000</td>
-                                                    <td>
-                                                        <button x-on:click="deleteItem(item.item_code)" type="button"
-                                                            class="btn btn-circle btn-error btn-soft">
-                                                            <span class="icon-[tabler--trash]"
-                                                                style="width: 24px; height: 24px;">
-                                                            </span>
-                                                        </button>
-                                                    </td>
+                            <div class="border rounded-lg p-4 flex flex-col gap-4">
+                                <h5 class="text-md font-semibold flex gap-4 items-center mb-2">
+                                    <span class="icon-[circum--box-list]" style="width: 24px; height: 24px;"></span>
+                                    Material Produksi
+                                </h5>
+                                <div class="border-base-content/25 w-full rounded-lg border">
+                                    <div class="overflow-x-auto">
+                                        <table class="table rounded">
+                                            <thead>
+                                                <tr>
+                                                    <th>Item Name</th>
+                                                    <th>Total</th>
+                                                    <th>#</th>
                                                 </tr>
-                                            </template>
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                <template x-for="item in xitems" :key="item.item_code">
+                                                    <tr class="hover:bg-slate-100">
+                                                        <td class="flex flex-col gap-1 font-space">
+                                                            <span x-text="item.item_name">Product name</span>
+                                                            <div
+                                                                class="flex gap-2 text-xs text-red-400 dark:text-white">
+                                                                <span x-text="formatRupiah(item.item_price)">
+                                                                    Rp. 3.000
+                                                                </span>
+                                                                *
+                                                                <span x-text="item.item_qty">3</span>
+                                                            </div>
+                                                        </td>
+                                                        <td x-text="formatRupiah(item.item_total)">Rp. 9.000</td>
+                                                        <td>
+                                                            <button x-on:click="deleteItem(item.item_code)"
+                                                                type="button"
+                                                                class="btn btn-circle btn-error btn-soft">
+                                                                <span class="icon-[tabler--trash]"
+                                                                    style="width: 24px; height: 24px;">
+                                                                </span>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border rounded-lg p-4 mt-4 max-w-96">
+                                <h5 class=" text-md font-semibold flex gap-4 items-center mb-3">
+                                    <span class="icon-[si--wallet-detailed-duotone]"
+                                        style="width: 24px; height: 24px;"></span>
+                                    Biaya
+                                </h5>
+                                <div class="flex flex-col gap-4">
+                                    <div class="flex flex-col gap-2">
+                                        <label>Biaya Material</label>
+                                        <input x-model="xproduction.cost" readonly class="input w-full bg-gray-300"
+                                            type="number" />
+                                    </div>
+                                    <div class="flex flex-col gap-2">
+                                        <label>Biaya Produksi</label>
+                                        <input @keyup.enter="subtotal" x-model="xproduction.price"
+                                            class="input w-full" type="number" />
+                                    </div>
+                                    <div class="flex flex-col gap-2">
+                                        <label>Subtotal</label>
+                                        <input x-model="xproduction.subtotal"
+                                            class="input input-lg w-full bg-gray-300" type="text" readonly />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -246,10 +279,18 @@
                                     <span class="font-space font-semibold text-white">Point Member</span>
                                 </div>
                                 <div class="flex justify-start mb-4">
-                                    <span class="text-4xl font-semibold font-space text-white">Rp. 500.000</span>
+                                    <span class="text-4xl font-semibold font-space text-white">Rp. 0</span>
                                 </div>
                             </div>
-                            <div class="mt-8">
+                            <div class="py-4">
+                                <div class="flex items-center gap-1.5">
+                                    <input type="checkbox" class="switch switch-outline switch-lg switch-primary"
+                                        id="" />
+                                    <label class="label label-text text-lg font-semibold font-space text-gray-700"
+                                        for=""> Gunakan Point </label>
+                                </div>
+                            </div>
+                            <div class="mt-4">
                                 <span>INFORMASI :</span>
                                 <br>
                                 <i class="text-sm text-warning">
@@ -269,7 +310,7 @@
                             Crafter
                         </span>
                     </div>
-                    <div class="border rounded-xl p-8 flex gap-4 flex-col">
+                    <div class="border rounded-xl p-8 flex gap-4 flex-col max-w-4xl">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div class="w-full">
                                 <label class="label label-text" for="favorite-simpson">Crafter</label>
@@ -297,22 +338,20 @@
                         </div>
 
                         <div class="mb-3 grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div class="relative">
+                            <div class="flex flex-col gap-2">
+                                <label class="" for="">Produk Title</label>
                                 <input x-model="xproduction.title" type="text" placeholder="nama bucket"
-                                    class="input input-floating peer" id="">
-                                <label class="input-floating-label" for="">Produk Title</label>
+                                    class="input" id="">
                             </div>
-                            <div class="relative">
-                                <input x-model="xproduction.estimasi" type="text"
-                                    class="input input-floating peer flatpickr-input"
+                            <div class="flex flex-col gap-2">
+                                <label class="" for="floatingInput">Estimasi</label>
+                                <input x-model="xproduction.estimasi" type="text" class="input flatpickr-input"
                                     placeholder="YYYY-MM-DD to YYYY-MM-DD" id="flatpickr-range" readonly="readonly">
-                                <label class="input-floating-label" for="floatingInput">Estimasi</label>
                             </div>
                         </div>
-                        <div class="relative mb-3">
-                            <textarea x-model="xproduction.comment" class="textarea textarea-floating peer" placeholder=""
-                                id="textareaFloating"></textarea>
-                            <label class="textarea-floating-label" for="textareaFloating">Comment</label>
+                        <div class="flex flex-col gap-2 mb-3">
+                            <label class="" for="textareaFloating">Comment</label>
+                            <textarea x-model="xproduction.comment" class="textarea" placeholder="" id=""></textarea>
                         </div>
                     </div>
                 </div>
@@ -321,7 +360,7 @@
                         <h3 class="text-base-content/50 text-3xl">Your Form has been Submitted</h3>
                     </div>
                 </div>
-                <div class="mt-16 flex items-center justify-between gap-x-2 font-space">
+                <div class="mt-16 flex items-center justify-start gap-x-2 font-space">
                     <button type="button" class="btn rounded-full px-8 btn-primary btn-prev max-sm:btn-square"
                         data-stepper-back-btn="">
                         <span class="icon-[tabler--chevron-left] text-primary-content size-5 rtl:rotate-180"></span>
@@ -385,7 +424,10 @@
                         jasa: '',
                         title: '',
                         estimasi: '',
-                        comment: ''
+                        comment: '',
+                        cost: 0,
+                        price: 25000,
+                        subtotal: 0
                     },
                     xitems: [],
                     xitem_qty: [],
@@ -405,13 +447,22 @@
                             const url = "/transaksi/pre-order-action";
                             const store = await axios.post(url, data);
                             const res = store.data.data;
-                            
-                        } catch (error) {
+
+                        } catch (err) {
                             this.isStoring = false;
                             this.isPembayaran = false;
-                            console.log(error);
+                            const errResponse = err.response;
+                            if (errResponse.status === 400) {
+                                const resErrors = errResponse.data.errors;
+                                let delay = 0;
+                                resErrors.forEach(element => {
+                                    setTimeout(() => {
+                                        notifier.warning(element);
+                                    }, delay);
+                                    delay += 250; 
+                                });
+                            }
                         }
-                        console.log(data);
                     },
                     resetFrom() {
                         this.isPembayaran = false;
@@ -446,14 +497,17 @@
                         let data = this.xitems.find(result => result.item_code === item.item_code);
                         if (data) {
                             data.item_qty = item.item_qty;
+                            data.item_total = item.item_qty * parseInt(i.price);
                         } else {
                             this.xitems.push(item);
                         }
+                        this.sumTotalCost();
                     },
 
                     deleteItem(index) {
                         this.xitems = this.xitems.filter(result => result.item_code !== index);
-                        console.log(this.xitems);
+                        this.sumTotalCost();
+                        this.subtotal();
                     },
 
                     xcrafter: [],
@@ -476,6 +530,19 @@
                             }).catch((err) => {
                                 console.log(err);
                             })
+                    },
+
+                    sumTotalCost() {
+                        let cost = 0;
+                        this.xitems.forEach(element => {
+                            cost += parseInt(element.item_total);
+                        });
+                        this.xproduction.cost = cost;
+                        this.subtotal();
+                    },
+
+                    subtotal() {
+                        this.xproduction.subtotal = parseInt(this.xproduction.price) + parseInt(this.xproduction.cost);
                     },
 
                     init() {
