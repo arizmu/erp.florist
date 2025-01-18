@@ -64,6 +64,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::get('/get-data-produksi', 'productionJson');
             Route::get('/to-complate/{key}', 'toComplate');
             Route::get('/distribution-to-product/{key}', 'distributionToProduct');
+            Route::get('/get-production-detail/{production_id}', 'getDetailBahanBaku');
         });
     });
 
@@ -89,12 +90,13 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::post('kasir-proses-bayar-post/{key}', 'prosesBayarPost');
             Route::get('/cetak-invoice/{transaksi_id}/{invoice_id}', 'invoice');
         });
-        Route::controller(PreoderController::class)->group(function() {
+        Route::controller(PreoderController::class)->group(function () {
             Route::get('/pre-order-form', 'formLayout')->name('preoder.form.layout');
             Route::get('/get-material', 'getMaterial');
             Route::get('/get-crafter', 'getCrafter');
             Route::get('/get-referensi-jasa', 'getReferensiJasa');
             Route::post('/pre-order-action', 'preOrderStore');
+            Route::get('/find-costumer/{tlp}', 'findCostumer');
         });
     });
 

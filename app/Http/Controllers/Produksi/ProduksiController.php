@@ -10,8 +10,10 @@ use App\Models\Product\Product;
 use App\Models\Production\Production;
 use App\Models\Production\ProductionBarangDetail;
 use App\Models\production\ProductionOtherDetail;
+use App\Models\Transaction\DetailsTransaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ProduksiController extends Controller
@@ -136,7 +138,7 @@ class ProduksiController extends Controller
 
     public function productionJson()
     {
-        $query = Production::query();
+        $query = Production::query()->latest();
         return response()->json([
             'status' => 'ok',
             'code' => 200,
@@ -205,5 +207,34 @@ class ProduksiController extends Controller
                 'errors' => $th->getMessage()
             ]);
         }
+    }
+
+    public function getDetailBahanBaku($keyId)
+    {
+        $queryMaterial = ProductionBarangDetail::where('production_id', $keyId)->with('barang')->get();
+        $materialDetails = [];
+        foreach ($queryMaterial as $value) {
+            $materialDetails[] = [
+                'nama' => $value->barang->nama_barang,
+                'harga' => $value->cost_item,
+                'jumlah' => $value->amount_item,
+                'total' => $value->total_cost,
+                'status' => false
+            ];
+        }
+
+        $queryOther = ProductionOtherDetail::where('production_id', $keyId)->get();
+        $otherDetails = [];
+        foreach ($queryOther as $value) {
+            $otherDetails[] = [
+                'nama' => $value->item_name,
+                'harga' => $value->cost,
+                'jumlah' => $value->qty,
+                'total' => $value->total_cost,
+                'status' => true
+            ];
+        }
+        $mergedDetails = array_merge($materialDetails, $otherDetails);
+        return getResponseJson('ok', 200, 'Data detail bahan baku', $mergedDetails, false);
     }
 }

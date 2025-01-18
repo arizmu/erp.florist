@@ -89,7 +89,9 @@
                                         <span class="icon-[fluent--box-search-24-regular]"
                                             style="width: 24px; height: 24px;"></span>
                                     </button>
-                                    <button type="button" class="btn btn-circle btn-soft btn-warning">
+                                    <button type="button" class="btn btn-circle btn-soft btn-warning"
+                                        aria-haspopup="dialog" aria-expanded="false" aria-controls="add-item-modal"
+                                        data-overlay="#add-item-modal">
                                         <span class="icon-[gridicons--add-outline]"
                                             style="width: 24px; height: 24px;"></span>
                                     </button>
@@ -254,8 +256,8 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div class="w-full">
                                         <label class="label label-text" for="">Telpon </label>
-                                        <input x-model="xcostumer.phone" type="text" placeholder="08..."
-                                            class="input" id="" />
+                                        <input x-model="xcostumer.phone" @keyup.enter="findCostumer" type="text"
+                                            placeholder="08..." class="input" id="" />
                                     </div>
                                     <div class="w-full">
                                         <label class="label label-text" for="">Email</label>
@@ -279,13 +281,15 @@
                                     <span class="font-space font-semibold text-white">Point Member</span>
                                 </div>
                                 <div class="flex justify-start mb-4">
-                                    <span class="text-4xl font-semibold font-space text-white">Rp. 0</span>
+                                    <span class="text-4xl font-semibold font-space text-white">Rp.
+                                        <span x-text="xcostumer.point_view"></span>
+                                    </span>
                                 </div>
                             </div>
                             <div class="py-4">
                                 <div class="flex items-center gap-1.5">
-                                    <input type="checkbox" class="switch switch-outline switch-lg switch-primary"
-                                        id="" />
+                                    <input x-model="xcostumer.point_use" type="checkbox"
+                                        class="switch switch-outline switch-lg switch-primary" id="" />
                                     <label class="label label-text text-lg font-semibold font-space text-gray-700"
                                         for=""> Gunakan Point </label>
                                 </div>
@@ -380,13 +384,76 @@
 
                     <button :disabled="isStoring" type="button" x-on:click="resetFrom"
                         class="btn rounded-full px-8 btn-primary" data-stepper-reset-btn="" style="display: none">
-                        <span x-text="isStoring ? 'Is Loading...!':'Back'"></span>
+                        <span x-text="isStoring ? 'Is Loading...!':'Back'" x-show="!isSuccess"></span>
+                        <span x-show="isSuccess">Back</span>
+
                     </button>
-                    <button x-show="isPembayaran" type="button" class="btn rounded-full px-8 btn-error"
-                        data-stepper-reset-btn="">Proses Pembayaran</button>
+                    <button x-show="isPembayaran" type="button" x-on:click="prosesBayar"
+                        class="btn rounded-full px-8 btn-error" data-stepper-reset-btn="">Proses Pembayaran</button>
                 </div>
             </div>
         </div>
+
+        {{-- modal item add --}}
+        <div id="add-item-modal" class="overlay modal overlay-open:opacity-100 hidden" role="dialog"
+            tabindex="-1">
+            <div
+                class="modal-dialog overlay-open:mt-12 overlay-open:opacity-100 overlay-open:duration-500 transition-all ease-out">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Form item</h3>
+                        <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3"
+                            aria-label="Close" data-overlay="#add-item-modal" id="close-modal">
+                            <span class="icon-[tabler--x] size-4"></span>
+                        </button>
+                    </div>
+                    <form @submit.prevent="addCostumeItem">
+                        <div class="modal-body flex flex-col gap-2">
+                            <div class="w-full">
+                                <label class="label label-text" for="inte-name">
+                                    Nama item
+                                </label>
+                                <input x-model="csForm.item" type="text" placeholder="item name" class="input"
+                                    id="inte-name" />
+                            </div>
+                            <div class="grid grid-flow-row md:grid-cols-3 gap-2">
+                                <div class="md:col-span-2 w-full">
+                                    <label class="label label-text" for="biaya">
+                                        Biaya
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input x-model="csForm.price" type="number" class="input grow"
+                                            placeholder="00.00" id="biaya" />
+                                        <label class="sr-only" for="biaya">Enter amount</label>
+                                        <span class="input-group-text">Rp</span>
+                                    </div>
+                                </div>
+                                <div class="w-full">
+                                    <label class="label label-text" for="qty">
+                                        Qty
+                                    </label>
+                                    <input x-model="csForm.qty" type="number" placeholder="qty" class="input"
+                                        id="qty" />
+                                </div>
+                            </div>
+                            <div class="relative mt-2">
+                                <textarea x-model="csForm.comment" class="textarea textarea-floating peer" placeholder="comment..."
+                                    id="comment-cs-form"></textarea>
+                                <label class="textarea-floating-label" for="comment-cs-form">Comment</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-soft btn-secondary" data-overlay="#add-item-modal">
+                                Close
+                            </button>
+                            <button type="submit" class="btn btn-primary">Add item</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {{-- end modal --}}
     </div>
     @push('js')
         <script>
@@ -409,7 +476,7 @@
                     xmaterial: [],
                     xcostumer: {
                         status: false, // false = non member (new cs) | true = member
-                        point: '',
+                        point: 0,
                         point_use: false, // false = tidak menggunakan point | true = menggunakan point
                         id: '',
                         name: '',
@@ -417,7 +484,8 @@
                         address: '',
                         phone: '',
                         email: '',
-                        sosmed: ''
+                        sosmed: '',
+                        point_view: ''
                     },
                     xproduction: {
                         crafter: '',
@@ -430,10 +498,26 @@
                         subtotal: 0
                     },
                     xitems: [],
+                    csForm: {
+                        item: '',
+                        price: '',
+                        qty: '',
+                        comment: ''
+                    },
                     xitem_qty: [],
                     isPembayaran: false,
                     isStoring: false,
-                    isSuccess: true,
+                    isSuccess: false,
+                    transaksi_id: '',
+                    prosesBayar() {
+                        try {
+                            console.log(this.transaksi_id);
+                            window.location.href = `/transaksi/kasir-proses-bayar/${this.transaksi_id}`;
+                        } catch (error) {
+                            console.log(this.transaksi_id);
+                            console.log(error);                            
+                        }
+                    },
                     async storeFinish() {
                         const data = {
                             items: this.xitems,
@@ -442,15 +526,18 @@
                         }
 
                         this.isStoring = true;
-                        // this.isPembayaran = true;
                         try {
                             const url = "/transaksi/pre-order-action";
                             const store = await axios.post(url, data);
-                            const res = store.data.data;
+                            const res = store.data;
+                            console.log(res);
+                            this.transaksi_id = res.data.transaction_id;
+                            console.log(this.transaksi_id);
 
+                            this.isPembayaran = true;
+                            this.isSuccess = true;
                         } catch (err) {
                             this.isStoring = false;
-                            this.isPembayaran = false;
                             const errResponse = err.response;
                             if (errResponse.status === 400) {
                                 const resErrors = errResponse.data.errors;
@@ -459,8 +546,10 @@
                                     setTimeout(() => {
                                         notifier.warning(element);
                                     }, delay);
-                                    delay += 250; 
+                                    delay += 250;
                                 });
+                            } else {
+                                notifier.error('System Error!');
                             }
                         }
                     },
@@ -492,7 +581,8 @@
                             item_price: parseInt(i.price),
                             item_qty: qty,
                             item_total: parseInt(i.price) * qty,
-                            item_status: false
+                            item_status: false,
+                            comment: ''
                         }
                         let data = this.xitems.find(result => result.item_code === item.item_code);
                         if (data) {
@@ -543,6 +633,59 @@
 
                     subtotal() {
                         this.xproduction.subtotal = parseInt(this.xproduction.price) + parseInt(this.xproduction.cost);
+                    },
+
+                    addCostumeItem() {
+                        try {
+                            const item = {
+                                item_code: uuid(),
+                                item_name: this.csForm.item,
+                                item_price: parseInt(this.csForm.price),
+                                item_qty: parseInt(this.csForm.qty),
+                                item_total: parseInt(this.csForm.price) * parseInt(this.csForm.qty),
+                                item_status: true,
+                                comment: this.csForm.comment
+                            }
+                            this.xitems.push(item);
+                            this.sumTotalCost();
+
+                            const btnClose = document.getElementById("close-modal");
+                            btnClose.click();
+                            this.csForm = {
+                                item: "",
+                                price: "",
+                                qty: "",
+                            };
+                        } catch (error) {
+                            console.log(error);
+
+                        }
+                    },
+
+                    findCostumer() {
+                        axios.get(`/transaksi/find-costumer/${this.xcostumer.phone}`)
+                            .then((res) => {
+                                const costumer = res.data.data;
+                                let point = parseInt(costumer.point_member);
+                                this.xcostumer = {
+                                    status: true,
+                                    point: point,
+                                    id: costumer.id,
+                                    name: costumer.name,
+                                    gender: costumer.jenis_kelamin === "L" ? true : false,
+                                    address: costumer.alamat,
+                                    phone: costumer.no_telp,
+                                    email: costumer.email,
+                                    sosmed: costumer.sosmed,
+                                    point_view: formatRupiah(point)
+
+                                }
+                                console.log(this.xcostumer);
+
+                            }).catch((err) => {
+                                console.log(err);
+
+                            })
                     },
 
                     init() {

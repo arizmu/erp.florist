@@ -121,16 +121,23 @@
                                         <td>Rp. <span x-text="formatRupiah(item.production_cost) ?? 00"></span></td>
                                         <td class="text-nowrap" x-text="formatTanggalNoTime(item.created_at)">March 1,
                                             2024</td>
-                                        <td>
-                                            <button type="button" x-on:click="toDistribusi(item.id)"
+                                        <td class="flex flex-wrap gap-2">
+                                            <button title="mutasi to product" type="button"
+                                                x-on:click="toDistribusi(item.id)"
                                                 class="btn btn-circle btn-info btn-soft" aria-label="Action button"
                                                 x-show="item.production_status">
                                                 <span class="icon-[tabler--arrow-back-up-double] size-5"></span>
                                             </button>
                                             <button type="button" x-on:click="toComplate(item.id)"
                                                 class="btn btn-circle btn-warning btn-soft" aria-label="Action button"
-                                                x-show="!item.production_status">
+                                                x-show="!item.production_status" title="to complate">
                                                 <span class="icon-[tabler--checks] size-5"></span>
+                                            </button>
+
+                                            <button class="btn btn-circle btn-soft btn-primary" title="lihat bahan baku"
+                                                type="button" @click="detailFunc(item)">
+                                                <span class="icon-[solar--eye-broken]"
+                                                    style="width: 24px; height: 24px;"></span>
                                             </button>
                                         </td>
                                     </tr>
@@ -139,6 +146,57 @@
                         </table>
                     </div>
                 </div>
+
+                {{-- modal detail --}}
+                <button type="button" class="btn btn-primary hidden" aria-haspopup="dialog" id="open-modal-detail"
+                    aria-expanded="false" aria-controls="large-modal" data-overlay="#large-modal">Large</button>
+
+                <div id="large-modal" class="overlay modal overlay-open:opacity-100 hidden" role="dialog"
+                    tabindex="-1">
+                    <div class="modal-dialog overlay-open:opacity-100 modal-dialog-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title">Detail Produksi</h3>
+                                <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3"
+                                    aria-label="Close" data-overlay="#large-modal">
+                                    <span class="icon-[tabler--x] size-4"></span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                <div class="border-base-content/25 w-full rounded-lg border">
+                                    <div class="overflow-x-auto">
+                                        <table class="table rounded">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Jumlah</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template x-for="item in details">
+                                                    <tr>
+                                                        <td x-text="item.nama"></td>
+                                                        <td x-text="item.jumlah"></td>
+                                                        <td x-text="item.status ? 'Lainnya':'Bahan Baku'"></td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-soft btn-secondary"
+                                    data-overlay="#large-modal">Tutup</button>
+                                {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
 
         </div>
@@ -199,14 +257,14 @@
                 <div class="card-footer text-center">
                     <div class="grid grid-cols-2 gap-4 p-4">
                         <button class="btn btn-outline btn-primary w-auto">Filter</button>
-                        <a href="{{ route("produksi.baru.index") }}" class="btn btn-outline btn-error w-auto">Produksi
+                        <a href="{{ route('produksi.baru.index') }}" class="btn btn-outline btn-error w-auto">Produksi
                             Baru</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    @push("js")
+    @push('js')
         <script>
             function productionIndex() {
                 return {
@@ -304,6 +362,20 @@
                             }
                         });
                     },
+
+                    details: [],
+                    detailFunc(item) {
+                        const openModal = document.getElementById("open-modal-detail");
+                        axios.get(`/produksi/get-production-detail/${item.id}`)
+                            .then((res) => {
+                                const data = res.data.data;
+                                this.details = data;
+                                openModal.click();
+                            }).catch((err) => {
+                                console.log(err)
+                            })
+                    },
+
                     init() {
                         this.getData()
                     }
