@@ -104,4 +104,5 @@ class RJasaCraftingController extends Controller
             'data' => $query->paginate(15)
         ]);
     }
+    
 }

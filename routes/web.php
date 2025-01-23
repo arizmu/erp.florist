@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AppSettingController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CostumerController;
+use App\Http\Controllers\CraftingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\invetory\InventoryController;
 use App\Http\Controllers\JenisProductController;
@@ -145,5 +147,15 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         Route::post('/update-data/{key}', 'update');
         Route::post('/delete-data/{key}', 'delete');
         Route::get('/get-data-json', 'getJson');
+    });
+
+    Route::controller(CostumerController::class)->group(function() {
+        Route::get('costumers', 'index')->name('costumer.index');
+        Route::get('costumer/data-json', 'jsonData');
+    });
+
+    Route::controller(CraftingController::class)->prefix('jasa-crafter')->group(function() {
+        Route::get('/', 'index')->name('jasa.crafter.index');
+        Route::get('/data-json', 'dataJson');
     });
 });

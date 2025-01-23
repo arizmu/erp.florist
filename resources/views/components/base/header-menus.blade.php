@@ -25,6 +25,11 @@
                     <span class="icon-[tabler--basket-check] size-6"></span>
                     <span class="">Transaksi</span>
                 </a>
+                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                    href="{{ route('costumer.index') }}">
+                    <span class="icon-[fa6-solid--users-viewfinder] size-6"></span>
+                    <span class="">Costumers</span>
+                </a>
             </div>
         </div>
         <div class="flex gap-4 flex-col">
@@ -79,7 +84,7 @@
                     <span class="icon-[basil--history-outline] size-6" style="width: 24px; height: 24px;"></span>
                     <span class="">
                         History
-                        <span class="badge badge-error badge-soft">Son...</span>
+
                     </span>
                 </a>
             </div>
@@ -87,10 +92,11 @@
         <div class="flex gap-4 flex-col">
             <h4 class="font-semibold  text-gray-500" style="--fw:500">
                 Manajemen Jasa
-                <span class="badge badge-error badge-soft">Son...</span>
+
             </h4>
             <div class="flex flex-col gap-1 border-l px-2">
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
+                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                    href="{{ route('jasa.crafter.index') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -113,7 +119,7 @@
         </div>
         <div class="flex gap-4 flex-col">
             <h4 class="font-semibold  text-gray-500" style="--fw:500">
-                Manajemen Pelaporan <span class="badge badge-error badge-soft">Son...</span>
+                Manajemen Pelaporan
             </h4>
             <div class="flex flex-col gap-1 border-l px-2">
                 <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
@@ -170,7 +176,7 @@
                     </svg>
                     <span class="">Category</span>
                 </a>
-                {{-- <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
                     href="{{ route('satuan.index') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
@@ -179,7 +185,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
                     </svg>
                     <span class="">Satuan</span>
-                </a> --}}
+                </a>
             </div>
         </div>
         <div class="flex gap-4 flex-col">
@@ -198,9 +204,9 @@
                     <span class="">Pengguna</span>
                 </a>
                 <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
-                    <span class="icon-[mdi--shield-lock-outline] size-8"></span>
+                    <span class="icon-[hugeicons--shield-energy] size-6"></span>
                     <span class="">Role & Permission
-                        <span class="badge badge-error badge-soft">Son...</span></span>
+                    </span>
                 </a>
                 <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
                     href="{{ route('app-setting.index') }}">
@@ -209,7 +215,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12m6.894 5.785-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
                     </svg>
-                    <span class="">Pengaturan Sistem</span>
+                    <span class="">Pengaturan</span>
                 </a>
             </div>
         </div>

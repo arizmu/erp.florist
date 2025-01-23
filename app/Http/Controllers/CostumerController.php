@@ -7,59 +7,19 @@ use Illuminate\Http\Request;
 
 class CostumerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        return view('Pages.costumer.costumer-index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function jsonData()
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Costumer $costumer)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Costumer $costumer)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Costumer $costumer)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Costumer $costumer)
-    {
-        //
+        $query = Costumer::query()->when(request()->key, function ($iResult) {
+            $key = request()->key;
+            $iResult->where('name', 'like', '%' . $key . '%')
+                ->orWhere('alamat', 'like', '%' . $key . '%')
+                ->orWhere('no_telp', 'like', '%' . $key . '%');
+        })->paginate(15);
+        return getResponseJson('ok', 200, 'cosutemr fetch successfully', $query, false);
     }
 }

@@ -43,3 +43,8 @@ function explodeEstimasi($date)
         'endDate' => $tanggalEnd
     ];
 }
+
+
+function formatRupiah($number) {
+    return number_format($number, 0, ',', '.');
+}

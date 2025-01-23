@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Penjualan;
 use App\Http\Controllers\Controller;
 use App\Models\Costumer;
 use App\Models\Product\Product;
+use App\Models\Transaction\DetailsTransaction;
 use App\Models\Transaction\PaymentTransaction;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
@@ -17,8 +18,14 @@ class KasirController extends Controller
     {
         $query = Transaction::query()->with('details')->orderBy('created_at', 'desc');
         return view('Pages.penjualan.transaksi-index', [
-            'data' => $query->paginate(15)
-        ]);
+            'data' => $query->paginate(15),
+            'chart' => [
+                'pendapatan' => 0,
+                'paid' => 0,
+                'unpaid' => 0
+            ]
+            ]);
+        // ->withInput(request()->all() ?? "");
     }
 
     public function kasir()
@@ -210,7 +217,9 @@ class KasirController extends Controller
 
     public function transaksiDetail($key)
     {
-        return view('Pages.penjualan.kasir.kasir-detail', compact('key'));
+        $transaksi = Transaction::where('id', $key)->with('details', 'costumer')->first();
+        
+        return view('Pages.penjualan.kasir.kasir-detail', compact('key', 'transaksi'));
     }
 
     public function invoice($transaksi_id, $invoice_id)

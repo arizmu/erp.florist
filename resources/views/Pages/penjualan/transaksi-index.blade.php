@@ -32,7 +32,7 @@
                         class="col-span-1 md:col-span-2 bg-blue-300 rounded-2xl p-5 shadow flex justify-between gap-8 align-middle items-center">
                         <div class="flex flex-col gap-0">
                             <span class="text-gray-50 font-semibold">Total Revenue</span>
-                            <span class="font-bold text-4xl text-white">Rp. 4.300.000</span>
+                            <span class="font-bold text-4xl text-white">Rp. {{ $chart['pendapatan'] }}</span>
                         </div>
                         <div class="">
                             <div class="border-2 rounded-full bg-white p-3 border-red-500">
@@ -53,7 +53,7 @@
                         class="bg-red-300  rounded-2xl p-5 shadow flex flex-wrap gap-8 align-middle items-center justify-between lg:justify-between"">
                         <div class="flex flex-col gap-0">
                             <span class="text-gray-50 font-semibold">Total Unpaid</span>
-                            <span class="font-bold text-4xl text-white">Rp. 4.300.000</span>
+                            <span class="font-bold text-4xl text-white">Rp. {{ $chart['unpaid'] }}</span>
                         </div>
                         <div class="">
                             <div class="border-2 rounded-full bg-white p-3 border-yellow-500 text-yellow-500">
@@ -71,7 +71,7 @@
                         class="bg-green-300 rounded-2xl p-5 shadow flex flex-wrap gap-8 align-middle items-center justify-between lg:justify-between">
                         <div class="flex flex-col gap-0">
                             <span class="text-gray-50 font-semibold">Total Paid</span>
-                            <span class="font-bold text-4xl text-white">Rp. 4.300.000</span>
+                            <span class="font-bold text-4xl text-white">Rp. {{ $chart['paid'] }}</span>
                         </div>
                         <div class="">
                             <div class="border-2 rounded-full bg-white p-3 border-yellow-500 text-yellow-500">
@@ -88,28 +88,32 @@
                         </div>
                     </div>
                     <div class="col-span-1 md:col-span-2 mt-4">
-                        <div class="grid gap-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-6">
-                            <div class="col-span-1 md:col-span-2 lg:col-span-6">
-                                <input type="text" placeholder="Type here" class="input-lg input" />
+                        <form method="GET" action="{{ route('transaksi.index') }}">
+                            <div class="grid gap-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-6">
+                                <div class="col-span-1 md:col-span-2 lg:col-span-6">
+                                    <input name="pencarian" type="text" placeholder="ketik untuk mencari ..."
+                                        class="input-lg input" value="{{old("pencarian")}}" />
+                                </div>
+                                <div class="col-span-1 md:col-span-1 lg:col-span-3">
+                                    <input name="estimasi" type="text" class="input" value="{{ old('estimasi') }}"
+                                        placeholder="YYYY-MM-DD to YYYY-MM-DD" id="flatpickr-range" />
+                                </div>
+                                <div class="col-span-1 md:col-span-1 lg:col-span-2">
+                                    <select name="status_transaction" class="select appearance-none"
+                                        aria-label="select">
+                                        <option>All</option>
+                                        <option value="d" {{ old("status_transaction") == "d" ? 'selected' : '' }}>Draft</option>
+                                        <option value="s" {{ old("status_transaction") == "s" ? 'selected' : '' }}>Paid</option>
+                                        <option value="p" {{ old("status_transaction") == "p" ? 'selected' : '' }}>Unpaid</option>
+                                    </select>
+                                </div>
+                                <div class="col-span-1 md:col-span-2 lg:col-span-1">
+                                    <button class="btn btn-primary w-full" type="submit">
+                                        Filter
+                                    </button>
+                                </div>
                             </div>
-                            <div class="col-span-1 md:col-span-1 lg:col-span-3">
-                                <input type="text" class="input" placeholder="YYYY-MM-DD to YYYY-MM-DD"
-                                    id="flatpickr-range" />
-                            </div>
-                            <div class="col-span-1 md:col-span-1 lg:col-span-2">
-                                <select class="select appearance-none" aria-label="select">
-                                    <option>All</option>
-                                    <option>Draft</option>
-                                    <option>Paid</option>
-                                    <option>Unpaid</option>
-                                </select>
-                            </div>
-                            <div class="col-span-1 md:col-span-2 lg:col-span-1">
-                                <button class="btn btn-primary w-full">
-                                    Filter
-                                </button>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -175,11 +179,13 @@
                                         </td>
                                         <td>
                                             @if ($item->status_transaction == 'd' || $item->status_transaction == 'p')
-                                                <a href="{{route('kasir.proses.bayar', $item->id)}}" class="btn btn-soft btn-circle btn-primary">
+                                                <a href="{{ route('kasir.proses.bayar', $item->id) }}"
+                                                    class="btn btn-soft btn-circle btn-primary">
                                                     <span class="icon-[uiw--pay]"></span>
                                                 </a>
                                             @endif
-                                            <a href="{{route('kasir.transaksi.detail', $item->id)}}" class="btn btn-soft btn-circle btn-info">
+                                            <a href="{{ route('kasir.transaksi.detail', $item->id) }}"
+                                                class="btn btn-soft btn-circle btn-info">
                                                 <span class="icon-[lets-icons--view-alt-light]"></span>
                                             </a>
                                             @if ($item->status_transaction == 'd')

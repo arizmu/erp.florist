@@ -25,28 +25,36 @@
                 </h2>
 
                 <div class="mt-6 flex flex-col gap-4">
-                    <div
-                        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-2 px-4 items-center border-b-2 font-space">
-                        <img class="max-h-40 w-auto"
-                            src="https://png.pngtree.com/png-clipart/20230312/ourmid/pngtree-transparent-watercolor-flowers-png-image_6646331.png"
-                            alt="">
-                        <div class="flex flex-col gap-2">
-                            <div for="product_name" class="flex flex-col gap-0">
-                                <label for="" class="text-xs text-gray-400 ">Product name</label>
-                                <h4 class="text-xl font-bold text-gray-500">Nama proudc buanga</h4>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <span for="for-harga" class="text-orange-400 font-semibold">Rp. 40000 * 10</span>
+                    @foreach ($transaksi->details as $item)
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 px-6 items-center font-space border rounded-xl hover:bg-gray-100">
+                            @if ($item->img)
+                                  <img class="max-h-40 w-auto"
+                                 src="https://png.pngtree.com/png-clipart/20230312/ourmid/pngtree-transparent-watercolor-flowers-png-image_6646331.png"
+                                alt="">
+                            @else
+                                <span class="icon-[fxemoji--whiteflower] size-20"></span>
+                            @endif
+                            <div class="flex flex-col gap-2">
+                                <div for="product_name" class="flex flex-col gap-0">
+                                    <label for="" class="text-xs text-gray-400 ">Product name</label>
+                                    <h4 class="text-xl font-bold text-gray-500">{{ $item->item_name }}</h4>
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <span for="for-harga" class="text-orange-400 font-semibold">Rp.
+                                        {{ formatRupiah($item->cost_item) }} * {{ $item->amount_item }}</span>
 
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-2 md:text-right">
+                                <div class="flex flex-col gap-0" for="total">
+                                    <label for="" class="text-xs text-gray-400">Total</label>
+                                    <span class="text-xl font-bold text-gray-500">Rp.
+                                        {{ formatRupiah($item->total_cost) }}</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="flex flex-col gap-2 md:text-right">
-                            <div class="flex flex-col gap-0" for="total">
-                                <label for="" class="text-xs text-gray-400">Total</label>
-                                <span class="text-xl font-bold text-gray-500">Rp. 400000</span>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -56,14 +64,15 @@
                     <h5 class="card-title">Transaction Details</h5>
                 </div>
                 <div class="card-body">
-                    <div class="p-8 bg-orange-300 rounded-lg flex flex-col gap-1 ">
+                    <div class="p-8 bg-green-300 rounded-lg flex flex-col gap-1 ">
                         <label for="" class="text-slate-50">Subtotal</label>
-                        <span class="text-white text-4xl font-semibold">Rp. 500.000.,</span>
+                        <span class="text-white text-4xl font-semibold">Rp.
+                            {{ formatRupiah($transaksi->total_payment) }}</span>
                     </div>
                     <div class="flex flex-col gap-2 mt-4 p-2">
                         <div class="flex justify-between gap-2">
                             <label for="" class="text-gray-500">Code Transaksi</label>
-                            <span class="font-semibold">kdjkdjfkjd kjkdjkjj kjdkfu</span>
+                            <span class="font-semibold">{{ $transaksi->code }}</span>
                         </div>
 
                         <div>
@@ -71,20 +80,20 @@
                             <div class="p-5 border rounded-lg mt-3 flex flex-col gap-2">
                                 <div class="relative">
                                     <input type="text" placeholder="Nama Costumer" class="input input-filled peer"
-                                        id="nama_costumer" />
+                                        value="{{ $transaksi->costumer->name }}" id="nama_costumer" />
                                     <label class="input-filled-label" for="nama_costumer">Costumer Name</label>
                                     <span class="input-filled-focused"></span>
                                 </div>
 
                                 <div class="relative">
-                                    <textarea class="textarea textarea-filled peer" placeholder="Alamat..." id="alamat_costumer"></textarea>
+                                    <textarea class="textarea textarea-filled peer" placeholder="Alamat...">{{ $transaksi->costumer->alamat }}</textarea>
                                     <label class="textarea-filled-label" for="alamat_costumer">Alamat Costumers</label>
                                     <span class="textarea-filled-focused"></span>
                                 </div>
 
                                 <div class="relative">
                                     <input type="text" placeholder="08***" class="input input-filled peer"
-                                        id="nama_costumer" />
+                                        value="{{ $transaksi->costumer->no_telp }}" />
                                     <label class="input-filled-label" for="nama_costumer">Telpon</label>
                                     <span class="input-filled-focused"></span>
                                 </div>
@@ -98,12 +107,11 @@
                             </div>
                             <div class="flex justify-between px-1">
                                 <label for="" class=""></label>
-                                <span class="badge badge-soft badge-success">
-                                    Rp. 500.000
-                                    {{ request()->transaksiKey }}
+                                <span class="badge badge-soft badge-success">Rp.
+                                    {{ formatRupiah($transaksi->total_payment) }}
                                 </span>
                             </div>
-                            <div class="p-5 border rounded-lg">
+                            {{-- <div class="p-5 border rounded-lg">
                                 <div class="w-full overflow-x-auto">
                                     <table class="table">
                                         <thead>
@@ -122,7 +130,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
 
                     </div>
