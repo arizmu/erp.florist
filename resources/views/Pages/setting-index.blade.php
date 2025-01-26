@@ -20,9 +20,10 @@
             <div class="card-body">
                 <div class="p-4 md:px-60 lg:px-72">
                     <h5 class="card-title mb-2.5">Konfigurasi Aplikasi</h5>
-                    <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-                        <div class="lg:col-span-2">
-                            <form @submit.prevent="submit" class="">
+
+                    <form @submit.prevent="submit" class="" enctype="multipart/form-data">
+                        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+                            <div class="lg:col-span-2">
                                 <div class="flex flex-col items-end gap-4">
                                     <div class="w-full">
                                         <label class="label label-text" for=""> App Name </label>
@@ -34,7 +35,7 @@
                                     </div>
                                     <div class="w-full">
                                         <label class="label label-text"> Address </label>
-                                        <textarea class="textarea"  x-model="data.address"></textarea>
+                                        <textarea class="textarea" x-model="data.address"></textarea>
                                     </div>
                                     <div class="w-full">
                                         <label class="label label-text"></label> Telpon </label>
@@ -51,22 +52,22 @@
                                         </button>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
-                        <div class="lg:col-span-1 flex item-center flex-col gap-4 py-6">
-                            <figure class="">
-                                <img class="rounded-lg"
-                                    src="https://cdn.flyonui.com/fy-assets/components/card/image-9.png"
-                                    alt="Watch" />
-                            </figure>
-                            <div>
-                                <input type="file"
-                                    class="block text-sm file:uppercase file:btn file:btn-secondary file:btn-soft file:rounded-full file:me-3"
-                                    aria-label="file-input" />
+                            </div>
+                            <div class="lg:col-span-1 flex item-center flex-col gap-4 py-6">
+                                <label class="label label-text text-lg font-space">Logo</label>
+                                <figure class="max-w-48">
+                                    <img class="rounded-lg" :title="data.appName"
+                                        :src="data.file_logo"
+                                        alt="Watch" />
+                                </figure>
+                                <div>
+                                    <input type="file" x-ref="file" @change="file_upload"
+                                        class="block text-sm file:uppercase file:btn file:btn-secondary file:btn-soft file:rounded-full file:me-3"
+                                        aria-label="file-input" />
+                                </div>
                             </div>
                         </div>
-
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -75,25 +76,41 @@
         <script>
             function settingIndex() {
                 return {
+                    file: "",
                     data: {
                         appName: '',
                         appLogo: '',
                         comment: '',
                         address: '',
                         phone: '',
-                        email: ''
+                        email: '',
+                        file_logo: ''
                     },
-                    submit: function() {
-                        axios.post('/management/app-set-store', this.data)
-                            .then(response => {
-                                const data = response.data.data;
-                                thisgetData();
-                            })
-                            .catch(error => {
-                                console.log(error);
+                    file_upload(e) {
+                        this.file = e.target.files[0];
+                        const fsize = this.file.size / 1024;
+                        if (fsize > 2048) {
+                            alert("File size is too big. File size should be less than 2MB.");
+                            return;
+                        }
+                        this.data.file_logo = this.file;
+                    },
+
+                    async submit() {
+                        try {
+                            const url = `/management/app-set-store`;
+                            const response = await axios.post(url, this.data, {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data'
+                                }
                             });
+                            const data = response.data.data;
+                            this.getData();
+                        } catch (error) {
+                            console.log(error)
+                        }
                     },
-                    getData: function() {
+                    getData() {
                         axios.get('/management/app-set-get')
                             .then(response => {
                                 const data = response.data.data
@@ -104,6 +121,7 @@
                                     this.data.address = data.alamat;
                                     this.data.phone = data.telpon;
                                     this.data.email = data.email;
+                                    this.data.file_logo = data.foto;
                                 }
                             })
                             .catch(error => {
@@ -112,7 +130,6 @@
                     },
                     init: function() {
                         this.getData();
-                        console.log('Setting Index');
                     }
                 }
             }

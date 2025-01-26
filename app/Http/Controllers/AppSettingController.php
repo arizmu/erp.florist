@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AppSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class AppSettingController extends Controller
 {
@@ -26,15 +27,33 @@ class AppSettingController extends Controller
 
     public function storeOrUpdate(Request $request)
     {
+        $validasiData = Validator::make($request->all(), [
+            'file_logo' => ['required', 'type' => 'file', 'mimes:png,jpg'],
+        ]);
+
+        if ($validasiData->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 400,
+                'message' => 'Validasi gagal',
+                'errors' => $validasiData->errors()
+            ], 400);
+        }
+
         DB::beginTransaction();
         try {
             $query = AppSetting::first();
+            $filePath = $query->foto ?? "";
+            if ($request->hasFile('file_logo')) {
+                $filePath = FileUpload($request->file('file_logo'), "logo/", "app-logo");
+            }
             $arrayRequest = [
                 'app_name' => $request->appName,
                 'comment' => $request->comment,
                 'alamat' => $request->address,
                 'telpon' => $request->phone,
                 'email' => $request->email,
+                'foto' => $filePath // jika ada file logo, masukkan file_path ke field ini
             ];
             if ($query) {
                 $query->update($arrayRequest);

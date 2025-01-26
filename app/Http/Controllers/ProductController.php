@@ -32,14 +32,7 @@ class ProductController extends Controller
             $queryUpdate = Product::find($key);
             $file_path = "";
             if ($request->hasFile('img_file')) {
-                // $fileUpload = $request->file('img_file');
-                // $file_ext = $fileUpload->getClientOriginalExtension();
-                // $file_name_key = $queryUpdate->id . "." . $file_ext;
-                // $path = "product/img/";
-                // $file_path = $path . $file_name_key;
-                // $file_save = Storage::putFileAs($path, $fileUpload, $file_name_key);
-
-                $file_path = FileUpload($request->file('img_file'), "product/img/", "hello-world");
+                $file_path = FileUpload($request->file('img_file'), "product/img/", $queryUpdate->id);
             }
 
             $queryUpdate->update([

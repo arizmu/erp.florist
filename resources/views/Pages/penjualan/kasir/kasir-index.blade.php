@@ -53,7 +53,10 @@
                 <template x-for="item in dataTable">
                     <div class="card shadow-lg">
                         <figure>
-                            <img src="https://cdn.flyonui.com/fy-assets/components/card/image-7.png" alt="headphone" />
+                            <template x-if="item.img">
+                                <img :src="item.img" alt="headphone" />
+                            </template>
+                            <span x-show="!item.img" class="icon-[fxemoji--whiteflower] size-36"></span>
                         </figure>
                         <div class="card-body">
                             <h5 class="card-title text-orange-400 text-lg font-space" style="margin-top: -10pt"
@@ -112,8 +115,10 @@
                             <div class="grid grid-cols-3 items-start gap-4">
                                 <div class="col-span-2 flex items-start gap-4">
                                     <div class="w-28 h-28 max-sm:w-24 max-sm:h-24 shrink-0 bg-gray-100 p-2 rounded-md">
-                                        <img src='https://readymadeui.com/images/product14.webp'
-                                            class="w-full h-full object-contain" />
+                                        <template x-if="item.img_url">
+                                            <img :src='item.img_url' class="w-full h-full object-contain" />
+                                        </template>
+                                        <span x-show="!item.img_url" class="icon-[fxemoji--whiteflower] size-24"></span>
                                     </div>
 
                                     <div class="flex flex-col">
@@ -259,7 +264,7 @@
                                     const response = await axios.post(url, data);
                                     const result = response.data.data;
                                     const key = result.transaction_id;
-                                    
+
                                     this.isLoadTrasaction = false;
                                     this.resetItems();
 
@@ -301,7 +306,8 @@
                             'product_costume': false,
                             'product_costume_details': [],
                             'product_re_production': false,
-                            'product_re_produdction_detail': []
+                            'product_re_produdction_detail': [],
+                            'img_url': index.img
                         }
                         const findItems = this.items.find(arraydata => arraydata.product_id === data.product_id);
                         console.log(findItems);

@@ -33,7 +33,7 @@
                                         x-text="isUpdated ? 'Form Updated':'Form Input'"></h3>
                                 </div>
                                 <div class="card-body">
-                                    <form @submit.prevent="storeBarang">
+                                    <form @submit.prevent="isUpdated ? postUpdate : storeBarang">
                                         <div class="flex flex-col gap-4">
                                             <div class="relative w-auto">
                                                 <input x-model="sForm.nama_barang" type="text" placeholder=""
@@ -46,7 +46,8 @@
                                                     aria-label="Select floating label" id="">
                                                     <option>Pilih ...</option>
                                                     <template x-for="item in satuan">
-                                                        <option :value="item.id" x-text="item.nama_satuan"></option>
+                                                        <option :value="item.id" x-text="item.nama_satuan">
+                                                        </option>
                                                     </template>
                                                 </select>
                                                 <label class="select-floating-label text-blue-500"
@@ -67,6 +68,13 @@
                                             <div class="relative w-auto">
                                                 <textarea x-model="sForm.comment" class="textarea textarea-floating peer" placeholder="Hello!!!" id=""></textarea>
                                                 <label class="textarea-floating-label" for="">Comment</label>
+                                            </div>
+                                            <div class="relative w-auto">
+                                                <input x-model="sForm.harga" type="text" placeholder=""
+                                                    class="input input-floating peer" id="" />
+                                                <label class="input-floating-label" for="">
+                                                    Harga Jual
+                                                </label>
                                             </div>
                                             <div class="flex justify-between flex-wrap gap-4">
                                                 <button type="button" x-on:click="resetForm"
@@ -99,6 +107,7 @@
                                     <thead>
                                         <tr>
                                             <th>Name</th>
+                                            <th>Harga</th>
                                             <th>Satuan</th>
                                             <th>Category</th>
                                             <th>stock</th>
@@ -110,7 +119,8 @@
                                         <template x-for="barang in dataBarang" :key="barang.id">
                                             <tr class="hover:bg-slate-100">
                                                 <td class="text-nowrap" x-text="barang.nama_barang"></td>
-                                                <td></td>
+                                                <td x-text="barang.price"></td>
+                                                <td x-text="barang.satuan.nama_satuan"></td>
                                                 <td x-text="barang.category.category_name">johndoe@example.com</td>
                                                 <td>
                                                     <template x-if="barang.stock > 0">
@@ -126,7 +136,8 @@
                                                         </span>
                                                     </template>
                                                 </td>
-                                                <td class="text-nowrap" x-text="formatTanggalNoTime(barang.updated_at)">
+                                                <td class="text-nowrap"
+                                                    x-text="formatTanggalNoTime(barang.updated_at)">
                                                 </td>
                                                 <td>
                                                     <button type="btn" x-on:click="getEdit(barang)"
@@ -168,9 +179,10 @@
                 return {
                     dataBarang: [],
                     category: [],
-                    satuan:[],
+                    satuan: [],
                     sForm: {
                         id: '',
+                        harga: '',
                         nama_barang: '',
                         satuan_id: '',
                         category_id: '',
@@ -186,7 +198,37 @@
                         this.sForm.category_id = item.category_barang_id;
                         this.sForm.comment = '';
                         this.sForm.id = item.id;
+                        this.sForm.harga = item.price;
                     },
+
+                    async postUpdate() {
+                        const item = this.sForm;
+                        let url = `/master-barang/barang-update/${item.id}`;
+                        let data = {
+                            nama_barang: item.nama_barang,
+                            harga: item.harga,
+                            category_id: item.category_id,
+                            satuan : item.satuan_id,
+                            comment: item.comment,
+                        };
+                        try {
+                            const response = await axios.post(url, data);
+                            this.loadBarang();
+                            this.resetForm();
+                            Swal.fire({
+                                title: "Updated!",
+                                text: "Your file has been updated.",
+                                icon: "success"
+                            });
+                        } catch (error) {
+                            Swal.fire({
+                                title: "Error!",
+                                text: "Your file has not been updated.",
+                                icon: "error"
+                            });
+                        }
+                    },
+
 
                     deleteBarang(key) {
                         let url = `/master-barang/barang-destroy/${key}`;
@@ -253,13 +295,13 @@
                     getSatuan() {
                         const url = '/master-barang/barang-get-satuan';
                         response = axios.get(url)
-                        .then((res) => {
-                            const data = res.data.data;
-                            this.satuan = data;
-                        }).catch((err) => {
-                            console.log(err);
-                        });
-                        
+                            .then((res) => {
+                                const data = res.data.data;
+                                this.satuan = data;
+                            }).catch((err) => {
+                                console.log(err);
+                            });
+
                     },
 
                     resetForm() {

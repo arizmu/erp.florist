@@ -53,6 +53,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::get('/barang-json', 'barangJson');
             Route::get('/barang-destroy/{getId}', 'destory');
             Route::get('/barang-get-satuan', 'getSatuan');
+            Route::post('barang-update/{key}', 'update');
         });
     });
 

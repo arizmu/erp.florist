@@ -16,10 +16,9 @@
         href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=Lilita+One&family=MuseoModerno:ital,wght@0,100..900;1,100..900&family=Space+Grotesk:wght@300..700&display=swap"
         rel="stylesheet">
 
-    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
-
-    <link rel="stylesheet" href="{{ asset('assets/app.css') }}">
-    <script src="{{ asset('assets/app.js') }}"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- <link rel="stylesheet" href="{{ asset('build/assets/app-BainYrTj.css') }}">
+    <script src="{{ asset('build/assets/app-BjL84nCd.js') }}" defer></script> --}}
 
 
     <style>
@@ -27,6 +26,9 @@
             display: none;
         }
 
+        .overflow-auto::-webkit-scrollbar {
+            display: none;
+        }
 
         .font-space {
             font-family: "Space Grotesk", sans-serif;
@@ -55,10 +57,12 @@
             font-style: normal;
         }
     </style>
+
     @stack('css')
 </head>
 
 <body class="dark light:bg-slate-100">
+
     <div class="">
         <x-base.headers />
         <div class="p-6 py-4 lg:px-24 md:px-12 min-h-screen top-6">
@@ -66,6 +70,7 @@
         </div>
         <x-base.footers />
     </div>
+
     @stack('js')
 </body>
 

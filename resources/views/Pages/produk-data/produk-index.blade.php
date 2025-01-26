@@ -1,4 +1,12 @@
 <x-base-layout>
+    @push('css')
+        <style>
+            .overflow-auto::-webkit-scrollbar {
+                display: none;
+            }
+        </style>
+    @endpush
+
     <div class="breadcrumbs mb-2">
         <ol>
             <li>
@@ -11,7 +19,7 @@
             <li class="breadcrumbs-separator rtl:rotate-180"><span class="icon-[tabler--chevron-right]"></span></li>
             <li aria-current="page">
                 <span class="icon-[tabler--file] me-1 size-5"></span>
-                Barang
+                Produk Item
             </li>
         </ol>
     </div>
@@ -31,12 +39,15 @@
                             <span class="icon-[tabler--users] size-6 text-blue-600"></span>
                             Product
                         </h5>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4 max-h-screen overflow-auto">
                             <template x-for="item in productData">
                                 <div class="card shadow-lg">
-                                    <figure>
-                                        <img :src="item.img"
-                                            alt="headphone" />
+                                    <figure class="max-h-48">
+                                        <template x-if="item.img">
+                                            <img :src="item.img" alt="headphone" />
+                                        </template>
+                                        <span
+                                            class="icon-[material-symbols-light--image-search-outline-sharp] size-36"></span>
                                     </figure>
                                     <div class="card-body">
                                         <h5 class="card-title text-orange-400 text-xl font-space"
@@ -58,13 +69,13 @@
 
                                         <div class="flex gap-2 md:justify-start justify-center flex-wrap">
                                             <button x-on:click="openEdit(item)"
-                                                class="btn btn-primary btn-sm btn-circle btn-soft" type="button">
+                                                class="btn btn-primary btn-circle btn-soft" type="button">
                                                 <span class="icon-[tabler--edit] size-5"></span>
                                             </button>
 
-                                            <button class="btn btn-info btn-circle btn-soft btn-sm">
+                                            {{-- <button class="btn btn-info btn-circle btn-soft btn-sm">
                                                 <span class="size-5 icon-[tabler--eye-search]"></span>
-                                            </button>
+                                            </button> --}}
 
                                             {{-- <button
                                                 class="btn btn-error btn-sm rounded-full btn-soft">Re-Production</button> --}}
@@ -124,7 +135,7 @@
                     <div class="modal-header">
                         <h3 class="text-xl font-semibold text-gray-600">Product Details</h3>
                         <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3"
-                            aria-label="Close" data-overlay="#modal-edit-product-data">
+                            aria-label="Close" data-overlay="#modal-edit-product-data" id="model-close-layout">
                             <span class="icon-[tabler--x] size-4"></span>
                         </button>
                     </div>
@@ -168,7 +179,7 @@
         <script>
             function productIndex() {
                 return {
-                    file:'',
+                    file: '',
                     xform: {
                         product_id: '',
                         bucket: '',
@@ -184,9 +195,7 @@
                         this.xform.price = formatRupiah(index.price)
                         this.xform.img_file = index.img
                         this.xform.product_id = index.id
-
-                        const openModal = document.getElementById('modal-edit-prouduct');
-                        openModal.click();
+                        this.openModal();
                     },
 
                     file_upload(e) {
@@ -195,27 +204,54 @@
                     },
 
                     async store() {
-                        const data = this.xform;
-                        console.log(this.xform);
-                        const url = `/product/update-product-data/${this.xform.product_id}`;
-                        const response = await axios.post(url, data, {
-                            headers: {
-                                'Content-Type': 'multipart/form-data'
-                            }
-                        })
-                        console.log(response.data);
+                        try {
+                            const data = this.xform;
+                            console.log(this.xform);
+                            const url = `/product/update-product-data/${this.xform.product_id}`;
+                            const response = await axios.post(url, data, {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data'
+                                }
+                            })
+                            this.loadJson();
+                            notifier.success("Product updated successfully")
+                            this.resetForm();
+                            this.closeModal();
+                        } catch (error) {
+                            console.log(error);
+                            notifier.error("Failed to update product");
+                        }
                     },
+
                     productData: [],
                     loadJson() {
+                        this.productData = [];
                         const url = `/product/product-json`;
                         axios.get(url).then((res) => {
                             const data = res.data.data.data
                             this.productData = data;
-                            // console.log(data);
                         }).catch((err) => {
                             console.log(err);
-
                         })
+                    },
+
+                    openModal() {
+                        const openModal = document.getElementById('modal-edit-prouduct');
+                        openModal.click();
+                    },
+                    closeModal() {
+                        const openModal = document.getElementById('model-close-layout');
+                        openModal.click();
+                    },
+                    resetForm() {
+                        this.xform = {
+                            product_id: '',
+                            bucket: '',
+                            qty: '',
+                            cost_production: '',
+                            price: '',
+                            img_file: ''
+                        }
                     },
                     init() {
                         this.loadJson()
