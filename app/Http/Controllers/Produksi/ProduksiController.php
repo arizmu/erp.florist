@@ -10,10 +10,8 @@ use App\Models\Product\Product;
 use App\Models\Production\Production;
 use App\Models\Production\ProductionBarangDetail;
 use App\Models\production\ProductionOtherDetail;
-use App\Models\Transaction\DetailsTransaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ProduksiController extends Controller
@@ -182,6 +180,7 @@ class ProduksiController extends Controller
             $productionQuery = Production::find($key);
             $jeniQuery = JenisProduct::first();
             $nilaiProduction = $productionQuery->production_cost;
+            
             Product::create([
                 'product_name' => $productionQuery->production_title,
                 'comment' => 'form production',
@@ -192,6 +191,7 @@ class ProduksiController extends Controller
                 'price' => $nilaiProduction + ($nilaiProduction * 35 / 100)
             ]);
             $productionQuery->update(['distribution_status' => true]);
+
             DB::commit();
             return response()->json([
                 'status' => 'success',
@@ -205,7 +205,7 @@ class ProduksiController extends Controller
                 'code' => 500,
                 'message' => "Internal server error",
                 'errors' => $th->getMessage()
-            ]);
+            ], 500);
         }
     }
 
@@ -236,5 +236,14 @@ class ProduksiController extends Controller
         }
         $mergedDetails = array_merge($materialDetails, $otherDetails);
         return getResponseJson('ok', 200, 'Data detail bahan baku', $mergedDetails, false);
+    }
+
+    public function registreProduct(Request $request)
+    {
+        try {
+            return getResponseJson('ok', 200, 'Produk berhasil ditambahkan', "", false);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 }

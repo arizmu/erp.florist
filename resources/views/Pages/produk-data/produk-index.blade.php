@@ -39,7 +39,8 @@
                             <span class="icon-[tabler--users] size-6 text-blue-600"></span>
                             Product
                         </h5>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4 max-h-screen overflow-auto">
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4 max-h-screen overflow-auto">
                             <template x-for="item in productData">
                                 <div class="card shadow-lg">
                                     <figure class="max-h-48">
@@ -116,6 +117,10 @@
                                 <span class="icon-[tabler--user-search]"></span>
                                 Filter
                             </button>
+                            <button class="btn btn-primary btn-soft" @click="registerFrom">
+                                <span class="icon-[fluent-mdl2--product-release]"></span>
+                                Register Product
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -173,6 +178,48 @@
                 </div>
             </div>
         </div>
+
+
+        <button type="button" class="btn btn-primary hidden" aria-haspopup="dialog" aria-expanded="false"
+            aria-controls="modal-register-product" data-overlay="#modal-register-product"
+            id="modal-open-register">Open modal</button>
+        <div id="modal-register-product"
+            class="overlay modal overlay-open:opacity-100 hidden [--overlay-backdrop:static]" role="dialog"
+            tabindex="-1" data-overlay-keyboard="false">
+            <div class="modal-dialog overlay-open:opacity-100">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="text-xl font-semibold text-gray-600">Product Details</h3>
+                        <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3"
+                            aria-label="Close" data-overlay="#modal-register-product" id="model-close-layout">
+                            <span class="icon-[tabler--x] size-4"></span>
+                        </button>
+                    </div>
+                    <form x-on:submit.prevent="storeProduct()" enctype="multipart/form-data">
+                        <div class="modal-body flex flex-col gap-4">
+                            <div class="w-auto">
+                                <label class="label label-text" for=""> Bucket Name </label>
+                                <input type="text" x-model="regis.name" class="input" />
+                            </div>
+                            <div class="w-auto">
+                                <label class="label label-text" for=""> Price </label>
+                                <input type="text" x-model="regis.price" class="input" />
+                            </div>
+                            <div class="w-auto">
+                                <label class="label label-text" for=""> Foto Product </label>
+                                <input type="file" x-ref="file" @change="file_upload" class="input" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-soft btn-secondary"
+                                data-overlay="#modal-register-product">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     @push('js')
@@ -188,6 +235,7 @@
                         price: '',
                         img_file: ''
                     },
+
                     openEdit(index) {
                         this.xform.bucket = index.product_name
                         this.xform.qty = index.qty
@@ -201,6 +249,7 @@
                     file_upload(e) {
                         this.file = e.target.files[0];
                         this.xform.img_file = this.file;
+                        this.regis.file = this.file;
                     },
 
                     async store() {
@@ -239,10 +288,12 @@
                         const openModal = document.getElementById('modal-edit-prouduct');
                         openModal.click();
                     },
+
                     closeModal() {
                         const openModal = document.getElementById('model-close-layout');
                         openModal.click();
                     },
+
                     resetForm() {
                         this.xform = {
                             product_id: '',
@@ -253,6 +304,31 @@
                             img_file: ''
                         }
                     },
+
+                    registerFrom() {
+                        const openModal = document.getElementById('modal-open-register');
+                        openModal.click();
+                    },
+
+                    regis: {
+                        name: '',
+                        price: '',
+                        file: ''
+                    },
+                    async storeProduct() {
+                        try {
+                            const url = "/register-product";
+                            const response = await axios.post(url, this.regis, {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data'
+                                }
+                            });
+                            const data = response.data.data;
+                        } catch (error) {
+
+                        }
+                    },
+
                     init() {
                         this.loadJson()
                     }

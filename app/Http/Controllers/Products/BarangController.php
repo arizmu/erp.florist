@@ -75,7 +75,7 @@ class BarangController extends Controller
                 'nama_barang' => $request->nama_barang,
                 'category_barang_id' => $request->category_id,
                 'comment' => $request->comment,
-                'price'=> intval($request->harga),
+                'price' => intval($request->harga),
                 'satuan_barang_id' => $request->satuan
             ]);
 
@@ -99,7 +99,11 @@ class BarangController extends Controller
 
     public function barangJson()
     {
-        $query = Barang::with('category','satuan')->paginate(15);
+        $query = Barang::with('category', 'satuan')
+            ->when(request()->search, function ($e) {
+                $e->where('nama_barang', 'like', '%' . request()->search . '%');
+            })
+            ->latest()->paginate(15);
         return response()->json([
             'code' => 200,
             'status' => 'Ok',

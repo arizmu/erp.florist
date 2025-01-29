@@ -97,8 +97,9 @@
                         </div>
                         <div class="lg:col-span-6">
                             <div class="mb-3 rounded-lg border p-4 flex justify-start flex-wrap gap-2 md:gap-6 ">
-                                <input type="text" class="input rounded-full max-w-60">
-                                <button class="btn btn-soft btn-secondary btn-circle">
+                                <input type="text" class="input rounded-full max-w-60" x-model="keySearch"
+                                    @keyup.enter="search">
+                                <button class="btn btn-soft btn-secondary btn-circle" type="button" @click="search">
                                     <span class="icon-[mingcute--search-3-line] size-5"></span>
                                 </button>
                             </div>
@@ -156,14 +157,30 @@
                             </div>
 
                             <nav class="flex justify-end items-center gap-x-1 mt-4">
-                                <button type="button" class="btn btn-soft btn-sm rounded-full">Previous</button>
-                                {{-- <div class="flex items-center gap-x-1">
-                                  <button type="button" class="btn btn-soft btn-sm btn-circle aria-[current='page']:text-bg-soft-primary">1</button>
-                                  <button type="button" class="btn btn-soft btn-sm btn-circle aria-[current='page']:text-bg-soft-primary" aria-current="page">2</button>
-                                  <button type="button" class="btn btn-soft btn-sm btn-circle aria-[current='page']:text-bg-soft-primary">3</button>
-                                </div> --}}
-                                <button type="button" class="btn btn-soft btn-sm rounded-full">Next</button>
+                                <button type="button" class="btn btn-soft btn-sm rounded-full"
+                                    @click="goToPrevPage()" :disabled="!prevPageUrl"
+                                    :class="{ 'opacity-50 cursor-not-allowed': !prevPageUrl }">Previous</button>
+                                <div class="flex items-center gap-x-1">
+                                    <template x-for="page in lastPage" :key="page">
+                                        <button type="button"
+                                            class="btn btn-soft btn-sm btn-circle aria-[current='page']:text-bg-soft-primary"
+                                            @click="goToPage(page)" :class="{ 'font-bold': currentPage === page }">
+                                            <span x-text="page"></span>
+                                        </button>
+                                    </template>
+                                </div>
+
+
+                                <button type="button" class="btn btn-soft btn-sm rounded-full"
+                                    @click="goToNextPage()" :disabled="!nextPageUrl"
+                                    :class="{ 'opacity-50 cursor-not-allowed': !nextPageUrl }">Next</button>
                             </nav>
+
+                            {{-- <div>
+                                Menampilkan <span x-text="(currentPage - 1) * perPage + 1"></span> 
+                                sampai <span x-text="Math.min(currentPage * perPage, total)"></span> 
+                                dari <span x-text="total"></span> data.
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -208,7 +225,7 @@
                             nama_barang: item.nama_barang,
                             harga: item.harga,
                             category_id: item.category_id,
-                            satuan : item.satuan_id,
+                            satuan: item.satuan_id,
                             comment: item.comment,
                         };
                         try {
@@ -228,7 +245,6 @@
                             });
                         }
                     },
-
 
                     deleteBarang(key) {
                         let url = `/master-barang/barang-destroy/${key}`;
@@ -262,13 +278,50 @@
                         });
                     },
 
-                    async loadBarang() {
+                    currentPage: 1,
+                    nextPageUrl: '',
+                    prevPageUrl: '',
+                    lastPage: 1,
+                    total: 0,
+                    perPage: 5,
+                    async loadBarang(url = '/master-barang/barang-json') {
                         try {
-                            const response = await axios.get('/master-barang/barang-json');
-                            this.dataBarang = response.data.data.data;
+                            const response = await axios.get(url);
+                            const data = response.data.data;
+                            this.dataBarang = data.data;
+                            this.currentPage = data.current_page; // Halaman saat ini
+                            this.nextPageUrl = data.next_page_url; // URL halaman berikutnya
+                            this.prevPageUrl = data.prev_page_url; // URL halaman sebelumnya
+                            this.lastPage = data.last_page; // Total halaman
+                            this.total = data.total; // Total data
+                            this.perPage = data.per_page; // Data per halaman
+                            // console.log(data);
                         } catch (error) {
                             console.log(error);
                         }
+                    },
+
+                    keySearch: '',
+                    search() {
+                        const url = `/master-barang/barang-json?search=${this.keySearch}`;
+                        this.loadBarang(url);
+                    },
+
+                    goToNextPage() {
+                        if (this.nextPageUrl) {
+                            this.loadBarang(this.nextPageUrl);
+                        }
+                    },
+
+                    goToPrevPage() {
+                        if (this.prevPageUrl) {
+                            this.loadBarang(this.prevPageUrl);
+                        }
+                    },
+
+                    goToPage(page) {
+                        const url = `/master-barang/barang-json?page=${page}`;
+                        this.loadBarang(url);
                     },
 
                     async storeBarang() {
@@ -276,8 +329,20 @@
                         try {
                             const url = "/master-barang/barang-store"
                             const response = await axios.post(url, this.sForm);
+                            this.loadBarang();
+                            this.resetForm();
+                            Swal.fire({
+                                title: "success",
+                                text: "store data is successuflly.",
+                                icon: "success"
+                            });
+
                         } catch (error) {
-                            console.log(error);
+                            Swal.fire({
+                                title: "Error",
+                                text: "store data is failed.",
+                                icon: "error"
+                            });
                         }
 
                     },

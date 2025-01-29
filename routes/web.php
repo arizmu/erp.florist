@@ -159,4 +159,6 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         Route::get('/', 'index')->name('jasa.crafter.index');
         Route::get('/data-json', 'dataJson');
     });
+
+    Route::post('/register-product', [ProduksiController::class, 'registerProduct']);   
 });

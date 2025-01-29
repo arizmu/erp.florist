@@ -26,7 +26,7 @@
                                 </thead>
                                 <tbody>
                                     <template x-for="item in dataTable">
-                                        <tr>
+                                        <tr class="hover:bg-blue-100">
                                             <td class="text-nowrap" x-text="item.pegawai_name">John Doe</td>
                                             <td>
                                                 <span class="badge badge-soft badge-info" x-show="item.gender">
@@ -38,7 +38,7 @@
                                                     Perempuan
                                                 </span>
                                             </td>
-                                            <td x-text="item.alamat"></td>
+                                            <td x-text="item.alamat" class="text-wrap"></td>
                                             <td class="text-nowrap" x-text="item.telpon">March 1, 2024</td>
                                             <td>
                                                 <button type="button" x-on:click="getEdit(item)"
