@@ -27,6 +27,7 @@ Route::get('/login', function () {
 })->name('login');
 
 Route::post('/login', [AuthController::class, 'LoginAction'])->name('login.action');
+Route::get('app-json', [AppSettingController::class, 'publicJson']);
 
 Route::group(['middleware' => 'auth.manuals'], function () {
     Route::get('/logout', [AuthController::class, 'LogoutAction'])->name('logout');
@@ -68,6 +69,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::get('/to-complate/{key}', 'toComplate');
             Route::get('/distribution-to-product/{key}', 'distributionToProduct');
             Route::get('/get-production-detail/{production_id}', 'getDetailBahanBaku');
+            Route::post('delete/{id}', 'delete');
         });
     });
 
@@ -115,6 +117,8 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::get('/app-setting', 'index')->name('app-setting.index');
             Route::get('/app-set-get', 'appFirst');
             Route::post('/app-set-store', 'storeOrUpdate');
+            Route::post('/logo-upload', 'udpateLogo');
+            Route::post('/icon-upload', 'updateIcon');
         });
         Route::controller(UserController::class)->group(function () {
             Route::get('/user-index', 'index')->name('user.index');

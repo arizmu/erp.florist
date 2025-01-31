@@ -16,58 +16,97 @@
         </ol>
     </div>
     <div x-data="settingIndex()" class="py-4">
-        <div class="card bg-slate-50 dark:bg-gray-800">
+        <div class="card bg-slate-0 dark:bg-gray-800">
             <div class="card-body">
-                <div class="p-4 md:px-60 lg:px-72">
-                    <h5 class="card-title mb-2.5">Konfigurasi Aplikasi</h5>
-
+                <div class="p-4 px-5">
+                    <h5 class="card-title">Konfigurasi Aplikasi</h5>
                     <form @submit.prevent="submit" class="" enctype="multipart/form-data">
-                        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-                            <div class="lg:col-span-2">
-                                <div class="flex flex-col items-end gap-4">
+                        <div class="max-w-3xl">
+                            <div class="flex flex-col items-start gap-2">
+                                <div class="w-full">
+                                    <label class="label label-text font-semibold text-gray-400" for="">Title
+                                    </label>
+                                    <input x-model="data.appName" type="text" class="input" id="" />
+                                </div>
+                                <div class="w-full">
+                                    <label class="label label-text font-semibold text-gray-400" for=""> Sub
+                                        Title </label>
+                                    <input x-model="data.sub_title" type="text" class="input" id="" />
+                                </div>
+                                <div class="w-full">
+                                    <label class="label label-text font-semibold text-gray-400"> Comment </label>
+                                    <textarea x-model="data.comment" class="textarea"></textarea>
+                                </div>
+                                <div class="w-full">
+                                    <label class="label label-text font-semibold text-gray-400"> Address </label>
+                                    <textarea class="textarea" x-model="data.address"></textarea>
+                                </div>
+                                <div class="grid gap-2 grid-cols-1 md:grid-cols-2 w-full">
                                     <div class="w-full">
-                                        <label class="label label-text" for=""> App Name </label>
-                                        <input x-model="data.appName" type="text" class="input" id="" />
-                                    </div>
-                                    <div class="w-full">
-                                        <label class="label label-text"> Comment </label>
-                                        <textarea x-model="data.comment" class="textarea"></textarea>
-                                    </div>
-                                    <div class="w-full">
-                                        <label class="label label-text"> Address </label>
-                                        <textarea class="textarea" x-model="data.address"></textarea>
-                                    </div>
-                                    <div class="w-full">
-                                        <label class="label label-text"></label> Telpon </label>
+                                        <label class="label label-text font-semibold text-gray-400"></label> Telpon
+                                        </label>
                                         <input x-model="data.phone" type="text" class="input" />
                                     </div>
                                     <div class="w-full">
-                                        <label class="label label-text"> Email </label>
+                                        <label class="label label-text font-semibold text-gray-400"> Email </label>
                                         <input x-model="data.email" type="text" class="input" />
                                     </div>
-
-                                    <div class="flex justify-end gap-4 mt-3">
-                                        <button class="btn btn-info btn-soft rounded-full px-4" type="submit">
-                                            Simpan Perubahan
-                                        </button>
-                                    </div>
                                 </div>
-                            </div>
-                            <div class="lg:col-span-1 flex item-center flex-col gap-4 py-6">
-                                <label class="label label-text text-lg font-space">Logo</label>
-                                <figure class="max-w-48">
-                                    <img class="rounded-lg" :title="data.appName"
-                                        :src="data.file_logo"
-                                        alt="Watch" />
-                                </figure>
-                                <div>
-                                    <input type="file" x-ref="file" @change="file_upload"
-                                        class="block text-sm file:uppercase file:btn file:btn-secondary file:btn-soft file:rounded-full file:me-3"
-                                        aria-label="file-input" />
+
+                                <div class="mt-2">
+                                    <button class="btn btn-info btn-soft rounded-full px-4" type="submit">
+                                        <span class="icon-[ant-design--save-outlined] size-5"></span>
+                                        <label for="">Simpan</label>
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </form>
+
+                    <div class="max-w-3xl grid grid-cols-1 md:grid-cols-2">
+                        <div>
+                            <h5 class="card-title mb-2.5 mt-8">File Logo</h5>
+                            <div class="lg:col-span-1 flex item-center flex-col gap-4 py-6">
+                                <figure class="max-w-48">
+                                    <img class="rounded-lg" :title="data.appName" :src="data.file_logo"
+                                        alt="Watch" />
+                                </figure>
+                                <div>
+                                    <input type="file" x-ref="file" @change="file_upload"
+                                        class="block text-sm file:uppercase file:btn file:btn-secondary file:btn-soft file:rounded-full file:me-3 file:btn-sm"
+                                        aria-label="file-input" />
+                                </div>
+                                <div class="">
+                                    <button class=" btn btn-soft btn-info rounded-full" @click="logoUpload">
+                                        <span class="icon-[hugeicons--file-upload] size-5"></span>
+                                        <label for="">Upload File</label>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-2.5 mt-8">File Icon</h5>
+                            <div class="lg:col-span-1 flex item-center flex-col gap-4 py-6">
+                                <figure class="max-w-48">
+                                    <img class="rounded-lg" :title="data.appName" :src="data.icon"
+                                        alt="Watch" />
+                                </figure>
+                                <div>
+                                    <input type="file" x-ref="icon" @change="icon_upload"
+                                        class="block text-sm file:uppercase file:btn file:btn-secondary file:btn-soft file:rounded-full file:me-3 file:btn-sm"
+                                        aria-label="file-input" />
+                                </div>
+                                <div>
+
+                                    <button class=" btn btn-soft btn-info rounded-full" type="button"
+                                        @click="iconUpload">
+                                        <span class="icon-[hugeicons--file-upload] size-5"></span>
+                                        <label for="">Upload File</label>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -79,12 +118,14 @@
                     file: "",
                     data: {
                         appName: '',
+                        sub_title: '',
                         appLogo: '',
                         comment: '',
                         address: '',
                         phone: '',
                         email: '',
-                        file_logo: ''
+                        file_logo: '',
+                        icon: '',
                     },
                     file_upload(e) {
                         this.file = e.target.files[0];
@@ -96,20 +137,155 @@
                         this.data.file_logo = this.file;
                     },
 
-                    async submit() {
-                        try {
-                            const url = `/management/app-set-store`;
-                            const response = await axios.post(url, this.data, {
-                                headers: {
-                                    'Content-Type': 'multipart/form-data'
-                                }
-                            });
-                            const data = response.data.data;
-                            this.getData();
-                        } catch (error) {
-                            console.log(error)
+                    icon: '',
+                    icon_upload(e) {
+                        this.icon = e.target.files[0];
+                        const fsize = this.icon.size / 1024;
+                        if (fsize > 2048) {
+                            alert("File size is too big. File size should be less than 2MB.");
+                            return;
                         }
+                        this.data.icon = this.icon;
                     },
+                    
+                    async submit() {
+                        if (this.data.appName == "" || this.data.sub_title == "" || this.data.comment == "" || this.data
+                            .address == "" || this.data.phone == "" || this.data.email == "") {
+                            alert("Form must be filled out completely!");
+                            return;
+                        }
+
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: "for update your application!",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Yes, change!"
+                        }).then(async (response) => {
+                            if (response.isConfirmed) {
+                                Swal.fire({
+                                    title: 'Uploading...',
+                                    text: 'Please wait while your file is being uploaded.',
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading(); // Tampilkan spinner loading
+                                    }
+                                });
+                                try {
+                                    const formData = this.data;
+                                    const store = await axios.post('/management/app-set-store',
+                                        formData, {
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            }
+                                        });
+                                    const response = store.data.data;
+                                    console.log(response);
+
+                                    Swal.fire({
+                                        title: "success!",
+                                        text: "Your application updated successfully.",
+                                        icon: "success"
+                                    });
+                                } catch (error) {
+                                    console.error(error);
+                                    Swal.fire({
+                                        title: "Error!",
+                                        text: "Failed to update application.",
+                                        icon: "error"
+                                    });
+                                }
+                            }
+                        })
+                    },
+
+                    logoUpload() {
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: "for update your icon site!",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Yes, change!"
+                        }).then(async (result) => {
+                            if (result.isConfirmed) {
+                                Swal.fire({
+                                    title: 'Uploading...',
+                                    text: 'Please wait while your file is being uploaded.',
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading(); // Tampilkan spinner loading
+                                    }
+                                });
+                                try {
+                                    const formData = this.data;
+                                    const store = await axios.post('/management/logo-upload',
+                                        formData, {
+                                            headers: {
+                                                'Content-Type': 'multipart/form-data'
+                                            }
+                                        });
+                                    const response = store.data.data;
+                                    console.log(response);
+
+                                    Swal.fire({
+                                        title: "success!",
+                                        text: "Your logo updated successfully.",
+                                        icon: "success"
+                                    });
+                                } catch (error) {
+                                    console.log(error);
+                                }
+                            }
+                        });
+                    },
+
+                    iconUpload() {
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: "for update your icon site!",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Yes, change!"
+                        }).then(async (result) => {
+                            if (result.isConfirmed) {
+                                Swal.fire({
+                                    title: 'Uploading...',
+                                    text: 'Please wait while your file is being uploaded.',
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal
+                                            .showLoading(); // Tampilkan spinner loading
+                                    }
+                                });
+
+                                try {
+                                    const formData = this.data;
+                                    const store = await axios.post('/management/icon-upload',
+                                        formData, {
+                                            headers: {
+                                                'Content-Type': 'multipart/form-data'
+                                            }
+                                        });
+                                    const response = store.data.data;
+                                    console.log(response);
+                                    Swal.fire({
+                                        title: "success",
+                                        text: "Your icon app updated successfully.",
+                                        icon: "success"
+                                    });
+                                } catch (error) {
+                                    console.log(error);
+                                }
+                            }
+                        });
+                    },
+
                     getData() {
                         axios.get('/management/app-set-get')
                             .then(response => {
@@ -122,6 +298,8 @@
                                     this.data.phone = data.telpon;
                                     this.data.email = data.email;
                                     this.data.file_logo = data.foto;
+                                    this.data.icon = data.icon;
+                                    this.data.sub_title = data.sub_title;
                                 }
                             })
                             .catch(error => {

@@ -12,14 +12,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Production extends Model
 {
     use HasUuids;
-    protected $fillable = ['code_production', 'production_title', 'production_date', 'production_start', 'production_end', 'production_status', 'production_cost', 'pegawai_id'];
+    protected $fillable = ['code_production', 'production_title', 'production_date', 'production_start', 'production_end', 'production_status', 'production_cost', 'pegawai_id', 'amount_items', 'price_for_sale', 'delete_status', 'deleted_at', 'cost_items', 'distribution_status'];
 
     /**
      * Get the pegawai that owns the Production
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function pegawai(): BelongsTo
+    public function crafter(): BelongsTo
     {
         return $this->belongsTo(Pegawai::class, 'pegawai_id', 'id');
     }

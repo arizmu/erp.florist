@@ -5,12 +5,12 @@ namespace App\Http\Controllers\Penjualan;
 use App\Http\Controllers\Controller;
 use App\Models\Costumer;
 use App\Models\Product\Product;
-use App\Models\Transaction\DetailsTransaction;
 use App\Models\Transaction\PaymentTransaction;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class KasirController extends Controller
 {
@@ -24,7 +24,7 @@ class KasirController extends Controller
                 'paid' => 0,
                 'unpaid' => 0
             ]
-            ]);
+        ]);
         // ->withInput(request()->all() ?? "");
     }
 
@@ -98,7 +98,6 @@ class KasirController extends Controller
     public function prosesBayar($key)
     {
         $query = Transaction::with('details', 'costumer', 'payment')->find($key);
-
         return view('Pages.penjualan.kasir.kasir-pembayaran', [
             'data' => $query,
             'key' => $key
@@ -107,13 +106,21 @@ class KasirController extends Controller
     public function prosesBayarPost(Request $request, $key)
     {
         // add-validation
-
+        $validasi = Validator::make($request->all(), [
+            'metode_bayar' => 'required',
+            'jumlah_bayar' => 'required|numeric',
+            'kembali' => 'required|numeric',
+            'nama' => 'required|string',
+            'telpon' => 'required|numeric'
+        ]);
+        if ($validasi->fails()) {
+            return getResponseJson('error', 400, 'bad Reqeust', null, $validasi->errors());
+        }
         //
 
         DB::beginTransaction();
         try {
             $transaksi = Transaction::find($key);
-
             $totalPayment = $transaksi->total_payment;
             $totalPaid = $transaksi->total_paid;
             $totalUpaid = $transaksi->total_unpaid;
@@ -179,8 +186,6 @@ class KasirController extends Controller
                 ]);
             }
 
-
-
             DB::commit();
             return response()->json([
                 'status' => 'success',
@@ -218,7 +223,7 @@ class KasirController extends Controller
     public function transaksiDetail($key)
     {
         $transaksi = Transaction::where('id', $key)->with('details', 'costumer')->first();
-        
+
         return view('Pages.penjualan.kasir.kasir-detail', compact('key', 'transaksi'));
     }
 

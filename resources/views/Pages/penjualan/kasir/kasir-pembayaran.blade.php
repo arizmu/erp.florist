@@ -82,24 +82,24 @@
                                 <div class="p-5 border rounded-lg mt-3 flex flex-col gap-2">
                                     <div class="relative">
                                         <input x-model="xform.costumer.nama" type="text" placeholder="Nama Costumer"
-                                            required class="input input-filled peer" id="nama_costumer" />
-                                        <label class="input-filled-label" for="nama_costumer">Costumer Name</label>
+                                            class="input input-filled peer" id="nama_costumer" />
+                                        <label class="input-filled-label" for="nama_costumer">
+                                            Nama Pelanggang
+                                        </label>
                                         <span class="input-filled-focused"></span>
                                     </div>
-
                                     <div class="relative">
-                                        <textarea x-model='xform.costumer.alamat' class="textarea textarea-filled peer" required placeholder="Alamat..."
-                                            id="alamat_costumer"></textarea>
-                                        <label class="textarea-filled-label" for="alamat_costumer">Alamat
-                                            Costumers</label>
-                                        <span class="textarea-filled-focused"></span>
-                                    </div>
-
-                                    <div class="relative">
-                                        <input x-model="xform.costumer.telpon" required type="text"
-                                            placeholder="08***" class="input input-filled peer" id="nama_costumer" />
+                                        <input x-model="xform.costumer.telpon" type="text" @keyup.tab="findCostumer" placeholder="08***"
+                                            class="input input-filled peer" id="nama_costumer" />
                                         <label class="input-filled-label" for="nama_costumer">Telpon</label>
                                         <span class="input-filled-focused"></span>
+                                    </div>
+                                    <div class="relative">
+                                        <textarea x-model='xform.costumer.alamat' class="textarea textarea-filled peer" placeholder="Alamat..."
+                                            id="alamat_costumer"></textarea>
+                                        <label class="textarea-filled-label" for="alamat_costumer">Alamat
+                                        </label>
+                                        <span class="textarea-filled-focused"></span>
                                     </div>
                                 </div>
                             </div>
@@ -109,8 +109,7 @@
                                 <div class="p-5 border rounded-lg mt-3 flex flex-col gap-2">
                                     <div class="w-full">
                                         <label class="label label-text" for="favorite-simpson">Method</label>
-                                        <select required x-model="xform.payment.method" class="select"
-                                            id="favorite-simpson">
+                                        <select x-model="xform.payment.method" class="select" id="favorite-simpson">
                                             <option value="">Select</option>
                                             <option value="q">Qris</option>
                                             <option value="b">Transfer Bank</option>
@@ -119,7 +118,7 @@
                                     </div>
                                     <div class="w-full">
                                         <label class="label label-text" for=""> Jumlah Bayar </label>
-                                        <input required x-model="xform.payment.payment" type="text"
+                                        <input x-model="xform.payment.payment" type="text"
                                             placeholder="input nominal pembayaran" class="input" id=""
                                             @keyup="hitungCashback()" />
                                     </div>
@@ -136,7 +135,8 @@
 
                     </div>
                     <div class="card-footer text-center">
-                        <button type="submit" :disabled="isStoring" x-text="isStoring ? 'Load...' : 'Proses Pembayaran'"
+                        <button type="submit" :disabled="isStoring"
+                            x-text="isStoring ? 'Load...' : 'Proses Pembayaran'"
                             class="w-full btn btn-error btn-soft btn-circle">Proses Pembayaran</button>
                     </div>
                 </form>
@@ -178,6 +178,7 @@
                         }
 
                     },
+
                     store() {
                         Swal.fire({
                             title: "Are you sure?",
@@ -189,7 +190,7 @@
                             confirmButtonText: "Yes, delete it!"
                         }).then(async (result) => {
                             if (result.isConfirmed) {
-                                this.store = true;
+                                this.isStoring = true; // Ganti `this.store` menjadi `this.isStoring`
                                 const data = {
                                     transaksi_id: this.code_transaksi,
                                     transaksi_details: this.indexData,
@@ -197,38 +198,80 @@
                                     jumlah_bayar: this.xform.payment.payment,
                                     kembali: this.xform.payment.cashback,
                                     costumer: this.xform.costumer
-                                }
-                                const url = `/transaksi/kasir-proses-bayar-post/${this.indexData.id}`;
-                                const response = await axios.post(url, data);
-                                const result = response.data;
-                                if (result.code == 200) {
-                                    Swal.fire({
-                                        title: "Success!",
-                                        text: result.message,
-                                        icon: "success"
-                                    });
-                                    window.open(`/transaksi/cetak-invoice/${this.indexData.id}/${result.data.payment_id}`, '_blank');
-                                    window.location.href = '/transaksi';
-                                } else {
-                                    Swal.fire({
-                                        title: "Error!",
-                                        text: result.message,
-                                        icon: "error"
-                                    });
+                                };
+                                try {
+                                    const url = `/transaksi/kasir-proses-bayar-post/${this.indexData.id}`;
+                                    const response = await axios.post(url, data);
+                                    const result = response.data;
+                                    if (result.code == 200) {
+                                        Swal.fire({
+                                            title: "Success!",
+                                            text: result.message,
+                                            icon: "success"
+                                        });
+                                        window.open(
+                                            `/transaksi/cetap-invoice/${this.indexData.id}/${result.data.payment_id}`,
+                                            '_blank');
+                                        window.location.href = '/transaksi';
+                                    }
+                                } catch (error) {
+                                    const err = error.response.data;
+                                    if (error.status === 400) {
+                                        const res = err.errors;
+                                        if (res.metode_bayar) {
+                                            const metode = res.metode_bayar;
+                                            metode.forEach(pesan => {
+                                                notifier.warning(pesan);
+                                            });
+                                        }
+                                        if (res.jumlah_bayar) {
+                                            const metode = res.jumlah_bayar;
+                                            metode.forEach(pesan => {
+                                                notifier.warning(pesan);
+                                            });
+                                        }
+                                        if (res.nama) {
+                                            const metode = res.nama;
+                                            metode.forEach(pesan => {
+                                                notifier.warning(pesan);
+                                            });
+                                        }
+                                        if (res.telpon) {
+                                            const metode = res.telpon;
+                                            metode.forEach(pesan => {
+                                                notifier.warning(pesan);
+                                            });
+                                        }
+                                    }
+                                } finally {
+                                    this.isStoring = false; // Reset status setelah selesai
                                 }
                             }
                         });
                     },
-                    getCostumer() {
-                        this.xform.costumer.nama = this.indexData.costumer.name;
-                        this.xform.costumer.alamat = this.indexData.costumer.alamat;
-                        this.xform.costumer.telpon = this.indexData.costumer.no_telp;
-                    },
-                    init() {
-                        this.getCostumer()
-                        this.hitungCashback();
-                        console.log(this.indexData);
 
+                    getCostumer() {
+                        this.xform.costumer.nama = this.indexData.costumer.name ?? "";
+                        this.xform.costumer.alamat = this.indexData.costumer.alamat ?? "";
+                        this.xform.costumer.telpon = this.indexData.costumer.no_telp ?? "";
+                    },
+
+                    findCostumer() {
+                        axios.get(`/transaksi/find-costumer/${this.xform.costumer.telpon}`)
+                            .then((res) => {
+                                const costumer = res.data.data;
+                                console.log(costumer);
+                                
+                            }).catch((err) => {
+                                console.log(err);
+
+                            })
+                    },
+
+
+                    init() {
+                        // this.getCostumer()
+                        // this.hitungCashback();
                     }
                 }
             }

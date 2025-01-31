@@ -37,7 +37,7 @@ class ProductController extends Controller
 
             $queryUpdate->update([
                 'img' => $file_path,
-                'price' => $request->price
+                // 'price' => $request->price
             ]);
             DB::commit();
             return response()->json([

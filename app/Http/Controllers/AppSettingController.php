@@ -27,33 +27,16 @@ class AppSettingController extends Controller
 
     public function storeOrUpdate(Request $request)
     {
-        $validasiData = Validator::make($request->all(), [
-            'file_logo' => ['required', 'type' => 'file', 'mimes:png,jpg'],
-        ]);
-
-        if ($validasiData->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'code' => 400,
-                'message' => 'Validasi gagal',
-                'errors' => $validasiData->errors()
-            ], 400);
-        }
-
         DB::beginTransaction();
         try {
             $query = AppSetting::first();
-            $filePath = $query->foto ?? "";
-            if ($request->hasFile('file_logo')) {
-                $filePath = FileUpload($request->file('file_logo'), "logo/", "app-logo");
-            }
             $arrayRequest = [
                 'app_name' => $request->appName,
+                'sub_title' => $request->sub_title,
                 'comment' => $request->comment,
                 'alamat' => $request->address,
                 'telpon' => $request->phone,
                 'email' => $request->email,
-                'foto' => $filePath // jika ada file logo, masukkan file_path ke field ini
             ];
             if ($query) {
                 $query->update($arrayRequest);
@@ -76,5 +59,82 @@ class AppSettingController extends Controller
                 'detail' => $th->getMessage()
             ], 500);
         }
+    }
+
+    public function udpateLogo(Request $request)
+    {
+        $validasiData = Validator::make($request->all(), [
+            'file_logo' => ['required', 'type' => 'file', 'mimes:png,jpg'],
+        ]);
+
+        if ($validasiData->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 400,
+                'message' => 'Validasi gagal',
+                'errors' => $validasiData->errors()
+            ], 400);
+        }
+
+        try {
+            $logoFile = request()->file('file_logo');
+            if (!$logoFile->isValid()) {
+                return response()->json([
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'File logo tidak valid'
+                ], 400);
+            }
+            $filePath = FileUpload($logoFile, "logo/", "app-logo");
+            $setting = AppSetting::first();
+            $setting->foto = $filePath;
+            $setting->save();
+
+            return getResponseJson('success', 200, 'Logo saved successfully', $filePath, null);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return getResponseJson('error', 500, 'File gagal diupload', null, $th->getMessage());
+        }
+    }
+
+    public function updateIcon(Request $request)
+    {
+        $validasiData = Validator::make($request->all(), [
+            'icon' => ['required', 'type' => 'file', 'mimes:png,jpg'],
+        ]);
+
+        if ($validasiData->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 400,
+                'message' => 'Validasi gagal',
+                'errors' => $validasiData->errors()
+            ], 400);
+        }
+
+        $iconFile = request()->file('icon');
+
+        if (!$iconFile->isValid()) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 400,
+                'message' => 'File icon tidak valid'
+            ], 400);
+        }
+        $filePath = FileUpload($iconFile, "icon/", "app-icon");
+        $setting = AppSetting::first();
+        $setting->icon = $filePath;
+        $setting->save();
+        return response()->json([
+            'status' => 'success',
+            'code' => 200,
+            'message' => 'Icon berhasil diupdate',
+            'data' => $filePath // jika ada file icon, masukkan file_path ke field ini
+        ]);
+    }
+
+    public function publicJson() {
+        $query = AppSetting::first();
+        return getResponseJson('ok', 200, 'success', $query, false);
     }
 }

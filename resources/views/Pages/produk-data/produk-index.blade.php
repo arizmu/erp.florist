@@ -35,51 +35,60 @@
             <div class="mx-auto max-w-7xl shadow-lg p-8 relative bg-white rounded-md">
                 <div class="grid grid-cols-1 md:grid-cols-7 gap-4">
                     <div class="md:col-span-5">
-                        <h5 class="text-xl text-gray-600 font-semibold mb-5 flex justify-start gap-4 items-center">
-                            <span class="icon-[tabler--users] size-6 text-blue-600"></span>
-                            Product
+                        <h5 class="text-xl text-gray-600 mb-5 flex justify-start gap-4 items-center">
+                            <span class="icon-[fluent-mdl2--product-variant] size-6 text-orange-600"></span>
+                            <span class="font-muse">
+                                Product Data
+                            </span>
                         </h5>
                         <div
-                            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4 max-h-screen overflow-auto">
+                            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 py-4 max-h-screen overflow-auto rounded-lg">
                             <template x-for="item in productData">
-                                <div class="card shadow-lg">
-                                    <figure class="max-h-48">
+                                <div class="card shadow-lg" :title="item.product_name" :alt="item.product_name">
+                                    <figure class="min-h-44 max-h-44">
                                         <template x-if="item.img">
-                                            <img :src="item.img" alt="headphone" />
+                                            <img :src="item.img" alt="headphone" class="h-44 object-cover" />
                                         </template>
-                                        <span
-                                            class="icon-[material-symbols-light--image-search-outline-sharp] size-36"></span>
+                                        <span x-show="!item.img"
+                                            class="icon-[material-symbols-light--image-search-outline-sharp] size-36 h-44 object-cover"></span>
                                     </figure>
                                     <div class="card-body">
-                                        <h5 class="card-title text-orange-400 text-xl font-space"
-                                            style="margin-top: -10pt" x-text="item.product_name ?? '[null]'">
-                                            Product Name
+                                        <h5 class="card-title text-blue-400 text-xl" style="margin-top: -10pt">
+                                            <span class="capitalize mr-2"
+                                                x-text="item.product_name.substring(0, 25) ?? '[null]'"></span>...
                                         </h5>
-                                        <div class="py-3 flex flex-col gap-1 mb-2 text-xs">
-                                            <div class="flex gap-3 align-middle">
-                                                <span class="icon-[tabler--moneybag] size-4"></span>
-                                                <span class="font-semibold">Rp. <span
-                                                        x-text="formatRupiah(item.price)"></span></span>
+                                        <div class="py-3 flex flex-wrap gap-2 text-xs mt-2">
+                                            <div class="flex gap-2 align-middle badge badge-info badge-soft">
+                                                <span class="icon-[proicons--qr-code] size-4"></span>
+                                                <span class="font-semibold uppercase" x-text="item.code ?? [404]">
+                                                    
+                                                </span>
                                             </div>
-                                            <div class="flex gap-3 align-middle">
+                                            <div class="flex gap-2 align-middle badge badge-secondary badge-soft">
                                                 <span class="icon-[tabler--clipboard-check] size-4"></span>
                                                 <span class="font-semibold"><span x-text="item.qty ?? '0'"></span>
                                                     PCS</span>
                                             </div>
+                                            <div class="flex gap-2 align-middle badge badge-warning badge-soft">
+                                                <span class="icon-[tabler--moneybag] size-4"></span>
+                                                <span class="font-semibold">Rp. <span
+                                                        x-text="formatRupiah(item.price)"></span></span>
+                                            </div>
                                         </div>
-
+                                    </div>
+                                    <div class="card-footer">
                                         <div class="flex gap-2 md:justify-start justify-center flex-wrap">
-                                            <button x-on:click="openEdit(item)"
-                                                class="btn btn-primary btn-circle btn-soft" type="button">
-                                                <span class="icon-[tabler--edit] size-5"></span>
-                                            </button>
-
-                                            {{-- <button class="btn btn-info btn-circle btn-soft btn-sm">
-                                                <span class="size-5 icon-[tabler--eye-search]"></span>
-                                            </button> --}}
-
                                             {{-- <button
-                                                class="btn btn-error btn-sm rounded-full btn-soft">Re-Production</button> --}}
+                                                class="btn btn-primary btn-circle btn-soft shadow-md" type="button">
+                                                <span class="icon-[solar--eye-scan-outline] size-5"></span>
+                                            </button> --}}
+                                            <button x-on:click="openEdit(item)"
+                                                class="btn btn-secondary btn-circle btn-soft shadow-md" type="button">
+                                                <span class="icon-[line-md--upload-loop] size-6"></span>
+                                            </button>
+                                            <button class="btn btn-error btn-circle btn-soft shadow-md" type="button">
+                                                <span class="icon-[lucide--trash-2] size-5"></span>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -137,42 +146,47 @@
             tabindex="-1" data-overlay-keyboard="false">
             <div class="modal-dialog overlay-open:opacity-100">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="text-xl font-semibold text-gray-600">Product Details</h3>
-                        <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3"
-                            aria-label="Close" data-overlay="#modal-edit-product-data" id="model-close-layout">
-                            <span class="icon-[tabler--x] size-4"></span>
-                        </button>
-                    </div>
                     <form x-on:submit.prevent="store()" enctype="multipart/form-data">
                         <div class="modal-body flex flex-col gap-4">
-                            <div class="w-auto">
-                                <label class="label label-text" for=""> Bucket Name </label>
-                                <input type="text" x-model="xform.bucket" readonly class="input" />
+                            <div class="flex items-center">
+                                <h3 class="text-xl font-semibold text-gray-600">Details | File Upload</h3>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="flex flex-col gap-2 p-4 border-2 rounded-lg">
                                 <div class="w-auto">
-                                    <label class="label label-text" for=""> Quantity </label>
-                                    <input type="text" x-model="xform.qty" class="input" />
+                                    <label class="label label-text" for=""> Bucket Name </label>
+                                    <input type="text" x-model="xform.bucket" readonly class="input" />
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="w-auto">
+                                        <label class="label label-text" for=""> Quantity </label>
+                                        <input type="text" x-model="xform.qty" class="input" />
+                                    </div>
+                                    <div class="w-auto">
+                                        <label class="label label-text" for=""> Cost Production </label>
+                                        <input type="text" x-model="xform.cost_production" readonly
+                                            class="input" />
+                                    </div>
                                 </div>
                                 <div class="w-auto">
-                                    <label class="label label-text" for=""> Cost Production </label>
-                                    <input type="text" x-model="xform.cost_production" readonly class="input" />
+                                    <label class="label label-text" for=""> Price </label>
+                                    <input type="text" x-model="xform.price" class="input" />
                                 </div>
                             </div>
                             <div class="w-auto">
-                                <label class="label label-text" for=""> Price </label>
-                                <input type="text" x-model="xform.price" class="input" />
-                            </div>
-                            <div class="w-auto">
-                                <label class="label label-text" for=""> Foto Product </label>
+                                <label class="label label-text" for=""> Upload Foto </label>
                                 <input type="file" x-ref="file" @change="file_upload" class="input" />
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-soft btn-secondary"
-                                data-overlay="#modal-edit-product-data">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
+                            <button type="button" class="btn btn-soft btn-circle btn-error"
+                                data-overlay="#modal-edit-product-data" title="close" id="modal-file-upload-close">
+                                <span class="icon-[mdi--close-octagon-outline]"
+                                    style="width: 24px; height: 24px;"></span>
+                            </button>
+                            <button type="submit" class="btn btn-primary rounded-full btn-soft">
+                                <span class="icon-[proicons--save]" style="width: 24px; height: 24px;"></span>
+                                <span x-text="isStore ? 'Is Loading':'Updated'">Updated</span>
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -252,8 +266,10 @@
                         this.regis.file = this.file;
                     },
 
+                    isStore:false,
                     async store() {
                         try {
+                            this.isStore = true;
                             const data = this.xform;
                             console.log(this.xform);
                             const url = `/product/update-product-data/${this.xform.product_id}`;
@@ -264,8 +280,9 @@
                             })
                             this.loadJson();
                             notifier.success("Product updated successfully")
-                            this.resetForm();
-                            this.closeModal();
+                            this.isStore = false;
+                            const clsoe = document.getElementById('modal-file-upload-close');
+                            clsoe.click();
                         } catch (error) {
                             console.log(error);
                             notifier.error("Failed to update product");

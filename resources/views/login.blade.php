@@ -1,57 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Login Page | hello world</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=Lilita+One&family=MuseoModerno:ital,wght@0,100..900;1,100..900&family=Space+Grotesk:wght@300..700&display=swap"
-        rel="stylesheet">
-
-    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
-    <link rel="stylesheet" href="{{ asset('build/assets/app-BainYrTj.css') }}">
-    <script src="{{ asset('build/assets/app-BjL84nCd.js') }}"></script>
-
-    <style>
-        body::-webkit-scrollbar {
-            display: none;
-        }
-
-
-        .font-space {
-            font-family: "Space Grotesk", sans-serif;
-            font-optical-sizing: auto;
-            font-weight: '';
-            font-style: normal;
-        }
-
-        .font-fugaz {
-            font-family: "Fugaz One", sans-serif;
-            font-weight: 400;
-            font-style: normal;
-        }
-
-        .font-lilita {
-            font-family: "Lilita One", sans-serif;
-            font-weight: 400;
-            font-style: normal;
-        }
-
-        .font-muse {
-            font-family: "MuseoModerno", sans-serif;
-            font-optical-sizing: auto;
-            font-weight: var(--fw, 400);
-            /* font-weight: 500; */
-            font-style: normal;
-        }
-    </style>
-</head>
-
-<body>
+<x-master-layout>
+    @push('css')
+    @endpush
     <div class="font-[sans-serif] bg-white flex items-center justify-center md:h-screen p-4">
         <div class="shadow-[0_2px_16px_-3px_rgba(6,81,237,0.3)] max-w-6xl max-md:max-w-lg rounded-md p-6">
             {{-- <a href="javascript:void(0)"><img
@@ -141,7 +90,8 @@
                                 </label>
                             </div>
                             <div>
-                                <a href="jajvascript:void(0);" class="text-blue-600 font-semibold text-sm hover:underline">
+                                <a href="jajvascript:void(0);"
+                                    class="text-blue-600 font-semibold text-sm hover:underline">
                                     Forgot Password?
                                 </a>
                             </div>
@@ -149,7 +99,8 @@
 
                         <div class="mt-12">
                             <button type="submit"
-                                class="w-full btn btn-outline btn-gradient btn-primary shadow font-muse" style="--fw:500">
+                                class="w-full btn btn-outline btn-gradient btn-primary shadow font-muse"
+                                style="--fw:500">
                                 Sign in
                             </button>
 
@@ -163,6 +114,4 @@
             </div>
         </div>
     </div>
-</body>
-
-</html>
+</x-master-layout>

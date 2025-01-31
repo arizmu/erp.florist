@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductionBarangDetail extends Model
 {
-    protected $fillable = ['production_id', 'barang_id', 'amount_item', 'cost_item', 'total_cost', 'status'];
+    protected $fillable = ['production_id', 'barang_id', 'amount_item', 'cost_item', 'total_cost', 'status', 'item_status', 'item_name'];
 
     /**
      * Get the production that owns the ProductionBarangDetail

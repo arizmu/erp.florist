@@ -38,8 +38,9 @@
                                             <div class="relative w-auto">
                                                 <input x-model="sForm.nama_barang" type="text" placeholder=""
                                                     class="input input-floating peer" id="" />
-                                                <label class="input-floating-label" for="">Category
-                                                    Name</label>
+                                                <label class="input-floating-label" for="">
+                                                    Nama Barang
+                                                </label>
                                             </div>
                                             <div class="relative w-auto">
                                                 <select x-model="sForm.satuan_id" class="select select-floating"
@@ -343,6 +344,7 @@
                                 text: "store data is failed.",
                                 icon: "error"
                             });
+                            this.isAction = false;
                         }
 
                     },

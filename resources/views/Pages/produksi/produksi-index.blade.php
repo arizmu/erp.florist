@@ -99,29 +99,39 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Bucket</th>
                                     <th>Kode</th>
-                                    <th>Status</th>
+                                    <th>Bucket</th>
+                                    <th>Nilai BB</th>
                                     <th>Biaya Produksi</th>
+                                    <th>Nilai Jual</th>
                                     <th>Tanggal</th>
+                                    <th>Crafter</th>
+                                    <th>Status</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <template x-for="item in data">
-                                    <tr>
-                                        <td x-text="item.production_title"></td>
+                                    <tr class="item-start">
                                         <td x-text="item.code_production"></td>
+                                        <td class="" style="width: 250pt">
+                                            <span x-text="item.production_title" class="text-nowrap font-semibold w-52"></span>
+                                        </td>
+                                        <td>Rp. <span x-text="formatRupiah(item.cost_items)"></span></td>
+                                        <td>Rp. <span x-text="formatRupiah(item.production_cost) ?? 00"></span></td>
+                                        <td>Rp. <span x-text="formatRupiah(item.price_for_sale)"
+                                                class="font-semibold"></span></td>
+                                        <td class="text-nowrap" x-text="formatTanggalNoTime(item.created_at)"></td>
+                                        <td>
+                                            <span x-text="item.crafter.pegawai_name"></span>
+                                        </td>
                                         <td>
                                             <span class="badge badge-soft badge-warning text-xs"
                                                 x-show="!item.production_status">PRODUCTION</span>
                                             <span class="badge badge-soft badge-success text-xs"
                                                 x-show="item.production_status">COMPLATE</span>
                                         </td>
-                                        <td>Rp. <span x-text="formatRupiah(item.production_cost) ?? 00"></span></td>
-                                        <td class="text-nowrap" x-text="formatTanggalNoTime(item.created_at)">March 1,
-                                            2024</td>
-                                        <td class="flex flex-wrap gap-2">
+                                        <td class="flex gap-1">
                                             <button title="mutasi to product" type="button"
                                                 x-on:click="toDistribusi(item.id)"
                                                 class="btn btn-circle btn-info btn-soft" aria-label="Action button"
@@ -134,10 +144,15 @@
                                                 <span class="icon-[tabler--checks] size-5"></span>
                                             </button>
 
-                                            <button class="btn btn-circle btn-soft btn-primary" title="lihat bahan baku"
-                                                type="button" @click="detailFunc(item)">
-                                                <span class="icon-[solar--eye-broken]"
-                                                    style="width: 24px; height: 24px;"></span>
+                                            <button class="btn btn-circle btn-soft btn-primary"
+                                                title="lihat bahan baku" type="button" @click="detailFunc(item)">
+                                                <span class="icon-[solar--eye-broken] size-5"></span>
+                                            </button>
+
+                                            <button @click="deleteProduct(item.id)"
+                                                class="btn btn-circle btn-soft btn-error" title="Is deleted"
+                                                type="button">
+                                                <span class="icon-[lucide--trash-2] size-5"></span>
                                             </button>
                                         </td>
                                     </tr>
@@ -353,6 +368,17 @@
                                         });
                                     })
                                     .catch(error => {
+                                        const res = error.response.data
+                                        console.log(res);
+                                        if (error.status === 405) {
+                                            Swal.fire({
+                                                title: res.status,
+                                                text: res.message,
+                                                icon: "info"
+                                            });
+                                            return;
+                                        }
+                                        
                                         Swal.fire({
                                             title: "Error!",
                                             text: "Distribusi gagal diproses.",
@@ -362,20 +388,72 @@
                             }
                         });
                     },
-
                     details: [],
                     detailFunc(item) {
                         const openModal = document.getElementById("open-modal-detail");
                         axios.get(`/produksi/get-production-detail/${item.id}`)
                             .then((res) => {
                                 const data = res.data.data;
+                                console.log(data);
+                                
                                 this.details = data;
                                 openModal.click();
                             }).catch((err) => {
                                 console.log(err)
                             })
                     },
+                    deleteProduct(key) {
+                        Swal.fire({
+                            title: "Konfirmasi",
+                            text: "Apakah anda yakin ingin menghapus produk ini?",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Hapus",
+                            cancelButtonText: "Batal"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Processing...',
+                                    html: 'Mohon tunggu sebentar',
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading()
+                                    }
+                                });
+                                axios.post(`/produksi/delete/${key}`, {
+                                        id: key
+                                    })
+                                    .then(response => {
+                                        Swal.fire({
+                                            title: "Berhasil!",
+                                            text: "Data produk berhasil dihapus.",
+                                            icon: "success"
+                                        });
+                                        this.getData()
+                                    })
+                                    .catch(error => {
+                                        const message = error.response.data.message;
+                                        if (error.status === 400) {
+                                            Swal.fire({
+                                                title: "Invalid",
+                                                text: message,
+                                                icon: "warning"
+                                            });
+                                            return;
+                                        }
 
+                                        Swal.fire({
+                                            title: "Error!",
+                                            text: "Terjadi kesalahan saat menghapus data.",
+                                            icon: "error"
+                                        });
+                                    });
+                            }
+                        });
+                    },
                     init() {
                         this.getData()
                     }

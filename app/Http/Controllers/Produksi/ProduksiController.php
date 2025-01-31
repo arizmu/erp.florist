@@ -13,6 +13,7 @@ use App\Models\production\ProductionOtherDetail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class ProduksiController extends Controller
 {
@@ -53,6 +54,23 @@ class ProduksiController extends Controller
 
     public function store(Request $request)
     {
+        $validasi = Validator::make($request->all(), [
+            'item.*' => ['required'],
+            'detail.title_product' => ['required'],
+            'detail.estimasi' => ['required'],
+            'detail.crafter' => ['required'],
+            'detail.jasa' => ['required'],
+            'detail.amount_items' => ['required'],
+            'detail.production_cost' => ['required'],
+            'detail.price_to_sale' => ['required'],
+            'amount_items' => ['required'],
+            'price' => ['required'],
+            'jasa' => ['required'],
+        ]);
+        if ($validasi->fails()) {
+            return getResponseJson('errors', 400, 'bad request', $request->all(), $validasi->errors());
+        }
+
         DB::beginTransaction();
         try {
             $production = $request->detail;
@@ -67,29 +85,25 @@ class ProduksiController extends Controller
                 'production_end' => $tanggalEnd->format('Y-m-d'),
                 'production_status' => false,
                 'production_cost' => filter_var($request['biaya_produksi'], FILTER_SANITIZE_NUMBER_INT),
-                'pegawai_id' => $production['crafter']
+                'pegawai_id' => $production['crafter'],
+                'price_for_sale' => intval($request['detail']['price_to_sale']),
+                'amount_items' => 1,
+                'cost_items' => intval($request['detail']['amount_items'])
             ]);
 
             foreach ($request->items as $value) {
+                ProductionBarangDetail::create([
+                    'production_id' => $productionQuery->id,
+                    'item_status' => $value['status'],
+                    'barang_id' => $value['status'] ? null : $value['id'],
+                    'amount_item' => $value['qty'],
+                    'cost_item' => $value['price'],
+                    'total_cost' => $value['total_price'],
+                    'item_name' => $value['item'],
+                    'status' => false
+                ]);
                 if (!$value['status']) {
-                    ProductionBarangDetail::create([
-                        'production_id' => $productionQuery->id,
-                        'barang_id' => $value['id'],
-                        'amount_item' => $value['qty'],
-                        'cost_item' => $value['price'],
-                        'total_cost' => $value['total_price'],
-                        'status' => false
-                    ]);
-                } else {
-                    ProductionOtherDetail::create([
-                        'production_id' => $productionQuery->id,
-                        'id' => $value['id'],
-                        'item_name' => $value['item'],
-                        'qty' => $value['qty'],
-                        'cost' => $value['price'],
-                        'total_cost' => $value['total_price'],
-                        'comment' => $value['comment']
-                    ]);
+                    Barang::where('id', $value['id'])->decrement('stock', $value['qty']);
                 }
             }
 
@@ -136,7 +150,7 @@ class ProduksiController extends Controller
 
     public function productionJson()
     {
-        $query = Production::query()->latest();
+        $query = Production::query()->with(['crafter'])->latest()->where('delete_status', false);
         return response()->json([
             'status' => 'ok',
             'code' => 200,
@@ -178,17 +192,20 @@ class ProduksiController extends Controller
         DB::beginTransaction();
         try {
             $productionQuery = Production::find($key);
+            if ($productionQuery->distribution_status) {
+                return getResponseJson('Opps', 405, "Product sudah selesai distribusi", $productionQuery, false);
+            }
+
             $jeniQuery = JenisProduct::first();
-            $nilaiProduction = $productionQuery->production_cost;
-            
             Product::create([
+                'code' => $productionQuery->code_production,
                 'product_name' => $productionQuery->production_title,
                 'comment' => 'form production',
                 'qty' => 1,
                 'cost_production' => $productionQuery->production_cost,
                 'jenis_product_id' => $jeniQuery->id,
                 'ref_production_id' => $productionQuery->id,
-                'price' => $nilaiProduction + ($nilaiProduction * 35 / 100)
+                'price' => $productionQuery->price_for_sale
             ]);
             $productionQuery->update(['distribution_status' => true]);
 
@@ -215,35 +232,55 @@ class ProduksiController extends Controller
         $materialDetails = [];
         foreach ($queryMaterial as $value) {
             $materialDetails[] = [
-                'nama' => $value->barang->nama_barang,
+                'nama' => $value->item_name,
                 'harga' => $value->cost_item,
                 'jumlah' => $value->amount_item,
                 'total' => $value->total_cost,
-                'status' => false
+                'status' => $value->item_status
             ];
         }
-
-        $queryOther = ProductionOtherDetail::where('production_id', $keyId)->get();
-        $otherDetails = [];
-        foreach ($queryOther as $value) {
-            $otherDetails[] = [
-                'nama' => $value->item_name,
-                'harga' => $value->cost,
-                'jumlah' => $value->qty,
-                'total' => $value->total_cost,
-                'status' => true
-            ];
-        }
-        $mergedDetails = array_merge($materialDetails, $otherDetails);
+        $mergedDetails = array_merge($materialDetails);
         return getResponseJson('ok', 200, 'Data detail bahan baku', $mergedDetails, false);
     }
 
-    public function registreProduct(Request $request)
+    public function delete($key)
     {
+        DB::beginTransaction();
         try {
-            return getResponseJson('ok', 200, 'Produk berhasil ditambahkan', "", false);
+            $production = Production::find($key);
+            if (!$production) {
+                return getResponseJson('errors', 404, 'Data produksi tidak ditemukan', "", false);
+            }
+            if ($production->production_status !== 0 && $production->production_status !== false) {
+                return getResponseJson(
+                    'errors',
+                    400,
+                    'Hanya data dengan status produksi belum selesai yang bisa dihapus',
+                    "",
+                    false
+                );
+            }
+            $production->update([
+                'delete_status' => true,
+                'deleted_at' => Carbon::now()
+            ]);
+            ProductionBarangDetail::where('production_id', $production->id)
+                ->where('item_status', false)
+                ->each(function ($detail) {
+                    Barang::where('id', $detail->barang_id)
+                        ->increment('stock', $detail->amount_item);
+                });
+            DB::commit();
+            return getResponseJson('ok', 200, 'Produk berhasil dihapus', "", false);
         } catch (\Throwable $th) {
-            //throw $th;
+            DB::rollBack();
+            return getResponseJson(
+                'errors',
+                500,
+                'Terdapat kesalahan internal',
+                "",
+                $th->getMessage()
+            );
         }
     }
 }
