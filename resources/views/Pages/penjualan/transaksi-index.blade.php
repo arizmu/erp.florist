@@ -92,7 +92,7 @@
                             <div class="grid gap-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-6">
                                 <div class="col-span-1 md:col-span-2 lg:col-span-6">
                                     <input name="pencarian" type="text" placeholder="ketik untuk mencari ..."
-                                        class="input-lg input" value="{{old("pencarian")}}" />
+                                        class="input-lg input" value="{{ old('pencarian') }}" />
                                 </div>
                                 <div class="col-span-1 md:col-span-1 lg:col-span-3">
                                     <input name="estimasi" type="text" class="input" value="{{ old('estimasi') }}"
@@ -102,9 +102,12 @@
                                     <select name="status_transaction" class="select appearance-none"
                                         aria-label="select">
                                         <option>All</option>
-                                        <option value="d" {{ old("status_transaction") == "d" ? 'selected' : '' }}>Draft</option>
-                                        <option value="s" {{ old("status_transaction") == "s" ? 'selected' : '' }}>Paid</option>
-                                        <option value="p" {{ old("status_transaction") == "p" ? 'selected' : '' }}>Unpaid</option>
+                                        <option value="d" {{ old('status_transaction') == 'd' ? 'selected' : '' }}>
+                                            Draft</option>
+                                        <option value="s" {{ old('status_transaction') == 's' ? 'selected' : '' }}>
+                                            Paid</option>
+                                        <option value="p" {{ old('status_transaction') == 'p' ? 'selected' : '' }}>
+                                            Unpaid</option>
                                     </select>
                                 </div>
                                 <div class="col-span-1 md:col-span-2 lg:col-span-1">
@@ -120,7 +123,7 @@
         </div>
     </div>
 
-    <div class="py-4">
+    <div class="py-4" x-data="transaction">
         <div class="card">
             <div class="card-body">
                 <div class="border-base-content/25 w-full rounded-lg border">
@@ -189,7 +192,8 @@
                                                 <span class="icon-[lets-icons--view-alt-light]"></span>
                                             </a>
                                             @if ($item->status_transaction == 'd')
-                                                <button class="btn btn-soft btn-circle btn-error">
+                                                <button class="btn btn-soft btn-circle btn-error"
+                                                    x-on:click="deleteTransaction({{ $item }})">
                                                     <span class="icon-[tabler--trash]"></span>
                                                 </button>
                                             @endif
@@ -202,15 +206,25 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        @push('js')
-            <script>
-                window.addEventListener('load', function() {
-                    // Range Date Picker
-                    flatpickr('#flatpickr-range', {
-                        mode: 'range'
-                    })
+    @push('js')
+        <script>
+            window.addEventListener('load', function() {
+                // Range Date Picker
+                flatpickr('#flatpickr-range', {
+                    mode: 'range'
                 })
-            </script>
-        @endpush
+            })
+
+            function transaction() {
+                return {
+                    deleteTransaction(params) {
+                        
+
+                    }
+                }
+            }
+        </script>
+    @endpush
 </x-base-layout>

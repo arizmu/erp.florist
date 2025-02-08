@@ -1,4 +1,4 @@
-<x-base-layout>
+<x-base-layout style="bg-gray-200">
     <div class="breadcrumbs">
         <ol>
             <li>
@@ -48,7 +48,7 @@
             <div
                 class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2 p-2 py-6 max-h-screen overflow-y-scroll [&::-webkit-scrollbar]:w-2  [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300  dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
                 <template x-for="item in dataTable">
-                    <div class="card shadow-md rounded-3xl">
+                    <div class="card shadow-md rounded-3xl bg-slate-50">
                         <figure class="max-h-52">
                             <template x-if="item.img">
                                 <img :src="item.img" class="object-cover h-40 md:h-52" alt="headphone" />
@@ -57,31 +57,47 @@
                                 class="icon-[fxemoji--whiteflower] size-36 h-40 md:h-52 object-cover"></span>
                         </figure>
                         <div class="card-body">
-                            <h5 class="card-title text-orange-400 text-lg font-space" style="margin-top: -10pt"
-                                x-text="shortText(item.product_name, 25) ?? '[404]'" :title="item.product_name">
-                                Product Name
+                            <h5 class="card-title text-lg font-space" style="margin-top: -10pt"
+                                :title="item.product_name">
+                                <span x-text="shortText(item.product_name, 25) ?? '[404]'" class="capitalize">Nama
+                                    Product</span>
                             </h5>
-                            <div class="py-3 flex flex-col gap-1">
-                                <div class="flex gap-3 align-middle items-center">
-                                    <span class="icon-[streamline--qr-code-solid]"></span>
-                                    <span class="font-semibold text-sm">Rp. <span x-text="item.price"></span></span>
+                            <div class="p-2 border rounded-lg -mb-2 mt-2 shadow">
+                                <div class="flex justify-between flex-wrap  gap-2 mb-2">
+                                    <div
+                                        class="flex gap-2 align-middle items-center badge badge-warning badge-soft badge-md">
+                                        <span class="icon-[hugeicons--money-bag-02] size-3"></span>
+                                        <span class="font-semibold">
+                                            Rp.
+                                            <span x-text="formatRupiah(item.price)"></span>
+                                        </span>
+                                    </div>
+                                    <div
+                                        class="flex gap-3 align-middle items-center badge badge-soft badge-info badge-md">
+                                        <span class="icon-[hugeicons--discount-01]"></span>
+                                        <span class="font-semibold capitalize">
+                                            <span x-text="item.qty"></span>
+                                            pcs
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="flex gap-3 align-middle items-center">
-                                    <span class="icon-[mingcute--refund-dollar-line]"></span>
-                                    <span class="font-semibold text-sm">Rp. <span x-text="item.price"></span></span>
-                                </div>
-                                <div class="flex gap-3 align-middle items-center">
-                                    <span class="icon-[hugeicons--discount-01]"></span>
-                                    <span class="font-semibold text-sm"><span x-text="item.qty"></span> PCS</span>
+
+                                <div
+                                    class="flex gap-2 align-middle items-center badge badge-soft badge-secondray badge-sm">
+                                    <span class="icon-[streamline--qr-code-solid] size-3"></span>
+                                    <span class="font-semibold text-xs" x-text="item.code">
+                                        Code Product
+                                    </span>
                                 </div>
                             </div>
                         </div>
                         <div class="card-footer">
-                            <button type="button" x-on:click="addItem(item)"
-                                class="btn btn-primary rounded-full btn-soft">
-                                <span class="icon-[tabler--shopping-bag-plus] size-5"></span>
-                                Add chart
-                            </button>
+                            <div class="flex justify-between flex-wrap gap-2">
+                                <button class="btn btn-soft btn-sm rounded-full shadow btn-primary min-w-28"
+                                    x-on:click="addItem(item)">Add Item</button>
+                                <button class="btn btn-soft btn-sm rounded-full shadow btn-error min-w-28"
+                                    x-on:click="openCostumeModal(item)">Costume</button>
+                            </div>
                         </div>
                     </div>
                 </template>
@@ -177,36 +193,175 @@
             </div>
         </div>
 
+        <div for="modal costumer">
+            <button type="button" class="btn btn-primary hidden" aria-haspopup="dialog" aria-expanded="false"
+                aria-controls="modal-costume-product" data-overlay="#modal-costume-product"
+                id="open-modal-costume-product">
+                Btn open modal costume product
+            </button>
+            <div id="modal-costume-product" class="overlay modal overlay-open:opacity-100 hidden" role="dialog"
+                tabindex="-1">
+                <div class="modal-dialog overlay-open:opacity-100 modal-dialog-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="flex gap-3 items-center">
+                                <span class="icon-[ant-design--product-outlined] size-6"></span>
+                                <span class="font-semibold text-lg">Costume Proudct</span>
+                            </h3>
+                            <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3"
+                                aria-label="Close" data-overlay="#modal-costume-product"
+                                id="close-modal-costume-product">
+                                <span class="icon-[tabler--x] size-4"></span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="flex gap-8 justify-between items-start border rounded-lg mb-4 p-4">
+                                <div class="flex flex-col gap-3 w-96">
+                                    <div class="flex gap-1 flex-col">
+                                        <span class="text-xs text-gray-400">Product</span>
+                                        <span class="font-semibold capitalize" x-text="costumeForm.product_name">
+                                            Nama Product
+                                        </span>
+                                    </div>
+                                    <div class="flex gap-1 flex-col">
+                                        <span class="text-xs text-gray-400">QTY</span>
+                                        <span class="text-semibold" x-text="costumeForm.product_qty">
+                                            1 Pcs
+                                        </span>
+                                    </div>
+                                    <div class="flex gap-1 flex-col">
+                                        <span class="text-xs text-gray-400">price</span>
+                                        <span class="font-bold text-xl">
+                                            <span class="text-orange-500 font-space">
+                                                Rp. <i x-text="costumeForm.price_rupiah_view"></i>
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-500 max-w-52 rounded-xl">
+                                    <img src="https://ik.imagekit.io/tvlk/blog/2024/08/shutterstock_2373316383.jpg"
+                                        alt="" class="object-cover rounded-lg">
+                                </div>
+                            </div>
+                            <div class="h-72 max-h-96">
+                                <div class="py-2">
+                                    <nav class="tabs overflow-x-auto space-x-1 rtl:space-x-reverse p-1"
+                                        aria-label="Tabs" role="tablist" aria-orientation="horizontal">
+                                        <button type="button"
+                                            class="btn btn-text active-tab:bg-primary active-tab:text-white hover:text-primary active hover:bg-primary/20"
+                                            id="tabs-pill-icon-item-1" data-tab="#tabs-pill-icon-1"
+                                            aria-controls="tabs-pill-icon-1" role="tab" aria-selected="false">
+                                            <span class="icon-[carbon--product] size-5 flex-shrink-0"></span>
+                                            <span class="hidden sm:inline">Material</span>
+                                        </button>
+                                        <button type="button"
+                                            class="btn btn-text active-tab:bg-primary active-tab:text-white hover:text-primary hover:bg-primary/20"
+                                            id="tabs-pill-icon-item-2" data-tab="#tabs-pill-icon-2"
+                                            aria-controls="tabs-pill-icon-2" role="tab" aria-selected="false">
+                                            <span class="icon-[ph--paper-plane-tilt-bold] size-5 flex-shrink-0"></span>
+                                            <span class="hidden sm:inline">Lainnya</span>
+                                        </button>
+                                    </nav>
 
-        <button type="button" class="btn btn-primary hidden" aria-haspopup="dialog" aria-expanded="false"
-            aria-controls="modal-static-proses-bayar" data-overlay="#modal-static-proses-bayar"
-            id="open-modal-pembayaran">open-mdoal-proses-bayar</button>
-
-        <div id="modal-static-proses-bayar"
-            class="overlay modal overlay-open:opacity-100 hidden [--overlay-backdrop:static]" role="dialog"
-            tabindex="-1" data-overlay-keyboard="false">
-            <div class="modal-dialog overlay-open:opacity-100">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">Dialog Title</h3>
-                        <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3"
-                            aria-label="Close" data-overlay="#modal-static-proses-bayar">
-                            <span class="icon-[tabler--x] size-4"></span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        This is some placeholder content to show the scrolling behavior for modals. Instead of repeating
-                        the text in the
-                        modal, we use an inline style to set a minimum height, thereby extending the length of the
-                        overall modal and
-                        demonstrating the overflow scrolling. When content becomes longer than the height of the
-                        viewport, scrolling
-                        will move the modal as needed.
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-soft btn-secondary"
-                            data-overlay="#modal-static-proses-bayar">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                                    <div class="mt-3">
+                                        <div id="tabs-pill-icon-1" role="tabpanel"
+                                            aria-labelledby="tabs-pill-icon-item-1">
+                                            <div class="p-4 rounded-lg border  flex gap-4 flex-wrap items-end">
+                                                <div class="flex flex-col gap-3">
+                                                    <label for="">Bahan baku</label>
+                                                    <div class="w-72 max-w-72">
+                                                        <select
+                                                            data-select='{
+                                                                "hasSearch": true,
+                                                                "searchLimit": 5,
+                                                                "placeholder": "Select your sign",
+                                                                "toggleTag": "<button type=\"button\" aria-expanded=\"false\"></button>",
+                                                                "toggleClasses": "advance-select-toggle",
+                                                                "dropdownClasses": "advance-select-menu max-h-52 pt-0 vertical-scrollbar rounded-scrollbar",
+                                                                "optionClasses": "advance-select-option selected:active",
+                                                                "optionTemplate": "<div class=\"flex justify-between items-center w-full\"><span data-title></span><span class=\"icon-[tabler--check] flex-shrink-0 size-4 text-primary hidden selected:block \"></span></div>",
+                                                                "extraMarkup": "<span class=\"icon-[tabler--caret-up-down] flex-shrink-0 size-4 text-base-content absolute top-1/2 end-3 -translate-y-1/2 \"></span>"
+                                                            }'
+                                                            class="hidden">
+                                                            <option value="">Choose</option>
+                                                            <option value="aries">Aries</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="flex gap-3 flex-col">
+                                                    <label for="">Qty</label>
+                                                    <div class="max-w-32">
+                                                        <input type="text" class="input">
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <button class="btn btn-circle btn-soft btn-error">
+                                                        <span class="icon-[material-symbols--add-task-rounded]"
+                                                            style="width: 24px; height: 24px;"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="tabs-pill-icon-2" class="hidden" role="tabpanel"
+                                            aria-labelledby="tabs-pill-icon-item-2">
+                                            <div class="p-4 rounded-lg border  flex gap-4 flex-wrap items-end">
+                                                <div class="min-w-72 flex flex-col gap-2">
+                                                    <label for="">Item name</label>
+                                                    <input type="text" class="input">
+                                                </div>
+                                                <div class="max-w-52 flex flex-col gap-2">
+                                                    <label for="">Cost</label>
+                                                    <input type="text" class="input">
+                                                </div>
+                                                <div class="max-w-24 flex flex-col gap-2">
+                                                    <label for="">Qty</label>
+                                                    <input type="text" class="input">
+                                                </div>
+                                                <div class="w-auto flex flex-col gap-2">
+                                                    <button class="btn btn-circle btn-soft btn-error">
+                                                        <span class="icon-[material-symbols--add-task-rounded]"
+                                                            style="width: 24px; height: 24px;"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="py-4">
+                                    <div class="border-base-content/25 w-full rounded-lg border">
+                                        <div class="overflow-x-auto">
+                                            <table class="table table-sm rounded">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Bahan baku</th>
+                                                        <th>Qty</th>
+                                                        <th>Total</th>
+                                                        <th>#</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>
+                                                            <button class="btn btn-circle btn-sm btn-soft btn-error">
+                                                                <span class="icon-[uil--trash-alt] siz"></span>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-soft btn-secondary"
+                                data-overlay="#modal-costume-product">Close</button>
+                            <button type="button" class="btn btn-primary">Add Product</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -245,6 +400,15 @@
                         }).then(async (result) => {
                             if (result.isConfirmed) {
                                 this.isLoadTrasaction = true;
+                                Swal.fire({
+                                    title: "Is loading...",
+                                    text: "Silakan tunggu, transaksi sedang diproses...",
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                });
+
                                 try {
                                     const url = '/transaksi/on-proses';
                                     const data = {
@@ -273,13 +437,29 @@
                                     });
                                 } catch (error) {
                                     this.isLoadTrasaction = false;
+                                    Swal.close()
+                                    const response = error.response.data;
                                     console.log(error);
+
+                                    if (error.status === 422) {
+                                        Swal.fire({
+                                            title: "Invalid!",
+                                            html: `<span class="capitalize text-wrap max-w-42">${response.message}</span>`,
+                                            icon: "warning"
+                                        })
+                                    } else {
+                                        Swal.fire({
+                                            title: "Error!",
+                                            text: "Terjadi kesalahan dalam proses transaksi",
+                                            icon: "error"
+                                        })
+                                    }
+
                                 }
 
 
                             }
                         });
-
 
                     },
 
@@ -292,11 +472,9 @@
                             'product_name': index.product_name ?? '[404]',
                             'product_qty': 1,
                             'product_price': index.price,
-                            'total_price': index.qty * index.price,
+                            'total_price': index.price * 1,
                             'product_costume': false,
                             'product_costume_details': [],
-                            'product_re_production': false,
-                            'product_re_produdction_detail': [],
                             'img_url': index.img
                         }
                         const findItems = this.items.find(arraydata => arraydata.product_id === data.product_id);
@@ -311,17 +489,20 @@
                         }
                         this.funcSubtotal();
                     },
+
                     removeItem(indexKey) {
                         const arrayFilter = this.items.filter(item => item.product_id !== indexKey);
                         this.items = arrayFilter;
                         this.funcSubtotal()
                     },
+
                     addQty(key) {
                         const data = this.items.find(index => index.product_id === key);
                         data['product_qty']++;
                         data['total_price'] = data['product_qty'] * data['product_price'];
                         this.funcSubtotal()
                     },
+
                     reduceQty(key) {
                         const data = this.items.find(index => index.product_id === key);
                         if (data['product_qty'] <= 1) {
@@ -332,6 +513,7 @@
                         data['total_price'] = data['product_qty'] * data['product_price'];
                         this.funcSubtotal()
                     },
+
                     funcSubtotal() {
                         let subtotalBelanja = 0;
                         this.items.forEach(element => {
@@ -359,6 +541,42 @@
 
                     shortText(value, length) {
                         return `${value.substring(0, length)}  ...`;
+                    },
+
+                    closeCostumeModal() {
+                        const btn = document.getElementById("close-modal-costume-product")
+                        btn.click()
+                    },
+
+                    costumeForm: {
+                        product_id: "",
+                        product_name: "",
+                        product_qty: 1,
+                        product_price: 0,
+                        total_price: 0,
+                        product_costume: true,
+                        product_costume_details: this.costumeItem,
+                        img_url: "",
+                        nilaiRupiah: 0,
+                    },
+                    costumeItem: [],
+                    openCostumeModal(indexResult) {
+                        const btn = document.getElementById(`open-modal-costume-product`);
+                        btn.click();
+                        const data = indexResult;
+                        this.costumeForm = {
+                            product_id: data.id,
+                            product_name: data.product_name,
+                            product_qty: 1,
+                            product_price: data.price,
+                            total_price: data.price * 1,
+                            product_costume: true,
+                            product_costume_details: this.costumeItem,
+                            img_url: data.img,
+                            price_rupiah_view: formatRupiah(data.price)
+                        };
+                        console.log(this.costumeForm);
+
                     },
 
                     init() {

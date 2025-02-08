@@ -1,81 +1,162 @@
-<!DOCTYPE html>
-<html lang="id">
+<x-master-layout>
+    @push('css')
+        <style>
+            /* Mengatur ukuran kertas saat dicetak */
+            @media print {
+                @page {
+                    size: 57mm auto;
+                    /* Lebar 57mm, panjang menyesuaikan isi */
+                    margin: 0;
+                    /* Menghilangkan margin */
+                }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nota Pembayaran</title>
+                footer {
+                    display: none !important;
+                }
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=Lilita+One&family=MuseoModerno:ital,wght@0,100..900;1,100..900&family=Space+Grotesk:wght@300..700&display=swap"
-        rel="stylesheet">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>
-        .font-space {
-            font-family: "Space Grotesk", sans-serif;
-            font-optical-sizing: auto;
-            font-weight: '';
-            font-style: normal;
-        }
+                header {
+                    display: none!important;
+                }
 
-        body {
-            width: 80mm;
-            margin: 0 auto;
-        }
-    </style>
-</head>
+                body {
+                    font-family: Arial, sans-serif;
+                    font-size: 12px;
+                    width: 57mm;
+                    margin: 0;
+                    padding: 0px;
+                }
 
-<body class="p-4 font-space w-auto flex flex-col" onload="print()">
-    <div for="header" class="flex flex-col gap-1 border-b pb-2 text-center">
-        <h3 class="text-lg font-semibold">Niara Gift</h3>
-        <div class="flex flex-col gap-0 text-xs">
-            <span>Jl. Baji Gau Makassar</span>
-            <span>Telpon : 08... | Email : niaragift@gmail.com</span>
+                .nota {
+                    text-align: center;
+                    border-bottom: 1px dashed black;
+                    padding-bottom: 5px;
+                    margin-bottom: 5px;
+                }
+
+                .items {
+                    width: 100%;
+                    border-bottom: 1px dashed black;
+                    margin-bottom: 5px;
+                    padding-bottom: 5px;
+                }
+
+                .items td {
+                    padding: 3px;
+                }
+
+                .total {
+                    font-weight: bold;
+                    font-size: 13px;
+                }
+
+                /* Sembunyikan tombol cetak saat mencetak */
+                .print-btn {
+                    display: none;
+                }
+            }
+
+            /* Style untuk tampilan layar */
+            body {
+                font-family: Arial, sans-serif;
+                font-size: 12px;
+                width: 57mm;
+                margin: auto;
+                padding: 10px;
+                background: #f8f8f8;
+            }
+
+            .nota {
+                text-align: center;
+                border-bottom: 1px dashed black;
+                padding-bottom: 5px;
+                margin-bottom: 5px;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+
+                border-bottom: 1px dashed black;
+            }
+
+            .items td,
+            .total td {
+                padding: 3px;
+            }
+
+            .total {
+                font-weight: bold;
+            }
+
+            .footer {
+                text-align: center;
+                font-size: 11px;
+                margin-top: 5px;
+            }
+
+            .print-btn {
+                display: block;
+                width: 100%;
+                padding: 10px;
+                margin-top: 10px;
+                font-size: 14px;
+                background-color: #007bff;
+                color: white;
+                border: none;
+                cursor: pointer;
+            }
+
+            .print-btn:hover {
+                background-color: #0056b3;
+            }
+        </style>
+    @endpush
+
+    <section>
+        <div class="flex justify-center">
+            <img src="https://cdn.pixabay.com/photo/2016/04/20/21/17/png-1342113_1280.png" alt=""
+                class="max-w-20 object-cover">
         </div>
-    </div>
-    <div for="detail"></div>
-    <div for="details" class="flex flex-col gap-1 py-2">
-        <h4 class="font-semibold text-sm text-center">Details</h4>
-        <span class="text-center text-xs" style="margin-top: -6pt">-----------------</span>
-        <div class="flex flex-col gap-1 px-2">
+        <div class="nota mt-2">
+            <div class="flex gap-0 flex-col">
+                <span class="capitalize font-semibold" style="font-size: 16px">** Naira Gift **</span>
+                <span>- Craft & Flowrist -</span>
+            </div>
+            <p style="margin: 0;">Jl. Contoh No. 123, Kota</p>
+        </div>
+
+        <table class="items">
             @foreach ($data->details as $item)
-                <div class="flex justify-between items-end">
-                    <div class="flex flex-col gap-0 text-start">
-                        <span class="text-sm">{{ $item->item_name }}</span>
-                        <i class="text-xs">Rp. {{ $item->cost_item }} * {{ $item->amount_item }}</i>
-                    </div>
-                    <span class="text-xs">Rp. {{$item->total_cost}}</span>
-                </div>
+                <tr class="">
+                    <td>{{ $item->item_name }}</td>
+                    <td>{{ $item->amount_item }} x {{ $item->cost_item }}</td>
+                    <td>{{ $item->total_cost }}</td>
+                </tr>
             @endforeach
-        </div>
-    </div>
-    <div for="payment" class="flex flex-col gap-0 px-2 border-t py-2">
-        <div class="flex justify-end gap-6 font-semibold text-sm">
-            <span>Subtotal</span>
-            <span>Rp. {{$data->total_payment}}</span>
-        </div>
-        <div class="flex justify-end gap-6 font-semibold text-sm">
-            <span>Paid</span>
-            <span>Rp. {{$data->total_paid}}</span>
-        </div>
-        <div class="flex justify-end gap-6 font-semibold text-sm">
-            <span>Cash</span>
-            <span>Rp. {{$data->payment->first()->total_paid}}</span>
-        </div>
-        <div class="flex justify-end gap-6 font-semibold text-sm">
-            <span>Unpaid</span>
-            <span>Rp. {{$data->total_unpaid}}</span>
-        </div>
-    </div>
-    <span class="text-center">-----------</span>
-    <div for="header" class="flex flex-col gap-1 pb-2 text-center">
-        <div class="flex flex-col gap-0 text-xs">
-            <span class="font-semibold">Terimah kasih!</span>
-            <span>Admin : helloworld</span>
-        </div>
-    </div>
-</body>
+        </table>
 
-</html>
+        <table class="total">
+            <tr>
+                <td>Subtotal</td>
+                <td style="text-align: right">{{ $data->total_payment }}</td>
+            </tr>
+            <tr>
+                <td>Paid</td>
+                <td style="text-align: right">{{ $data->total_paid }}</td>
+            </tr>
+            <tr>
+                <td>Jumlah Bayar</td>
+                <td style="text-align: right">{{ $data->payment->first()->total_paid }}</td>
+            </tr>
+            <tr>
+                <td>Unpaid</td>
+                <td style="text-align: right">{{ $data->total_unpaid }}</td>
+            </tr>
+        </table>
+
+        <div class="footer flex gap-0 flex-col items-center align-middle">
+            <span class="text-center">Terima kasih telah berbelanja!</span>
+            {{-- <span>Hub : 078999</span> --}}
+        </div>
+    </section>
+</x-master-layout>

@@ -80,20 +80,20 @@
                             <div class="p-5 border rounded-lg mt-3 flex flex-col gap-2">
                                 <div class="relative">
                                     <input type="text" placeholder="Nama Costumer" class="input input-filled peer"
-                                        value="{{ $transaksi->costumer->name }}" id="nama_costumer" />
+                                        value="{{ $transaksi->costumer->name ?? "" }}" id="nama_costumer" />
                                     <label class="input-filled-label" for="nama_costumer">Costumer Name</label>
                                     <span class="input-filled-focused"></span>
                                 </div>
 
                                 <div class="relative">
-                                    <textarea class="textarea textarea-filled peer" placeholder="Alamat...">{{ $transaksi->costumer->alamat }}</textarea>
+                                    <textarea class="textarea textarea-filled peer" placeholder="Alamat...">{{ $transaksi->costumer->alamat ?? "" }}</textarea>
                                     <label class="textarea-filled-label" for="alamat_costumer">Alamat Costumers</label>
                                     <span class="textarea-filled-focused"></span>
                                 </div>
 
                                 <div class="relative">
                                     <input type="text" placeholder="08***" class="input input-filled peer"
-                                        value="{{ $transaksi->costumer->no_telp }}" />
+                                        value="{{ $transaksi->costumer->no_telp ?? "" }}" />
                                     <label class="input-filled-label" for="nama_costumer">Telpon</label>
                                     <span class="input-filled-focused"></span>
                                 </div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Models\Costumer;
 use App\Models\Pegawai;
+use App\Models\Product\JenisProduct;
 use App\Models\Product\Product;
 use App\Models\Production\Production;
 use App\Models\Production\ProductionBarangDetail;
@@ -47,6 +48,7 @@ class PreoderController extends Controller
 
     public function preOrderStore(Request $request)
     {
+        return $request->all();
         $validation = Validator::make($request->all(), [
             'items.*' => 'required',
             'production.title' => 'required',
@@ -128,6 +130,138 @@ class PreoderController extends Controller
 
             return getResponseJson('errors', 500, 'internal server error', $request->all(), ['error_id' => $errorId]);
         }
+    }
+
+    public function prosesOrdering(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            // fungsi cek costumer;
+            $costumerFunc = $this->costumer($request->costumer);
+            $costumerId = $costumerFunc['costumer_id'];
+            $pointStatus = $costumerFunc['point_status'];
+            $point = $costumerFunc['point'];
+
+            // fungsi crate proudotion barang
+            $tanggal = explode("to", $request['estimasi']);
+            $tanggalStart = Carbon::parse($tanggal[0]);
+            $tanggalEnd = count($tanggal) > 1 ? Carbon::parse($tanggal[1]) : $tanggalStart;
+            $production = $this->productionOrdering($request->product, $tanggalStart, $tanggalEnd);
+
+            // fungsi transaksi pereorder
+            $totalPrice = 0;
+            $detailTransaksi = [];
+            foreach ($production['product_data'] as $value) {
+                $detailTransaksi[] = [
+                    'order_status' => true,
+                    'production_id_or_product_id' => $value['id'],
+                    'item_name' => $value['name'], // nama item
+                    'amount_item' => 1, // jumlah item
+                    // 'amount_item' => $value['qty'], // jumlah item
+                    'cost_item' => $value['harga'], // harga per item
+                    'total_cost' => $value['total'], // total, jumlah item * harga per item
+                    'status' => false, // status
+                    // 'img' => , // image
+                ];
+                $totalPrice += $value['total'];
+            }
+
+            $transaksiData = Transaction::create([
+                'costumer_id' => $costumerId,
+                'code' => $this->genereateCodeTransaksi(),
+                'transaction_date' => Carbon::now()->format('Y-m-d'),
+                'total_payment' => $totalPrice,
+                'total_paid' => 0,
+                'total_unpaid' => $totalPrice,
+                'status_transaction' => 'd',
+                'preorder_status' => true
+            ]);
+
+            $queryTransaksi = Transaction::create($transaksiData);
+            $queryTransaksi->details()->createMany($detailTransaksi);
+
+            DB::commit();
+            return getResponseJson('success', 200, 'insert successfully!', [
+                'transaction_id' => $queryTransaksi->id,
+                'total_price' => $totalPrice,
+            ], false);
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            $errorId = Str::uuid()->toString();
+            Log::error([
+                'error_id' => $errorId,
+                'error_exception' => $th->getMessage(),
+                'error_line' => $th->getLine(),
+            ]);
+            return getResponseJson('errors', 500, 'internal server error', $request->all(), [
+                'error_id' => $errorId, 
+                'error_message' => $th->getMessage(),
+            ]);
+        }
+    }
+
+    public function productionOrdering($resultArray, $tanggalStart, $tanggalEnd)
+    {
+        $productData = [];
+        foreach ($resultArray as $product) {
+            $materials = [];
+            $totalPrice = 0;
+            foreach ($product['materials'] as $material) {
+                if (!$material['status']) {
+                    Barang::where('id', $material['item_code'])->decrement('stock', $material['item_qty']);
+                }
+
+                $materials[] = [
+                    'item_status' => $material['item_status'],
+                    'barang_id' => $material['item_status'] ? null : $material['item_code'],
+                    'amount_item' => $material['item_qty'],
+                    'cost_item' => $material['item_price'],
+                    'total_cost' => $material['item_total'],
+                    'item_name' => $material['item_name'],
+                    'status' => false
+                ];
+                $totalPrice += intval($material['item_total']);
+            }
+            $queryProduction = Production::create([
+                'code_production' => $this->codeProduksi(),
+                'production_title' => $product['title'],
+                'production_date' => Carbon::parse($tanggalStart)->format('Y-m-d'),
+                'production_start' => Carbon::parse($tanggalStart)->format('Y-m-d'),
+                'production_end' => Carbon::parse($tanggalEnd)->format('Y-m-d'),
+                'production_status' => false,
+                'pegawai_id' => $product['crafter'],
+                'amount_items' => $product['qty'],
+                'cost_items' => $product['cost_material'],
+                'production_cost' => $product['cost_production'],
+                'price_for_sale' => $product['total_cost'],
+            ]);
+            $queryProduction->detail()->createMany($materials);
+            // $jeniQuery = JenisProduct::first();
+            // $queryProduct = Product::create([
+            //     'code' => $queryProduction->code_production,
+            //     'product_name' => $queryProduction->production_title,
+            //     'comment' => 'Pre-ordering Form Production',
+            //     'qty' => 0,
+            //     'cost_production' => $queryProduction->production_cost,
+            //     'jenis_product_id' => $jeniQuery->id,
+            //     'ref_production_id' => $queryProduction->id,
+            //     'price' => $queryProduction->price_for_sale
+            // ]);
+
+            $productData[] = [
+                'id' => $queryProduction->id,
+                'code' => $queryProduction->code_production,
+                'name' => $queryProduction->production_title,
+                'qty' => $queryProduction->amount_items,
+                'harga' => $queryProduction->price_for_sale,
+                'total' => $queryProduction->amount_items * $queryProduction->price_for_sale
+            ];
+        }
+        return [
+            'product_data' => $productData,
+            'status' => 'success',
+        ];
     }
 
     public function findCostumer($key)
@@ -216,5 +350,35 @@ class PreoderController extends Controller
             'biaya_produksi' => $biayaMaterialProduksi,
             'produk_name' => $queryProduksi->production_title
         ];
+    }
+
+    public function codeProduksi()
+    {
+        $date = Carbon::now();
+        $year = $date->format('y');
+        $month = $date->format('m');
+        $latestCode = Production::where('code_production', 'like', $year . $month . '%')->latest()->first();
+        $increment = 1;
+        $code = "";
+        if ($latestCode) {
+            if (substr($latestCode->code_production, 0, 4) === "$year$month") {
+                $yearMonth = substr($latestCode->code_production, 0, 4);
+                $latestIncrement = (int)substr($latestCode->code_production, 4, 8);
+                $numberIncrement = $latestIncrement + 1;
+                $code = $yearMonth . str_pad($numberIncrement, 4, 0, STR_PAD_LEFT);
+            } else {
+                $code = $year . $month . str_pad($increment, 4, '0', STR_PAD_LEFT);
+            }
+        } else {
+            $code = $year . $month . str_pad($increment, 4, '0', STR_PAD_LEFT);
+        }
+        return $code;
+    }
+
+
+    public function genereateCodeTransaksi()
+    {
+        $code = 'TRX' . Carbon::now()->format('ym') . '-' . rand(000000, 999999);
+        return $code;
     }
 }

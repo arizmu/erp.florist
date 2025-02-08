@@ -25,7 +25,6 @@ class KasirController extends Controller
                 'unpaid' => 0
             ]
         ]);
-        // ->withInput(request()->all() ?? "");
     }
 
     public function kasir()
@@ -36,7 +35,7 @@ class KasirController extends Controller
 
     public function proudctJson()
     {
-        $query = Product::query()->orderBy('created_at', 'asc');
+        $query = Product::query()->orderBy('created_at', 'asc')->where('qty', '>=', 1);
         return response()->json([
             'status' => 'success',
             'code' => 200,
@@ -47,22 +46,17 @@ class KasirController extends Controller
 
     public function prosesTransaksi(Request $request)
     {
+        // return $request->all();
+
         DB::beginTransaction();
         try {
-            $transaksiArray = [
-                'code' => $this->genereateCodeTransaksi(),
-                'transaction_date' => Carbon::now()->format('Y-m-d H:i:s'),
-                'total_payment' => $request['subtotal'],
-                'total_paid' => 0,
-                'total_unpaid' => $request['subtotal']
-            ];
-            $queryTransaksi = Transaction::create($transaksiArray);
-
             $detailsTransaksi = $request['items'];
             $datailOnTransaction = [];
+            $subtotalPembayaran = 0;
             foreach ($detailsTransaksi as $item) {
+                $product = Product::find($item['product_id']);
                 $datailOnTransaction[] = [
-                    'transaction_id' => $queryTransaksi->id,
+                    // 'transaction_id' => $queryTransaksi->id,
                     'order_status' => false,
                     'production_id_or_product_id' => $item['product_id'],
                     'item_name' => $item['product_name'],
@@ -71,8 +65,29 @@ class KasirController extends Controller
                     'total_cost' => $item['total_price'],
                     'status' => false
                 ];
+                $totalPrice = intval($item['product_price']) * intval($item['product_qty']);
+                $subtotalPembayaran += intval($totalPrice);
+
+                if ($product->qty < $item['product_qty']) {
+                    return response()->json([
+                        'status' => 'Info',
+                        'code' => 422,
+                        'message' => 'Stok barang *' . $item['product_name'] . '* tidak mencukupi!.'
+                    ], 422);
+                }
+                $product->qty -= $item['product_qty'];
+                $product->save();
             }
 
+            $transaksiArray = [
+                'code' => $this->genereateCodeTransaksi(),
+                'transaction_date' => Carbon::now()->format('Y-m-d H:i:s'),
+                'total_payment' => $subtotalPembayaran,
+                'total_paid' => 0,
+                'total_unpaid' => $subtotalPembayaran
+            ];
+
+            $queryTransaksi = Transaction::create($transaksiArray);
             $queryTransaksi->details()->createMany($datailOnTransaction);
             DB::commit();
             return response()->json([
@@ -87,9 +102,9 @@ class KasirController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json([
-                'status' => 'error',
+                'status' => 'Errors',
                 'code' => 500,
-                'message' => 'Data fetch failed',
+                'message' => 'Error processing transaction',
                 'details' => $th->getMessage()
             ], 500);
         }
@@ -110,11 +125,11 @@ class KasirController extends Controller
             'metode_bayar' => 'required',
             'jumlah_bayar' => 'required|numeric',
             'kembali' => 'required|numeric',
-            'nama' => 'required|string',
-            'telpon' => 'required|numeric'
+            'costumer.nama' => 'required|string',
+            'costumer.telpon' => 'required|numeric'
         ]);
         if ($validasi->fails()) {
-            return getResponseJson('error', 400, 'bad Reqeust', null, $validasi->errors());
+            return getResponseJson('error', 400, 'bad Reqeust', $request->all(), $validasi->errors());
         }
         //
 
@@ -123,7 +138,7 @@ class KasirController extends Controller
             $transaksi = Transaction::find($key);
             $totalPayment = $transaksi->total_payment;
             $totalPaid = $transaksi->total_paid;
-            $totalUpaid = $transaksi->total_unpaid;
+            $totalUnpaid = $transaksi->total_unpaid;
             $metodePayment = $request['metode_bayar'];
             $cashMoney = $request['jumlah_bayar'];
             $cashBack = $request['kembali'];
@@ -134,7 +149,7 @@ class KasirController extends Controller
                 $costumer = [
                     'name' => $getCs['nama'],
                     'no_telp' => $getCs['telpon'],
-                    'alamat' => $getCs['alamat'],
+                    'alamat' => $getCs['alamat'] ?? "-",
                     // 'jenis_kelamain' => 'L',
                     'email' => '',
                     'status' => false
@@ -160,11 +175,13 @@ class KasirController extends Controller
                     'total_cashback' => $cashBack,
                 ]);
 
+                $cekTotalUnpaid = $hitungTotalPiutang > 0 ? $hitungTotalPiutang : 0;
                 $transaksi->update([
                     'costumer_id' => $transaksi->costumer_id ?? $costumerId,
                     'total_paid' => $hitungTotalTerbayar >= $totalPayment ? $totalPayment : $hitungTotalTerbayar,
-                    'total_unpaid' => $hitungTotalPiutang > 0 ? $hitungTotalPiutang : 0,
-                    'status_transaction' => $cashMoney >= $totalPayment ? 's' : 'p',
+                    'total_unpaid' => $cekTotalUnpaid,
+                    // 'status_transaction' => $cashMoney >= $totalPayment ? 's' : 'p',
+                    'status_transaction' => $hitungTotalPiutang > 0 ? 'p' : 's'
                 ]);
             } else {
                 $paymentQuery =  PaymentTransaction::create([
@@ -223,7 +240,6 @@ class KasirController extends Controller
     public function transaksiDetail($key)
     {
         $transaksi = Transaction::where('id', $key)->with('details', 'costumer')->first();
-
         return view('Pages.penjualan.kasir.kasir-detail', compact('key', 'transaksi'));
     }
 

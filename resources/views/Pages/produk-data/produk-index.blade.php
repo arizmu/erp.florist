@@ -61,7 +61,7 @@
                                             <div class="flex gap-2 align-middle badge badge-info badge-soft">
                                                 <span class="icon-[proicons--qr-code] size-4"></span>
                                                 <span class="font-semibold uppercase" x-text="item.code ?? [404]">
-                                                    
+
                                                 </span>
                                             </div>
                                             <div class="flex gap-2 align-middle badge badge-secondary badge-soft">
@@ -78,15 +78,16 @@
                                     </div>
                                     <div class="card-footer">
                                         <div class="flex gap-2 md:justify-start justify-center flex-wrap">
-                                            {{-- <button
+                                            <button
                                                 class="btn btn-primary btn-circle btn-soft shadow-md" type="button">
-                                                <span class="icon-[solar--eye-scan-outline] size-5"></span>
-                                            </button> --}}
+                                                <span class="icon-[bx--barcode-reader] size-5"></span>
+                                            </button>
                                             <button x-on:click="openEdit(item)"
                                                 class="btn btn-secondary btn-circle btn-soft shadow-md" type="button">
                                                 <span class="icon-[line-md--upload-loop] size-6"></span>
                                             </button>
-                                            <button class="btn btn-error btn-circle btn-soft shadow-md" type="button">
+                                            <button class="btn btn-error btn-circle btn-soft shadow-md" type="button"
+                                                x-on:click="archiveProduct(item)">
                                                 <span class="icon-[lucide--trash-2] size-5"></span>
                                             </button>
                                         </div>
@@ -126,10 +127,10 @@
                                 <span class="icon-[tabler--user-search]"></span>
                                 Filter
                             </button>
-                            <button class="btn btn-primary btn-soft" @click="registerFrom">
+                            {{-- <button class="btn btn-primary btn-soft" @click="registerFrom">
                                 <span class="icon-[fluent-mdl2--product-release]"></span>
                                 Register Product
-                            </button>
+                            </button> --}}
                         </div>
                     </div>
                 </div>
@@ -266,7 +267,7 @@
                         this.regis.file = this.file;
                     },
 
-                    isStore:false,
+                    isStore: false,
                     async store() {
                         try {
                             this.isStore = true;
@@ -344,6 +345,39 @@
                         } catch (error) {
 
                         }
+                    },
+
+                    async archiveProduct(params) {
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: "You won't be able to revert this!",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Yes, delete it!"
+                        }).then(async (result) => {
+                            if (result.isConfirmed) {
+                                try {
+                                    const data = params;
+                                    const url = `/product/delete-product-data/${data.id}`;
+                                    const res = await axios.post(url, {
+                                        id: data.id
+                                    });
+                                    Swal.fire({
+                                        title: "Deleted!",
+                                        text: "Your file has been deleted.",
+                                        icon: "success"
+                                    });
+                                } catch (error) {
+                                    Swal.fire({
+                                        title: "Deleted!",
+                                        text: "Invalid deleted request.",
+                                        icon: "error"
+                                    });
+                                }
+                            }
+                        });
                     },
 
                     init() {

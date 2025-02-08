@@ -1,4 +1,27 @@
 <x-base-layout>
+    @push('css')
+        <style>
+            .my-actions {
+                margin: 2em 2em 0;
+            }
+
+            .order-1 {
+                order: 1;
+            }
+
+            .order-2 {
+                order: 2;
+            }
+
+            .order-3 {
+                order: 3;
+            }
+
+            .right-gap {
+                margin-right: auto;
+            }
+        </style>
+    @endpush
     <div class="breadcrumbs mb-2">
         <ol>
             <li>
@@ -80,7 +103,7 @@
                     </div>
                     <div class="grid gap-6 grid-cols-1 lg:grid-cols-5">
                         <div class="lg:col-span-2 flex flex-col gap-4">
-                            <div class="border rounded-lg p-4 flex justify-between gap-4">
+                            <div class=" flex justify-between gap-4">
                                 <input x-model="searchMaterial" @keyup.enter="getMaterialFunc" type="text"
                                     class="input rounded-full">
                                 <div class="flex gap-2">
@@ -190,36 +213,171 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="border rounded-lg p-4 mt-4 max-w-96">
-                                <h5 class=" text-md font-semibold flex gap-4 items-center mb-3">
-                                    <span class="icon-[si--wallet-detailed-duotone]"
-                                        style="width: 24px; height: 24px;"></span>
-                                    Biaya
-                                </h5>
-                                <div class="flex flex-col gap-4">
-                                    <div class="flex flex-col gap-2">
-                                        <label>Biaya Material</label>
-                                        <input x-model="xproduction.cost" readonly class="input w-full bg-gray-300"
-                                            type="number" />
-                                    </div>
-                                    <div class="flex flex-col gap-2">
-                                        <label>Biaya Produksi</label>
-                                        <input @keyup.enter="subtotal" x-model="xproduction.price"
-                                            class="input w-full" type="number" />
-                                    </div>
-                                    <div class="flex flex-col gap-2">
-                                        <label>Subtotal</label>
-                                        <input x-model="xproduction.subtotal"
-                                            class="input input-lg w-full bg-gray-300" type="text" readonly />
+                            <div class="grid gap-4 grid-cols-1 md:grid-cols-5 mt-4">
+                                <div class="col-span-1 md:col-span-2">
+                                    <div class="border rounded-lg p-4">
+                                        <h5 class=" text-md font-semibold flex gap-4 items-center mb-3">
+                                            <span class="icon-[si--wallet-detailed-duotone]"
+                                                style="width: 24px; height: 24px;"></span>
+                                            Biaya
+                                        </h5>
+                                        <div class="flex flex-col gap-4">
+                                            <div class="flex flex-col gap-2">
+                                                <label>Biaya Material</label>
+                                                <input x-model="xproduction.cost" readonly
+                                                    class="input input-lg w-full bg-gray-300" type="number" />
+                                            </div>
+                                            <div class="flex flex-col gap-2">
+                                                <label>Biaya Produksi</label>
+                                                <input @keyup="subtotal" x-model="xproduction.price"
+                                                    class="input w-full" type="number" />
+                                            </div>
+                                            <div class="flex flex-col gap-2">
+                                                <label>Subtotal</label>
+                                                <input x-model="xproduction.subtotal"
+                                                    class="input input-lg w-full bg-gray-300" type="text"
+                                                    readonly />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="col-span-1 md:col-span-3">
+                                    <div class="border rounded-lg p-4">
+                                        <h5 class=" text-md font-semibold flex gap-4 items-center mb-3">
+                                            <span class="icon-[carbon--ibm-data-product-exchange]"
+                                                style="width: 24px; height: 24px;"></span>
+                                            Product
+                                        </h5>
+                                        <div class="flex flex-col gap-2 mt-2">
+                                            <label>Title Product</label>
+                                            <input class="input w-full" type="text" x-model="xproduction.title" />
+                                        </div>
+                                        <div class="flex flex-col gap-2 mt-">
+                                            <label>Keterangan</label>
+                                            <textarea x-model="xproduction.keterangan" class="textarea" placeholder="Keterangan ..."></textarea>
+                                        </div>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+                                            <div class="w-full">
+                                                <label class="label label-text" for="favorite-simpson">Crafter</label>
+                                                <select x-model="xproduction.crafter" class="select"
+                                                    id="favorite-simpson">
+                                                    <option>Pilih..</option>
+                                                    <template x-for="val in xcrafter">
+                                                        <option :value="val.id" x-text="val.pegawai_name">
+                                                        </option>
+                                                    </template>
+                                                </select>
+                                            </div>
+                                            <div class="w-full">
+                                                <label class="label label-text" for="favorite-simpson">
+                                                    Jasa Crafter
+                                                </label>
+                                                <select x-model="xproduction.jasa" class="select"
+                                                    id="favorite-simpson">
+                                                    <option value="">Pilih...</option>
+                                                    <template x-for="val in xjasalayanan">
+                                                        <option :value="val.id">
+                                                            <span x-text="val.title"></span> |
+                                                            <i class="text-sm font-semibold"
+                                                                x-text="formatRupiah(val.salary)"></i>
+                                                        </option>
+                                                    </template>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 px-2 md:px-0">
+                                <button class="btn btn-soft btn-error w-full rounded-full" x-on:click="addProduct">
+                                    <span class="icon-[hugeicons--file-add] size-5"></span>
+                                    Add Pre-order List
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div id="personal-info-validation" class="space-y-5" data-stepper-content-item='{ "index": 2 }'
                     style="display: none">
+                    <div class="flex gap-4 mb-8">
+                        <span class="icon-[gravity-ui--trolley] size-6 text-orange-500"></span>
+                        <span class="text-gray-400 text-lg font-semibold">
+                            Pre-order List
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
+                        <div class="col-span-1 md:col-span-4 p-4 py-0">
+                            <div class="border-base-content/25 w-full rounded-lg border">
+                                <div class="overflow-x-auto">
+                                    <table class="table rounded">
+                                        <thead>
+                                            <tr>
+                                                <th>Product</th>
+                                                <th>Price</th>
+                                                <th>Qty</th>
+                                                <th>Total</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template x-if="xproduct <= 0">
+                                                <tr>
+                                                    <td class="text-gray-400" colspan="5">
+                                                        Empty data!
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                            <template x-for="item in xproduct">
+                                                <tr>
+                                                    <td class="text-nowrap" x-text="item.title"></td>
+                                                    <td x-text="formatRupiah(item.total_cost)"></td>
+                                                    <td x-text="item.qty"></td>
+                                                    <td x-text="formatRupiah(item.qty * item.total_cost)"></td>
+                                                    <td>
+                                                        <button type="button" x-on:click="delProduct(item._fake_id)"
+                                                            class="btn btn-circle btn-text btn-sm btn-error btn-soft"
+                                                            aria-label="Action button"><span
+                                                                class="icon-[tabler--trash] size-5"></span>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-span-1 md:col-span-2 p-4 py-0 flex flex-col gap-2">
+                            <div
+                                class="w-full rounded-lg p-4 px-6 bg-red-400 shadow flex justify-between items-center">
+                                <div class="text-white flex flex-col gap-2">
+                                    <label for="">Subtotal Pembayaran</label>
+                                    <div class="font-bold text-2xl">
+                                        Rp.
+                                        <span x-text="subtotalPreorderView">0</span>
+                                    </div>
+                                </div>
+                                <div class="avatar placeholder">
+                                    <div class="bg-white text-red-300 w-14 rounded-full">
+                                        <span class="icon-[solar--tag-price-linear] size-8"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-2 mt-4">
+                                <label class="" for="floatingInput">Estimasi</label>
+                                <input x-model="xproduction.estimasi" type="text" class="input flatpickr-input"
+                                    placeholder="YYYY-MM-DD to YYYY-MM-DD" id="flatpickr-range" readonly="readonly">
+                            </div>
+                            <div class="flex flex-col gap-2 mb-3">
+                                <label class="" for="textareaFloating">Keterangan</label>
+                                <textarea x-model="xproduction.comment" class="textarea" placeholder="" id=""></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="social-links-validation" class="space-y-5" data-stepper-content-item='{ "index": 3}'
+                    style="display: none">
+
                     <div class="flex gap-4 mb-8">
                         <span class="icon-[solar--user-id-line-duotone] text-red-400"
                             style="width: 24px; height: 24px;"></span>
@@ -303,61 +461,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div id="social-links-validation" class="space-y-5" data-stepper-content-item='{ "index": 3}'
-                    style="display: none">
 
-                    <div class="flex gap-4 mb-8">
-                        <span class="icon-[solar--user-id-line-duotone] text-red-400"
-                            style="width: 24px; height: 24px;"></span>
-                        <span class="text-gray-400 text-lg font-semibold">
-                            Crafter
-                        </span>
-                    </div>
-                    <div class="border rounded-xl p-8 flex gap-4 flex-col max-w-4xl">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div class="w-full">
-                                <label class="label label-text" for="favorite-simpson">Crafter</label>
-                                <select x-model="xproduction.crafter" class="select" id="favorite-simpson">
-                                    <option>Pilih..</option>
-                                    <template x-for="val in xcrafter">
-                                        <option :value="val.id" x-text="val.pegawai_name"></option>
-                                    </template>
-                                </select>
-                            </div>
-                            <div class="w-full">
-                                <label class="label label-text" for="favorite-simpson">
-                                    Jasa Crafter
-                                </label>
-                                <select x-model="xproduction.jasa" class="select" id="favorite-simpson">
-                                    <option value="">Pilih...</option>
-                                    <template x-for="val in xjasalayanan">
-                                        <option :value="val.id">
-                                            <span x-text="val.title"></span> |
-                                            <i class="text-sm font-semibold" x-text="formatRupiah(val.salary)"></i>
-                                        </option>
-                                    </template>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="mb-3 grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div class="flex flex-col gap-2">
-                                <label class="" for="">Produk Title</label>
-                                <input x-model="xproduction.title" type="text" placeholder="nama bucket"
-                                    class="input" id="">
-                            </div>
-                            <div class="flex flex-col gap-2">
-                                <label class="" for="floatingInput">Estimasi</label>
-                                <input x-model="xproduction.estimasi" type="text" class="input flatpickr-input"
-                                    placeholder="YYYY-MM-DD to YYYY-MM-DD" id="flatpickr-range" readonly="readonly">
-                            </div>
-                        </div>
-                        <div class="flex flex-col gap-2 mb-3">
-                            <label class="" for="textareaFloating">Comment</label>
-                            <textarea x-model="xproduction.comment" class="textarea" placeholder="" id=""></textarea>
-                        </div>
-                    </div>
                 </div>
                 <div data-stepper-content-item='{ "isFinal": true }' style="display: none">
                     <div class="bg-base-200/50 flex h-48 items-center justify-center rounded-xl p-4">
@@ -491,6 +595,8 @@
                         crafter: '',
                         jasa: '',
                         title: '',
+                        keterangan: '',
+                        deskripsi: '',
                         estimasi: '',
                         comment: '',
                         cost: 0,
@@ -515,16 +621,17 @@
                             window.location.href = `/transaksi/kasir-proses-bayar/${this.transaksi_id}`;
                         } catch (error) {
                             console.log(this.transaksi_id);
-                            console.log(error);                            
+                            console.log(error);
                         }
                     },
                     async storeFinish() {
                         const data = {
-                            items: this.xitems,
+                            // items: this.xitems,
                             costumer: this.xcostumer,
-                            production: this.xproduction
+                            // production: this.xproduction
+                            product: this.xproduct,
+                            estimasi: this.xproduction.estimasi
                         }
-
                         this.isStoring = true;
                         try {
                             const url = "/transaksi/pre-order-action";
@@ -686,6 +793,121 @@
                                 console.log(err);
 
                             })
+                    },
+
+                    xproduct: [],
+                    addProduct() {
+                        if (this.xitems <= 0 || this.xproduction.title == '' || this.xproduction.jasa == '' || this.xproduction
+                            .crafter == '') { // items is array [{object data}]
+                            if (this.xitems <= 0 || this.xproduction.price == '' || this.xproduction.subtotal == '') {
+                                notifier.warning("Please add items!");
+                            }
+                            if (this.xproduction.title == '') {
+                                notifier.warning("Please add title!");
+                            }
+                            if (this.xproduction.jasa == '') {
+                                notifier.warning("Please add jasa!");
+                            }
+                            if (this.xproduction.crafter == '') {
+                                notifier.warning("Please add crafter!");
+                            }
+                            if (this.production.price == '') {
+                                notifier.warning("Please add cost production!");
+                            }
+                            return;
+                        }
+
+                        Swal.fire({
+                            title: "Konfirmasi ?",
+                            text: "yakin ingin tambah product pre-order!",
+                            icon: "question",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Yes, tambah!"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                try {
+                                    const materials = this.xitems
+                                    let product_data = {
+                                        _fake_id: uuid(),
+                                        title: this.xproduction.title,
+                                        metarials: materials,
+                                        description: this.xproduction.keterangan,
+                                        qty: 1,
+                                        cost_material: this.xproduction.cost,
+                                        cost_production: this.xproduction.price,
+                                        total_cost: this.xproduction.subtotal,
+                                        crafter: this.xproduction.crafter,
+                                        jasa: this.xproduction.jasa,
+                                    }
+                                    this.xproduct.push(product_data);
+                                    this.xitems = [];
+                                    this.xproduction = {
+                                        crafter: '',
+                                        jasa: '',
+                                        title: '',
+                                        keterangan: '',
+                                        deskripsi: '',
+                                        estimasi: '',
+                                        comment: '',
+                                        cost: 0,
+                                        price: 25000,
+                                        subtotal: 0
+                                    };
+                                    this.hitungTotalPreorder();
+                                    Swal.fire({
+                                        title: "Success!",
+                                        text: "Product pre-order berhasil ditambahkan.",
+                                        icon: "success"
+                                    });
+                                    console.log(this.xproduct);
+                                } catch (error) {
+                                    Swal.fire({
+                                        title: "Opss!!!",
+                                        text: "Product pre-order gagal ditambahkan!.",
+                                        icon: "error"
+                                    });
+                                }
+                            }
+                        });
+                    },
+
+                    delProduct(fakeId) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Yakin ingin hapus product item ?',
+                            showDenyButton: true,
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes, Hapus!',
+                            denyButtonText: 'Tidak',
+                            customClass: {
+                                actions: 'my-actions',
+                                cancelButton: 'order-1 right-gap',
+                                confirmButton: 'order-2',
+                                denyButton: 'order-3',
+                            },
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                this.xproduct = this.xproduct.filter(product => product._fake_id !== fakeId);
+                                this.hitungTotalPreorder();
+                                Swal.fire('Product Item berhasil dihapus!', '', 'success')
+                            } else if (result.isDenied) {
+                                Swal.fire('Proses dibatalkan!', '', 'info')
+                            }
+                        })
+                    },
+
+                    subtotalPreorder: 0,
+                    subtotalPreorderView: 0,
+                    hitungTotalPreorder() {
+                        let total = 0;
+                        this.xproduct.forEach(product => {
+                            total += parseInt(product.total_cost);
+                        });
+                        this.subtotalPreorder = total;
+                        this.subtotalPreorderView = formatRupiah(total);
+                        return;
                     },
 
                     init() {
