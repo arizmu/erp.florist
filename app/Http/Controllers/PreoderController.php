@@ -10,6 +10,7 @@ use App\Models\Product\Product;
 use App\Models\Production\Production;
 use App\Models\Production\ProductionBarangDetail;
 use App\Models\production\ProductionOtherDetail;
+use App\Models\Production\RefSeviceCharge;
 use App\Models\Transaction\DetailsTransaction;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
@@ -46,7 +47,7 @@ class PreoderController extends Controller
         return getResponseJson('success', 200, 'data fetch successfully', $query, 0);
     }
 
-    public function preOrderStore(Request $request)
+    public function preOrderStore_old(Request $request)
     {
         return $request->all();
         $validation = Validator::make($request->all(), [
@@ -132,8 +133,9 @@ class PreoderController extends Controller
         }
     }
 
-    public function prosesOrdering(Request $request)
+    public function preOrderStore(Request $request)
     {
+        // return $request->product;
         DB::beginTransaction();
         try {
             // fungsi cek costumer;
@@ -141,13 +143,13 @@ class PreoderController extends Controller
             $costumerId = $costumerFunc['costumer_id'];
             $pointStatus = $costumerFunc['point_status'];
             $point = $costumerFunc['point'];
-
+            
             // fungsi crate proudotion barang
             $tanggal = explode("to", $request['estimasi']);
             $tanggalStart = Carbon::parse($tanggal[0]);
             $tanggalEnd = count($tanggal) > 1 ? Carbon::parse($tanggal[1]) : $tanggalStart;
             $production = $this->productionOrdering($request->product, $tanggalStart, $tanggalEnd);
-
+            
             // fungsi transaksi pereorder
             $totalPrice = 0;
             $detailTransaksi = [];
@@ -162,11 +164,12 @@ class PreoderController extends Controller
                     'total_cost' => $value['total'], // total, jumlah item * harga per item
                     'status' => false, // status
                     // 'img' => , // image
+                    'code_product' => $value['code'], // product code
                 ];
                 $totalPrice += $value['total'];
             }
 
-            $transaksiData = Transaction::create([
+            $transaksiData = [
                 'costumer_id' => $costumerId,
                 'code' => $this->genereateCodeTransaksi(),
                 'transaction_date' => Carbon::now()->format('Y-m-d'),
@@ -175,7 +178,7 @@ class PreoderController extends Controller
                 'total_unpaid' => $totalPrice,
                 'status_transaction' => 'd',
                 'preorder_status' => true
-            ]);
+            ];
 
             $queryTransaksi = Transaction::create($transaksiData);
             $queryTransaksi->details()->createMany($detailTransaksi);
@@ -186,7 +189,6 @@ class PreoderController extends Controller
                 'total_price' => $totalPrice,
             ], false);
         } catch (\Throwable $th) {
-            //throw $th;
             DB::rollBack();
             $errorId = Str::uuid()->toString();
             Log::error([
@@ -203,12 +205,14 @@ class PreoderController extends Controller
 
     public function productionOrdering($resultArray, $tanggalStart, $tanggalEnd)
     {
+        $codeproduction = $this->codeProduksi();
+        $increment = 0;
         $productData = [];
         foreach ($resultArray as $product) {
             $materials = [];
             $totalPrice = 0;
-            foreach ($product['materials'] as $material) {
-                if (!$material['status']) {
+            foreach ($product['metarials'] as $material) {
+                if (!$material['item_status']) {
                     Barang::where('id', $material['item_code'])->decrement('stock', $material['item_qty']);
                 }
 
@@ -223,8 +227,10 @@ class PreoderController extends Controller
                 ];
                 $totalPrice += intval($material['item_total']);
             }
+            $jasaCrafter = RefSeviceCharge::find($product['jasa']);
+            $increment += 1;
             $queryProduction = Production::create([
-                'code_production' => $this->codeProduksi(),
+                'code_production' => $codeproduction + $increment,
                 'production_title' => $product['title'],
                 'production_date' => Carbon::parse($tanggalStart)->format('Y-m-d'),
                 'production_start' => Carbon::parse($tanggalStart)->format('Y-m-d'),
@@ -235,20 +241,11 @@ class PreoderController extends Controller
                 'cost_items' => $product['cost_material'],
                 'production_cost' => $product['cost_production'],
                 'price_for_sale' => $product['total_cost'],
+                'jasa_reference' => $jasaCrafter->id,
+                'nilai_jasa_crafter' => $jasaCrafter->salary,
+                'preorder' => true
             ]);
             $queryProduction->detail()->createMany($materials);
-            // $jeniQuery = JenisProduct::first();
-            // $queryProduct = Product::create([
-            //     'code' => $queryProduction->code_production,
-            //     'product_name' => $queryProduction->production_title,
-            //     'comment' => 'Pre-ordering Form Production',
-            //     'qty' => 0,
-            //     'cost_production' => $queryProduction->production_cost,
-            //     'jenis_product_id' => $jeniQuery->id,
-            //     'ref_production_id' => $queryProduction->id,
-            //     'price' => $queryProduction->price_for_sale
-            // ]);
-
             $productData[] = [
                 'id' => $queryProduction->id,
                 'code' => $queryProduction->code_production,
@@ -291,7 +288,7 @@ class PreoderController extends Controller
                 'no_telp' => $costumer['phone'],
                 'email' => $costumer['email'],
                 'status' => false,
-                'point' => 0,
+                'point_member' => 0,
                 'sosmed' => $costumer['sosmed']
             ]);
             $costumerID = $costumerStore->id;

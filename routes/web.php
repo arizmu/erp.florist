@@ -94,6 +94,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::get('/kasir-transaksi-detail/{transaksiKey}', 'transaksiDetail')->name('kasir.transaksi.detail');
             Route::post('kasir-proses-bayar-post/{key}', 'prosesBayarPost');
             Route::get('/cetak-invoice/{transaksi_id}/{invoice_id}', 'invoice');
+            Route::get('/get-barang', 'bbCostume');
         });
         Route::controller(PreoderController::class)->group(function () {
             Route::get('/pre-order-form', 'formLayout')->name('preoder.form.layout');
@@ -153,6 +154,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         Route::post('/update-data/{key}', 'update');
         Route::post('/delete-data/{key}', 'delete');
         Route::get('/get-data-json', 'getJson');
+        Route::get('/jasa-crafter', 'jasaLayanan');
     });
 
     Route::controller(CostumerController::class)->group(function() {

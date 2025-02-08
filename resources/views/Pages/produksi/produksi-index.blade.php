@@ -115,7 +115,8 @@
                                     <tr class="item-start">
                                         <td x-text="item.code_production"></td>
                                         <td class="" style="width: 250pt">
-                                            <span x-text="item.production_title" class="text-nowrap font-semibold w-52"></span>
+                                            <span x-text="item.production_title"
+                                                class="text-nowrap font-semibold w-52"></span>
                                         </td>
                                         <td>Rp. <span x-text="formatRupiah(item.cost_items)"></span></td>
                                         <td>Rp. <span x-text="formatRupiah(item.production_cost) ?? 00"></span></td>
@@ -126,10 +127,14 @@
                                             <span x-text="item.crafter.pegawai_name"></span>
                                         </td>
                                         <td>
-                                            <span class="badge badge-soft badge-warning text-xs"
-                                                x-show="!item.production_status">PRODUCTION</span>
-                                            <span class="badge badge-soft badge-success text-xs"
-                                                x-show="item.production_status">COMPLATE</span>
+                                            <div class="flex gap-2 flex-wrap">
+                                                <span class="badge badge-soft badge-warning text-xs"
+                                                    x-show="!item.production_status">PRODUCTION</span>
+                                                <span class="badge badge-soft badge-success text-xs"
+                                                    x-show="item.production_status">COMPLATE</span>
+                                                <span class="badge badge-soft badge-primary text-xs"
+                                                    x-show="item.preorder">PRE-ORDER</span>
+                                            </div>
                                         </td>
                                         <td class="flex gap-1">
                                             <button title="mutasi to product" type="button"
@@ -378,7 +383,7 @@
                                             });
                                             return;
                                         }
-                                        
+
                                         Swal.fire({
                                             title: "Error!",
                                             text: "Distribusi gagal diproses.",
@@ -395,7 +400,7 @@
                             .then((res) => {
                                 const data = res.data.data;
                                 console.log(data);
-                                
+
                                 this.details = data;
                                 openModal.click();
                             }).catch((err) => {

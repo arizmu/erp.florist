@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Penjualan;
 
 use App\Http\Controllers\Controller;
+use App\Models\Barang;
 use App\Models\Costumer;
 use App\Models\Product\Product;
 use App\Models\Transaction\PaymentTransaction;
@@ -63,7 +64,8 @@ class KasirController extends Controller
                     'amount_item' => $item['product_qty'],
                     'cost_item' => $item['product_price'],
                     'total_cost' => $item['total_price'],
-                    'status' => false
+                    'status' => false,
+                    'code_product' => $product->code,
                 ];
                 $totalPrice = intval($item['product_price']) * intval($item['product_qty']);
                 $subtotalPembayaran += intval($totalPrice);
@@ -249,5 +251,16 @@ class KasirController extends Controller
             $query->where('id', $invoice_id);
         }])->find($transaksi_id);
         return view('Pages.penjualan.invoice', ['data' => $queryTransaksi]);
+    }
+
+    public function bbCostume()
+    {
+        $queryData = Barang::when(request()->search, function ($query) {
+            $query->where('nama_barang', 'like', '%' . request()->search . '%');
+        })->get()->take(25);
+        return response()->json([
+            'status' => 'ok',
+            'data' => $queryData
+        ]);
     }
 }

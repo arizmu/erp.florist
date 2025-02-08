@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Production extends Model
 {
     use HasUuids;
-    protected $fillable = ['code_production', 'production_title', 'production_date', 'production_start', 'production_end', 'production_status', 'production_cost', 'pegawai_id', 'amount_items', 'price_for_sale', 'delete_status', 'deleted_at', 'cost_items', 'distribution_status'];
+    protected $fillable = ['code_production', 'production_title', 'production_date', 'production_start', 'production_end', 'production_status', 'production_cost', 'pegawai_id', 'amount_items', 'price_for_sale', 'delete_status', 'deleted_at', 'cost_items', 'distribution_status', 'preorder', 'nilai_jasa_crafter', 'jasa_reference'];
 
     /**
      * Get the pegawai that owns the Production

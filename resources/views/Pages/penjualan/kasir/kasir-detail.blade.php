@@ -38,10 +38,10 @@
                             <div class="flex flex-col gap-2">
                                 <div for="product_name" class="flex flex-col gap-0">
                                     <label for="" class="text-xs text-gray-400 ">Product name</label>
-                                    <h4 class="text-xl font-bold text-gray-500">{{ $item->item_name }}</h4>
+                                    <h4 class="text-md font-semibold text-gray-500">{{ $item->item_name }} || {{ $item->code_product ?? "[null]" }}</h4>
                                 </div>
                                 <div class="flex flex-col gap-1">
-                                    <span for="for-harga" class="text-orange-400 font-semibold">Rp.
+                                    <span for="for-harga" class="text-orange-400 text-sm font-semibold">Rp.
                                         {{ formatRupiah($item->cost_item) }} * {{ $item->amount_item }}</span>
 
                                 </div>
@@ -49,7 +49,7 @@
                             <div class="flex flex-col gap-2 md:text-right">
                                 <div class="flex flex-col gap-0" for="total">
                                     <label for="" class="text-xs text-gray-400">Total</label>
-                                    <span class="text-xl font-bold text-gray-500">Rp.
+                                    <span class="text-md font-bold text-gray-500">Rp.
                                         {{ formatRupiah($item->total_cost) }}</span>
                                 </div>
                             </div>

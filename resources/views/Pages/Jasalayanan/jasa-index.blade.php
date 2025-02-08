@@ -36,13 +36,17 @@
                             <tbody>
                                 <template x-for="(item, index) in xtableData" :key="index">
                                     <tr>
-                                        <td x-text="item.pegawai.pegawai_name"></td>
+                                        <td x-text="item.crafter.pegawai_name"></td>
                                         <td x-text="item.code_production"></td>
                                         <td x-text="item.production_date"></td>
-                                        <td x-text="formatRupiah(item.production_cost)"></td>
+                                        <td x-text="formatRupiah(item.price_for_sale)"></td>
                                         <td>
                                             <span class="badge badge-soft badge-success rounded-full" x-show="item.production_status">Done</span>
                                             <span class="badge badge-soft badge-error rounded-full" x-show="!item.production_status">Undone</span>
+                                        </td>
+                                        <td>
+                                            Rp.
+                                            <span x-text="formatRupiah(item.nilai_jasa_crafter)"></span>
                                         </td>
                                     </tr>
                                 </template>
@@ -110,11 +114,11 @@
                 return {
                     xtableData: [],
                     dataLoads() {
-                        axios.get(`/jasa-crafter/data-json`)
+                        axios.get(`/ref-jasa/jasa-crafter`)
                         .then((res) => {
-                            const data = res.data;
-                            this.xtableData = data.data;
-                            console.log(this.xtableData);
+                            const data = res.data.data;
+                            console.log(data);
+                            this.xtableData = data;
                             
                         }).catch((err) => {
                             console.log(err);

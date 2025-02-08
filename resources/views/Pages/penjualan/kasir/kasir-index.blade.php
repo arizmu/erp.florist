@@ -266,35 +266,39 @@
                                     <div class="mt-3">
                                         <div id="tabs-pill-icon-1" role="tabpanel"
                                             aria-labelledby="tabs-pill-icon-item-1">
-                                            <div class="p-4 rounded-lg border  flex gap-4 flex-wrap items-end">
+                                            <div class="p-4 rounded-lg border  flex gap-4 flex-wrap items-start">
                                                 <div class="flex flex-col gap-3">
                                                     <label for="">Bahan baku</label>
                                                     <div class="w-72 max-w-72">
-                                                        <select
-                                                            data-select='{
-                                                                "hasSearch": true,
-                                                                "searchLimit": 5,
-                                                                "placeholder": "Select your sign",
-                                                                "toggleTag": "<button type=\"button\" aria-expanded=\"false\"></button>",
-                                                                "toggleClasses": "advance-select-toggle",
-                                                                "dropdownClasses": "advance-select-menu max-h-52 pt-0 vertical-scrollbar rounded-scrollbar",
-                                                                "optionClasses": "advance-select-option selected:active",
-                                                                "optionTemplate": "<div class=\"flex justify-between items-center w-full\"><span data-title></span><span class=\"icon-[tabler--check] flex-shrink-0 size-4 text-primary hidden selected:block \"></span></div>",
-                                                                "extraMarkup": "<span class=\"icon-[tabler--caret-up-down] flex-shrink-0 size-4 text-base-content absolute top-1/2 end-3 -translate-y-1/2 \"></span>"
-                                                            }'
-                                                            class="hidden">
-                                                            <option value="">Choose</option>
-                                                            <option value="aries">Aries</option>
-                                                        </select>
+                                                        <input x-model="filtersearch" @keyup="filterbarangcostumer"
+                                                            type="text" class="input"
+                                                            placeholder="select barang...">
+                                                    </div>
+                                                    <ul class="-mt-2 rounded">
+                                                        <template x-for="item in filterdata">
+                                                            <li class="p-2 border hover:bg-slate-50 px-4">
+                                                                <span x-text="item.nama_barang" @click="selectBarang(item)"></span>
+                                                            </li>
+                                                        </template>
+                                                    </ul>
+                                                </div>
+
+                                                <div class="flex gap-3 flex-col">
+                                                    <label for="">Harga</label>
+                                                    <div class="max-w-48">
+                                                        <input type="text" class="input"
+                                                            x-model="costumeForm.product_price" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="flex gap-3 flex-col">
                                                     <label for="">Qty</label>
                                                     <div class="max-w-32">
-                                                        <input type="text" class="input">
+                                                        <input type="text" class="input"
+                                                            x-model="costumeForm.product_qty">
                                                     </div>
                                                 </div>
-                                                <div>
+                                                <div class="flex gap-3 flex-col">
+                                                    <label for="">&nbsp;</label>
                                                     <button class="btn btn-circle btn-soft btn-error">
                                                         <span class="icon-[material-symbols--add-task-rounded]"
                                                             style="width: 24px; height: 24px;"></span>
@@ -575,8 +579,23 @@
                             img_url: data.img,
                             price_rupiah_view: formatRupiah(data.price)
                         };
-                        console.log(this.costumeForm);
 
+                    },
+                    filtersearch: '',
+                    filterdata: [],
+                    filterbarangcostumer() {
+                        axios.get(`/transaksi/get-barang?search=${this.filtersearch}`)
+                            .then((response) => {
+                                const data = response.data.data;
+                                this.filterdata = data;
+
+                            }).catch((error) => {
+                                console.log(error);
+                            })
+                    },
+
+                    selectBarang(data) {
+                        console.log(data);
                     },
 
                     init() {

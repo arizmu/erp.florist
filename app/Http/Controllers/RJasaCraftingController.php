@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Production\Production;
 use App\Models\Production\RefSeviceCharge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -95,7 +96,8 @@ class RJasaCraftingController extends Controller
         }
     }
 
-    public function getJson() {
+    public function getJson()
+    {
         $query = RefSeviceCharge::query();
         return response()->json([
             'status' => 'success',
@@ -104,5 +106,11 @@ class RJasaCraftingController extends Controller
             'data' => $query->paginate(15)
         ]);
     }
-    
+
+    public function jasaLayanan(Request $request)
+    {
+        $queryData = Production::with('crafter')->latest()
+            ->get()->take($request->limit ?? 15);
+        return getResponseJson('ok', 200, 'fetch data!', $queryData, false);
+    }
 }

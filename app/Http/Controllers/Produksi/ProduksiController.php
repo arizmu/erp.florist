@@ -10,6 +10,7 @@ use App\Models\Product\Product;
 use App\Models\Production\Production;
 use App\Models\Production\ProductionBarangDetail;
 use App\Models\production\ProductionOtherDetail;
+use App\Models\Production\RefSeviceCharge;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -77,6 +78,7 @@ class ProduksiController extends Controller
             $tanggal = explode("to", $production['estimasi']);
             $tanggalStart = Carbon::parse($tanggal[0]);
             $tanggalEnd = count($tanggal) > 1 ? Carbon::parse($tanggal[1]) : $tanggalStart;
+            $jasa = RefSeviceCharge::find($request->jasa);
             $productionQuery = Production::create([
                 'code_production' => $this->codeProduksi(),
                 'production_title' => $production['title_product'],
@@ -88,7 +90,9 @@ class ProduksiController extends Controller
                 'pegawai_id' => $production['crafter'],
                 'price_for_sale' => intval($request['detail']['price_to_sale']),
                 'amount_items' => 1,
-                'cost_items' => intval($request['detail']['amount_items'])
+                'cost_items' => intval($request['detail']['amount_items']),
+                'nilai_jasa_crafter' => $jasa->salary,
+                'jasa_reference' => $jasa->id,
             ]);
 
             foreach ($request->items as $value) {

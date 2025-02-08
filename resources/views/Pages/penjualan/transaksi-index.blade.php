@@ -165,7 +165,7 @@
                                         <td>{{ $item->total_payment }}</td>
                                         <td>{{ $item->total_paid }}</td>
                                         <td>{{ $item->total_unpaid }}</td>
-                                        <td>
+                                        <td class="flex flex-wrap gap-2">
                                             @if ($item->status_transaction == 'd')
                                                 <span class="badge badge-soft badge-secondary">Draft</span>
                                             @endif
@@ -179,6 +179,14 @@
                                                     Unpaid
                                                 </span>
                                             @endif
+
+                                            @if ($item->preorder_status)
+                                                <span class="badge badge-soft badge-primary">
+                                                    Pre-order
+                                                </span>
+                                            @endif
+
+
                                         </td>
                                         <td>
                                             @if ($item->status_transaction == 'd' || $item->status_transaction == 'p')
