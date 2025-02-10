@@ -24,7 +24,7 @@ class InventoryController extends Controller
 
     public function getBarang()
     {
-        $query = Barang::query();
+        $query = Barang::query()->with('satuan');
         $query->when(request()->key, function ($query) {
             $query->where('nama_barang', 'like', '%' . request()->key . '%');
         });

@@ -48,7 +48,7 @@
                                                 search...
                                             </label>
                                             <input type="text" class="input grow" placeholder="search..."
-                                                id="" x-model="searchBarang" />
+                                                id="" x-model="searchBarang" @keyup.enter="getBahanBaku" />
                                         </div>
                                         <button x-on:click="getBahanBaku"
                                             class="btn btn-outline btn-secondary join-item h-auto"
@@ -58,6 +58,9 @@
                                 </div>
 
                                 <div class="py-5 flex flex-col gap-3 max-h-96 overflow-y-auto">
+                                    <div x-show="bahanBaku <= 0" class="p-6 text-center font-semibold text-gray-500 rounded-lg bg-gray-100">
+                                        <i>Not Found ...</i>
+                                    </div>
                                     <template x-for="(val, index) in bahanBaku" :key="index">
                                         <div class="card bg-green-200">
                                             <div class="card-body p-4">
@@ -79,8 +82,8 @@
                                                                 <span
                                                                     class="icon-[tabler--align-box-right-stretch] size-5"></span>
                                                                 <div>
-                                                                    <span x-text="val.stock"></span>
-                                                                    Pcs
+                                                                    <span x-text="val.stock">Stock</span>
+                                                                    <i x-text="val.satuan.nama_satuan" class="capitalize"></i>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -96,8 +99,10 @@
                                                                         class="icon-[tabler--minus] size-3.5 flex-shrink-0"></span>
                                                                 </button>
                                                             </span>
+
                                                             <input class="input input-sm text-center" type="text"
                                                                 x-model="qty[val.id]" data-input-number-input />
+
                                                             <span class="input-group-text gap-3">
                                                                 <button type="button"
                                                                     class="btn btn-primary btn-soft size-[22px] rounded min-h-0 p-0"
@@ -468,6 +473,7 @@
                         this.qty[data.id] = '0';
                         this.sumTotalPrice();
                     },
+
                     increment(index) {
                         if (this.qty[index] === undefined) {
                             this.qty[index] = 0;
@@ -481,6 +487,7 @@
                         }
                         this.qty[index]--;
                     },
+
                     deleteItem(key) {
                         const deleteIndex = this.items.filter(index => index.id !== key);
                         this.items = deleteIndex;

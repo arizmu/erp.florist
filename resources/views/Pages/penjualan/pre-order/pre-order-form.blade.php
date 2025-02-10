@@ -136,7 +136,7 @@
                                             <div class="flex gap-2">
                                                 <div class="input-group min-w-32 max-w-32" data-input-number>
                                                     <span class="input-group-text gap-3">
-                                                        <button type="button"
+                                                        <button type="button" @click="decrement(item.id)"
                                                             class="btn btn-primary btn-soft size-[22px] rounded min-h-0 p-0"
                                                             aria-label="Decrement button" data-input-number-decrement>
                                                             <span
@@ -144,10 +144,10 @@
                                                         </button>
                                                     </span>
                                                     <input x-model="xitem_qty[item.id]" class="input text-center"
-                                                        id="number-input-mini" type="number" value="0"
+                                                        id="number-input-mini" type="text" value="0"
                                                         data-input-number-input />
                                                     <span class="input-group-text gap-3">
-                                                        <button type="button"
+                                                        <button type="button" @click="increment(item.id)"
                                                             class="btn btn-primary btn-soft size-[22px] rounded min-h-0 p-0"
                                                             aria-label="Increment button" data-input-number-increment>
                                                             <span
@@ -660,6 +660,7 @@
                             }
                         }
                     },
+
                     resetFrom() {
                         this.isPembayaran = false;
                         this.isStoring = false;
@@ -673,6 +674,20 @@
                             }).catch((err) => {
                                 console.log(err);
                             })
+                    },
+                    
+                    increment(index) {
+                        if (this.xitem_qty[index] === undefined) {
+                            this.xitem_qty[index] = 0;
+                        }
+                        this.xitem_qty[index]++;
+                    },
+                    decrement(index) {
+                        if (this.xitem_qty[index] === undefined || this.xitem_qty[index] === 0) {
+                            this.xitem_qty[index] = 0;
+                            return;
+                        }
+                        this.xitem_qty[index]--;
                     },
 
                     addItem(index) {

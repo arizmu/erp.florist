@@ -91,10 +91,10 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-9 py-3 gap-5" x-data="productionIndex">
-        <div class="md:col-span-4 lg:col-span-6">
-            <div class="card">
-                <div class="card-body">
+    <div class="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-10 py-3 gap-5" x-data="productionIndex">
+        <div class="md:col-span-4 lg:col-span-7">
+            {{-- <div class="card">
+                <div class="card-body"> --}}
                     <div class="w-full overflow-x-auto bg-white border rounded-lg">
                         <table class="table">
                             <thead>
@@ -113,7 +113,9 @@
                             <tbody>
                                 <template x-for="item in data">
                                     <tr class="item-start">
-                                        <td x-text="item.code_production"></td>
+                                        <td>
+                                            <span x-text="item.code_production" class="text-wrap">Bucket Production</span>
+                                        </td>
                                         <td class="" style="width: 250pt">
                                             <span x-text="item.production_title"
                                                 class="text-nowrap font-semibold w-52"></span>
@@ -166,10 +168,13 @@
                         </table>
                     </div>
 
-                    <div class="py-2">
-                        <nav class="flex items-center gap-x-1">
-                            <button type="button" class="btn btn-outline btn-sm" @click="prevPageFunc"
-                                :disabled="!prevPage">Previous</button>
+                    <div class="py-4">
+                        <nav class="flex justify-between gap-x-1">
+                            <button type="button" class="btn btn-secondary btn-outline min-w-28" @click="prevPageFunc"
+                                :disabled="!prevPage">
+                                <span class="icon-[heroicons-outline--arrow-circle-left] size-5"></span>
+                                Previous
+                            </button>
                             <div class="flex items-center gap-x-1">
 
                                 {{-- <button type="button"
@@ -181,12 +186,15 @@
                                     class="btn btn-outline btn-square aria-[current='page']:text-border-primary aria-[current='page']:bg-primary/10">3</button> --}}
 
                             </div>
-                            <button type="button" class="btn btn-outline btn-sm" :disabled="!nextPage"
-                                @click="nextPageFunc">Next</button>
+                            <button type="button" class="btn btn-secondary btn-outline min-w-28" :disabled="!nextPage"
+                                @click="nextPageFunc">
+                                Next
+                                <span class="icon-[heroicons-outline--arrow-circle-right] size-5"></span>
+                            </button>
                         </nav>
                     </div>
 
-                </div>
+                {{-- </div> --}}
 
                 {{-- modal detail --}}
                 <button type="button" class="btn btn-primary hidden" aria-haspopup="dialog" id="open-modal-detail"
@@ -237,7 +245,7 @@
                     </div>
                 </div>
 
-            </div>
+            {{-- </div> --}}
 
         </div>
         <div class="md:col-span-2 lg:col-span-3 order-first md:order-last">
@@ -249,44 +257,45 @@
                 <div class="card-body">
                     <div class="p-4 pt-3 flex flex-col gap-5">
                         <div class="relative w-auto">
-                            <input type="text" placeholder="John Doe" class="input input-floating peer"
-                                id="floatingInput" />
+                            <input type="text" placeholder="" class="input input-floating peer" id=""
+                                x-model="search.keyword" />
 
-                            <label class="input-floating-label" for="floatingInput">
+                            <label class="input-floating-label" for="">
                                 Keywords
                             </label>
                         </div>
+                        <div class="flex flex-col gap-2">
+                            <input x-model="search.estimasi" type="text" class="input flatpickr-input"
+                                placeholder="YYYY-MM-DD to YYYY-MM-DD" id="flatpickr-range" readonly="readonly">
+                        </div>
+
                         <div class="relative w-auto">
-                            <select class="select select-floating" aria-label="Select floating label"
-                                id="selectFloating">
-                                <option>Pre-Order</option>
-                                <option>Re-Produksi</option>
-                                <option>Selesai</option>
+                            <select x-model="search.status" class="select select-floating"
+                                aria-label="Select floating label" id="selectFloating">
+                                <option value="">Pilih...</option>
+                                <option value="n">Produksi</option>
+                                <option value="y">Selesai</option>
                             </select>
                             <label class="select-floating-label" for="selectFloating">
                                 Crafter
                             </label>
                         </div>
                         <div class="relative w-auto">
-                            <select class="select select-floating" aria-label="Select floating label"
-                                id="selectFloating">
-                                <option>The Godfather</option>
-                                <option>The Shawshank Redemption</option>
-                                <option>Pulp Fiction</option>
-                                <option>The Dark Knight</option>
-                                <option>Schindler's List</option>
+                            <select x-model="search.crafter" class="select select-floating"
+                                aria-label="Select floating label" id="selectFloating">
+                                <option>Pilih...</option>
                             </select>
                             <label class="select-floating-label" for="selectFloating">
                                 Crafter
                             </label>
                         </div>
                         <div class="relative w-auto">
-                            <select class="select select-floating" aria-label="Select floating label"
-                                id="selectFloating">
-                                <option>15</option>
-                                <option>25</option>
-                                <option>50</option>
-                                <option>100</option>
+                            <select x-model="search.range" class="select select-floating"
+                                aria-label="Select floating label" id="selectFloating">
+                                <option value="15">15</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
                             </select>
                             <label class="select-floating-label" for="selectFloating">
                                 Data Range
@@ -295,8 +304,9 @@
                     </div>
                 </div>
                 <div class="card-footer text-center">
-                    <div class="grid grid-cols-2 gap-4 p-4">
-                        <button class="btn btn-outline btn-primary w-auto">Filter</button>
+                    <div class="grid grid-cols-1 gap-2 p-4">
+                        <button class="btn btn-outline btn-primary w-auto" type="button"
+                            @click="searchFunc">Filter</button>
                         <a href="{{ route('produksi.baru.index') }}" class="btn btn-outline btn-error w-auto">Produksi
                             Baru</a>
                     </div>
@@ -306,34 +316,111 @@
     </div>
     @push('js')
         <script>
+            window.addEventListener('load', function() {
+                flatpickr('.jsPickr', {
+                    allowInput: true,
+                    monthSelectorType: 'static'
+                })
+
+                flatpickr('#flatpickr-range', {
+                    mode: 'range'
+                })
+            })
+        </script>
+        <script>
             function productionIndex() {
                 return {
                     data: [],
                     links: [],
                     nextPage: '',
                     prevPage: '',
+
+                    search: {
+                        keyword: '',
+                        crafter: '',
+                        status: "",
+                        range: 5,
+                        estimasi: ''
+                    },
                     getData(url = "") {
                         if (!url) {
-                            url = `/produksi/get-data-produksi`;
+                            const params = new URLSearchParams({
+                                keywords: this.search.keyword ?? "",
+                                crafter: this.search.crafter ?? "",
+                                status: this.search.status ?? "",
+                                range: this.search.range ?? "",
+                                estimasi:this.search.estimasi ?? ""
+                            });
+                            url = `/produksi/get-data-produksi?${params.toString()}`;
                         }
-                        axios.get(url).then(res => {
-                            const response = res.data.data;
-                            this.data = response.data;
-                            this.links = response.links;
-                            this.nextPage = response.next_page_url;
-                            this.prevPage = response.prev_page_url;
-                        }).catch(erres => {
-                            console.log(erres);
 
-                        })
+                        axios.get(url)
+                            .then(res => {
+                                // this.data = [];
+                                const response = res.data.data;
+                                this.data = response.data;
+                                // Update link pagination dengan parameter pencarian terkini
+                                this.links = this.processPaginationLinks(response.links);
+                                this.nextPage = response.next_page_url ? this.addParamsToUrl(response.next_page_url) : null;
+                                this.prevPage = response.prev_page_url ? this.addParamsToUrl(response.prev_page_url) : null;
+                            })
+                            .catch(erres => {
+                                console.log(erres);
+                            });
+                    },
+                    // Fungsi untuk menambahkan parameter pencarian ke semua link pagination
+                    processPaginationLinks(links) {
+                        return links.map(link => {
+                            if (link.url) {
+                                return {
+                                    ...link,
+                                    url: this.addParamsToUrl(link.url)
+                                };
+                            }
+                            return link;
+                        });
+                    },
+                    // Fungsi untuk menambahkan parameter pencarian ke URL
+                    addParamsToUrl(url) {
+                        if (!url) return null;
+                        const newUrl = new URL(url);
+                        const searchParams = new URLSearchParams(newUrl.search);
+                        // Tambahkan parameter pencarian terkini
+                        searchParams.set('keywords', this.search.keyword);
+                        searchParams.set('crafter', this.search.crafter);
+                        searchParams.set('status', this.search.status);
+                        searchParams.set('range', this.search.range);
+                        searchParams.set('estimasi', this.search.estimasi);
+
+                        newUrl.search = searchParams.toString();
+                        return newUrl.toString();
                     },
 
                     nextPageFunc() {
-                        this.getData(this.nextPage);
+                        if (this.nextPage) {
+                            this.getData(this.nextPage);
+                        }
                     },
 
                     prevPageFunc() {
-                        this.getData(this.prevPage);
+                        if (this.prevPage) {
+                            this.getData(this.prevPage);
+                        }
+                    },
+
+                    searchFunc() {
+
+                        console.log('Search params before send:', this.search);
+                        const params = new URLSearchParams({
+                            keywords: this.search.keyword,
+                            crafter: this.search.crafter,
+                            status: this.search.status,
+                            range: this.search.range,
+                            estimasi: this.search.estimasi
+                        });
+                        url = `/produksi/get-data-produksi?${params.toString()}`;
+                        console.log('Final URL:', url);
+                        this.getData(url);
                     },
 
                     toComplate(index) {

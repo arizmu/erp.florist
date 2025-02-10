@@ -38,28 +38,21 @@
                                     <div
                                         class="bg-slate-50 p-4 px-6 flex justify-between rounded-xl border border-gray-100 hover:bg-blue-50 shadow items-center">
                                         <div class="flex flex-col gap-2">
-                                            <span class="text-lg font-semibold mb-2" x-text="val.nama_barang">Nama
+                                            <span class="text-md font-semibold mb-2" x-text="val.nama_barang">Nama
                                                 Product</span>
                                             <div class="flex gap-4">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                    class="size-5">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
-                                                </svg>
-                                                <span class="text-sm font-semibold">100 Pcs</span>
+                                                <span class="icon-[hugeicons--discount-01] size-5"></span>
+                                                <span class="text-sm font-semibold">
+                                                    <span x-text="val.stock">stock</span>
+                                                    <span x-text="val.satuan.nama_satuan"
+                                                        class="capitalize">satuan</span>
+                                                </span>
                                             </div>
                                             <div class="flex gap-4">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                    class="size-5">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M6 6h.008v.008H6V6Z" />
-                                                </svg>
+                                                <span class="icon-[solar--tag-price-linear] size-5"></span>
                                                 <span class="text-sm font-semibold">
-                                                    -
+                                                    <span>Rp.</span>
+                                                    <span x-text="formatRupiah(val.price)">Price</span>
                                                 </span>
                                             </div>
                                         </div>
@@ -70,7 +63,7 @@
                                                     <span class="input-group-text gap-3">
                                                         <button type="button"
                                                             class="btn btn-primary btn-soft size-[22px] rounded min-h-0 p-0"
-                                                            aria-label="Decrement button" data-input-number-decrement>
+                                                            aria-label="Decrement button" data-input-number-decrement @click="decrement(val.id)">
                                                             <span
                                                                 class="icon-[tabler--minus] size-3.5 flex-shrink-0"></span>
                                                         </button>
@@ -81,7 +74,7 @@
                                                     <span class="input-group-text gap-3">
                                                         <button type="button"
                                                             class="btn btn-primary btn-soft size-[22px] rounded min-h-0 p-0"
-                                                            aria-label="Increment button" data-input-number-increment>
+                                                            aria-label="Increment button" data-input-number-increment @click="increment(val.id)">
                                                             <span
                                                                 class="icon-[tabler--plus] size-3.5 flex-shrink-0"></span>
                                                         </button>
@@ -192,7 +185,7 @@
             </div>
         </div>
     </div>
-    @push("js")
+    @push('js')
         <script>
             window.addEventListener('load', function() {
                 flatpickr('#flatpickr-floating', {
@@ -323,6 +316,22 @@
                             console.log('finally')
                         })
                     },
+
+                    increment(index) {
+                        if (this.jumlahItem[index] === undefined) {
+                            this.jumlahItem[index] = 0;
+                        }
+                        this.jumlahItem[index]++;
+                    },
+
+                    decrement(index) {
+                        if (this.jumlahItem[index] === undefined || this.jumlahItem[index] === 0) {
+                            this.jumlahItem[index] = 0;
+                            return;
+                        }
+                        this.jumlahItem[index]--;
+                    },
+
                     init() {
                         this.getBarang()
                     }

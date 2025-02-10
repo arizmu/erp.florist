@@ -30,7 +30,7 @@ class ProduksiController extends Controller
 
     function getBahanBaku()
     {
-        $query = Barang::query()->select('id', 'nama_barang', 'stock', 'price');
+        $query = Barang::query()->with('satuan');
         $query->when(request()->key, function ($query) {
             $query->where('nama_barang', 'like', '%' . request()->key . '%');
         });
@@ -152,14 +152,53 @@ class ProduksiController extends Controller
         return $code;
     }
 
-    public function productionJson()
+    public function productionJson(Request $request)
     {
-        $query = Production::query()->with(['crafter'])->latest()->where('delete_status', false);
+        $query = Production::with(['crafter'])
+            ->latest()
+            ->where('delete_status', false);
+
+        // Filter keywords
+        $query->when($request->keywords, function ($q) use ($request) {
+            $q->where(function ($subQuery) use ($request) {
+                $subQuery->where('code_production', 'LIKE', '%' . $request->keywords . '%')
+                    ->orWhere('production_title', 'LIKE', '%' . $request->keywords . '%');
+            });
+        });
+
+
+        if ($request->status === "y") {
+            $query->when($request->status, function ($q) use ($request) {
+                $q->where('production_status', 1);
+            });
+        }
+
+        if ($request->status === 'n') {
+            $query->when($request->status, function ($q) use ($request) {
+                $q->where('production_status', 0);
+            });
+        }
+
+        if ($request->estimasi) {
+            $tanggal = explode("to", $request->estimasi);
+            $tanggalStart = Carbon::parse($tanggal[0]);
+            $tanggalEnd = count($tanggal) > 1 ? Carbon::parse($tanggal[1]) : $tanggalStart;
+            $query->whereBetween('production_date', [$tanggalStart->format('Y-m-d'), $tanggalEnd->format('Y-m-d')]);
+        }
+
+        // Filter crafter blem jadi
+        $query->when($request->crafter, function ($q) use ($request) {
+            $q->whereHas('crafter', function ($crafterQuery) use ($request) {
+                $crafterQuery->where('id', $request->crafter);
+            });
+        });
+
         return response()->json([
             'status' => 'ok',
             'code' => 200,
             'message' => 'Data fetch successfully.',
-            'data' => $query->paginate(15)
+            'data' => $query->paginate($request->range ?? 15),
+            'request' => $request->all()
         ]);
     }
 
