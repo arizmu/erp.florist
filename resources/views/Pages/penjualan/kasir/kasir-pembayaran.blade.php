@@ -61,12 +61,22 @@
                                                     <div class="font-medium capitalize" x-text="item.item_name">Item
                                                         Name</div>
                                                     <div class="text-sm opacity-50" x-text="item.code_product">-</div>
+                                                    <span class="badge badge-soft badge-sm badge-warning"
+                                                        x-show="item.costume_status">
+                                                        COSTUME
+                                                    </span>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            Rp.
-                                            <span x-text="parseInt(item.cost_item).toLocaleString('id-ID')"></span>
+                                            <div class="flex gap-2 flex-wrap">
+                                                <span class="badge badge-soft badge-info">
+                                                    Rp.
+                                                    <span
+                                                        x-text="parseInt(item.cost_item).toLocaleString('id-ID')"></span>
+                                                </span>
+                                                <span x-show="item.costume_status" class="badge badge-soft badge-warning" x-text="parseInt(item.costume_total).toLocaleString('id-ID')"></span>
+                                            </div>
                                         </td>
                                         <td>
                                             <span x-text="item.amount_item"></span>
@@ -272,7 +282,7 @@
                             if (result.isConfirmed) {
                                 this.isStoring = true; // Ganti `this.store` menjadi `this.isStoring`
                                 // loading alert
-                                
+
                                 const data = {
                                     transaksi_id: this.code_transaksi,
                                     transaksi_details: this.indexData,

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Costumer;
 use App\Models\Product\Product;
+use App\Models\Transaction\CostumeDetailTransaction;
+use App\Models\Transaction\DetailsTransaction;
 use App\Models\Transaction\PaymentTransaction;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
@@ -47,8 +49,6 @@ class KasirController extends Controller
 
     public function prosesTransaksi(Request $request)
     {
-        // return $request->all();
-
         DB::beginTransaction();
         try {
             $detailsTransaksi = $request['items'];
@@ -57,15 +57,17 @@ class KasirController extends Controller
             foreach ($detailsTransaksi as $item) {
                 $product = Product::find($item['product_id']);
                 $datailOnTransaction[] = [
-                    // 'transaction_id' => $queryTransaksi->id,
                     'order_status' => false,
                     'production_id_or_product_id' => $item['product_id'],
                     'item_name' => $item['product_name'],
                     'amount_item' => $item['product_qty'],
+                    'costume_status' => $item['product_costume'],
+                    'costume_total' => $item['costume_total'],
                     'cost_item' => $item['product_price'],
                     'total_cost' => $item['total_price'],
                     'status' => false,
                     'code_product' => $product->code,
+                    'details' => $item['product_costume_details']
                 ];
                 $totalPrice = intval($item['product_price']) * intval($item['product_qty']);
                 $subtotalPembayaran += intval($totalPrice);
@@ -90,7 +92,40 @@ class KasirController extends Controller
             ];
 
             $queryTransaksi = Transaction::create($transaksiArray);
-            $queryTransaksi->details()->createMany($datailOnTransaction);
+            // $queryTransaksi->details()->createMany($datailOnTransaction);
+            // return $datailOnTransaction;
+            foreach ($datailOnTransaction as $value) {
+                $details = DetailsTransaction::create([
+                    'transaction_id' => $queryTransaksi->id,
+                    'order_status' => $value['order_status'],
+                    'production_id_or_product_id' => $value['production_id_or_product_id'],
+                    'item_name' => $value['item_name'],
+                    'code_product' => $value['code_product'],
+                    'amount_item' => $value['amount_item'],
+                    'costume_status' => $value['costume_status'],
+                    'costume_total' => $value['costume_total'],
+                    'cost_item' => $value['cost_item'],
+                    'total_cost' => $value['total_cost'],
+                ]);
+                
+                foreach ($value['details'] as $val) {
+                    CostumeDetailTransaction::create([
+                        'details_transactions_id' => $details->id,
+                        'status_item' => $val['status'],
+                        'code_item' => $val['item_id'] ?? "",
+                        'item_name' => $val['item_name'],
+                        'comment' => $val['comment'],
+                        'qty' => $val['item_qty'],
+                        'price' => $val['item_price'],
+                        'total_price' => $val['total'],
+                    ]);
+                    if (!$val['status']) {
+                        $barang = Barang::find($val['item_id']);
+                        $barang->stock -= $val['item_qty'];
+                        $barang->save();
+                    }
+                }
+            }
             DB::commit();
             return response()->json([
                 'status' => 'success',

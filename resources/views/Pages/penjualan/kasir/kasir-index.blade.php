@@ -128,30 +128,31 @@
                                     </div>
 
                                     <div class="flex flex-col">
-                                        <h3 class="text-base max-sm:text-sm font-bold text-gray-800"
-                                            x-text="shortText(item.product_name, 35)">Velvet Sneaker
+                                        <h3 class="text-base max-sm:text-sm font-semibold text-gray-800">
+                                            <span class="capitalize" x-text="shortText(item.product_name, 35)">Nama
+                                                Product</span>
                                         </h3>
-                                        <p class="text-xs font-semibold text-gray-500 mt-0.5">Harga : <span
-                                                x-text="formatRupiah(item.product_price)"></span></p>
+                                        <div class="flex gap-2 flex-wrap">
+                                            <div class="badge badge-sm badge-soft badge-info">
+                                                HARGA :
+                                                <span x-text="formatRupiah(item.product_price)"></span>
+                                            </div>
+                                            <div class="badge badge-sm badge-soft badge-warning" x-show="item.product_costume">
+                                                COSTUME :
+                                                <span x-text="formatRupiah(item.costume_total)"></span>
+                                            </div>
+                                        </div>
 
                                         <button type="button" x-on:click="removeItem(item.product_id)"
                                             class="mt-6 font-semibold text-red-500 text-xs flex items-center gap-1 shrink-0">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 fill-current inline"
-                                                viewBox="0 0 24 24">
-                                                <path
-                                                    d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
-                                                    data-original="#000000"></path>
-                                                <path
-                                                    d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
-                                                    data-original="#000000"></path>
-                                            </svg>
+                                            <span class="icon-[uil--trash-alt] size-5"></span>
                                             REMOVE
                                         </button>
                                     </div>
                                 </div>
 
                                 <div class="ml-auto">
-                                    <h4 class="text-lg max-sm:text-base max-sm:text-sm font-bold text-gray-800">
+                                    <h4 class="text-lg max-sm:text-sm font-bold text-gray-800">
                                         Rp. <span x-text="formatRupiah(item.total_price)"></span>
                                     </h4>
                                     <div class="input-group max-w-32 mt-2" data-input-number>
@@ -277,7 +278,8 @@
                                                     <ul class="-mt-2 rounded">
                                                         <template x-for="item in filterdata">
                                                             <li class="p-2 border hover:bg-slate-50 px-4">
-                                                                <span x-text="item.nama_barang" @click="selectBarang(item)"></span>
+                                                                <span x-text="item.nama_barang"
+                                                                    @click="selectBarang(item)"></span>
                                                             </li>
                                                         </template>
                                                     </ul>
@@ -287,19 +289,20 @@
                                                     <label for="">Harga</label>
                                                     <div class="max-w-48">
                                                         <input type="text" class="input"
-                                                            x-model="costumeForm.product_price" readonly>
+                                                            x-model="xbarangdata.price" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="flex gap-3 flex-col">
                                                     <label for="">Qty</label>
                                                     <div class="max-w-32">
                                                         <input type="text" class="input"
-                                                            x-model="costumeForm.product_qty">
+                                                            x-model="xbarangdata.qty">
                                                     </div>
                                                 </div>
                                                 <div class="flex gap-3 flex-col">
                                                     <label for="">&nbsp;</label>
-                                                    <button class="btn btn-circle btn-soft btn-error">
+                                                    <button class="btn btn-circle btn-soft btn-error"
+                                                        x-on:click="addItemCostumeBarang">
                                                         <span class="icon-[material-symbols--add-task-rounded]"
                                                             style="width: 24px; height: 24px;"></span>
                                                     </button>
@@ -311,18 +314,21 @@
                                             <div class="p-4 rounded-lg border  flex gap-4 flex-wrap items-end">
                                                 <div class="min-w-72 flex flex-col gap-2">
                                                     <label for="">Item name</label>
-                                                    <input type="text" class="input">
+                                                    <input type="text" class="input"
+                                                        x-model="xothercsdata.title">
                                                 </div>
                                                 <div class="max-w-52 flex flex-col gap-2">
                                                     <label for="">Cost</label>
-                                                    <input type="text" class="input">
+                                                    <input type="text" class="input"
+                                                        x-model="xothercsdata.price">
                                                 </div>
                                                 <div class="max-w-24 flex flex-col gap-2">
                                                     <label for="">Qty</label>
-                                                    <input type="text" class="input">
+                                                    <input type="text" class="input" x-model="xothercsdata.qty">
                                                 </div>
                                                 <div class="w-auto flex flex-col gap-2">
-                                                    <button class="btn btn-circle btn-soft btn-error">
+                                                    <button class="btn btn-circle btn-soft btn-error"
+                                                        x-on:click="addItemCostumeOther">
                                                         <span class="icon-[material-symbols--add-task-rounded]"
                                                             style="width: 24px; height: 24px;"></span>
                                                     </button>
@@ -338,22 +344,42 @@
                                                 <thead>
                                                     <tr>
                                                         <th>Bahan baku</th>
+                                                        <th>Harga</th>
                                                         <th>Qty</th>
                                                         <th>Total</th>
                                                         <th>#</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td>
-                                                            <button class="btn btn-circle btn-sm btn-soft btn-error">
-                                                                <span class="icon-[uil--trash-alt] siz"></span>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
+                                                    <template x-for="item in costumeItem">
+                                                        <tr>
+                                                            <td class="flex flex-col gap-1">
+                                                                <span x-text="item.item_name"
+                                                                    class="text-wrap"></span>
+                                                                <span x-show="!item.status"
+                                                                    class="badge badge-sm badge-soft badge-primary">Bahan
+                                                                    Baku</span>
+                                                                <span x-show="item.status"
+                                                                    class="badge badge-sm badge-soft badge-error">Akomodasi</span>
+                                                            </td>
+                                                            <td>Rp.
+                                                                <span x-text="formatRupiah(item.item_price)"></span>
+                                                            </td>
+                                                            <td>
+                                                                <span x-text="item.item_qty"></span>
+                                                            </td>
+                                                            <td>
+                                                                Rp.
+                                                                <span x-text="formatRupiah(item.total)"></span>
+                                                            </td>
+                                                            <td>
+                                                                <button @click="deleteItemCostumeBarang(item.item_id)"
+                                                                    class="btn btn-circle btn-sm btn-soft btn-error">
+                                                                    <span class="icon-[uil--trash-alt] siz"></span>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </template>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -364,7 +390,8 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-soft btn-secondary"
                                 data-overlay="#modal-costume-product">Close</button>
-                            <button type="button" class="btn btn-primary">Add Product</button>
+                            <button type="button" class="btn btn-primary" @click="addItemCostume">Add
+                                Product</button>
                         </div>
                     </div>
                 </div>
@@ -479,11 +506,10 @@
                             'total_price': index.price * 1,
                             'product_costume': false,
                             'product_costume_details': [],
+                            'costume_total': 0,
                             'img_url': index.img
                         }
                         const findItems = this.items.find(arraydata => arraydata.product_id === data.product_id);
-                        console.log(findItems);
-
                         if (findItems) {
                             notifier.alert(`Item product sudah ada`)
                             return
@@ -502,9 +528,12 @@
 
                     addQty(key) {
                         const data = this.items.find(index => index.product_id === key);
-                        data['product_qty']++;
-                        data['total_price'] = data['product_qty'] * data['product_price'];
-                        this.funcSubtotal()
+                        let qty = data['product_qty'] += 1;
+                        let price = data['product_price'];
+                        let costumeCost = data['costume_total'];
+                        let total = parseFloat(price) + parseFloat(costumeCost);
+                        data['total_price'] = total * qty;
+                        this.funcSubtotal();
                     },
 
                     reduceQty(key) {
@@ -513,9 +542,12 @@
                             notifier.alert('Jumlah item tidak boleh kurang dari 1.')
                             return;
                         }
-                        data['product_qty']--;
-                        data['total_price'] = data['product_qty'] * data['product_price'];
-                        this.funcSubtotal()
+                        let qty = data['product_qty'] -= 1;
+                        let price = data['product_price'];
+                        let costumeCost = data['costume_total'];
+                        let total = parseFloat(price) + parseFloat(costumeCost);
+                        data['total_price'] = total * qty;
+                        this.funcSubtotal();
                     },
 
                     funcSubtotal() {
@@ -581,6 +613,7 @@
                         };
 
                     },
+
                     filtersearch: '',
                     filterdata: [],
                     filterbarangcostumer() {
@@ -595,7 +628,153 @@
                     },
 
                     selectBarang(data) {
-                        console.log(data);
+                        this.filterdata = [];
+                        this.filtersearch = data.nama_barang;
+                        this.xbarangdata = {
+                            id: data.id,
+                            title: data.nama_barang,
+                            qty: 1,
+                            price: data.price,
+                            total: data.price * 1,
+                            comment: ''
+                        }
+                    },
+
+                    xbarangdata: {
+                        id: '',
+                        title: '',
+                        qty: 0,
+                        price: 0,
+                        total: 0,
+                        comment: ''
+                    },
+                    addItemCostumeBarang() {
+                        const errors = [];
+                        if (!this.xbarangdata.title.trim()) errors.push('Nama barang tidak boleh kosong');
+                        if (this.xbarangdata.qty <= 0) errors.push('Jumlah barang harus lebih dari 0');
+                        if (this.xbarangdata.price <= 0) errors.push('Harga barang harus lebih dari 0');
+                        if (errors.length) {
+                            errors.forEach(error => notifier.warning(error)); // Menampilkan setiap error satu per satu
+                            return;
+                        }
+
+                        const existingItemIndex = this.costumeItem.findIndex(item => item.item_id === this.xbarangdata.id);
+                        if (existingItemIndex !== -1) {
+                            // Update existing item
+                            this.costumeItem[existingItemIndex].item_qty = this.xbarangdata.qty;
+                            this.costumeItem[existingItemIndex].total = this.xbarangdata.qty * this.xbarangdata.price;
+                            notifier.warning('barang costumer updated');
+                        } else {
+                            // Add new item
+                            const newItem = {
+                                status: false,
+                                item_id: this.xbarangdata.id,
+                                item_name: this.xbarangdata.title,
+                                item_qty: this.xbarangdata.qty,
+                                item_price: this.xbarangdata.price,
+                                total: this.xbarangdata.qty * this.xbarangdata.price,
+                                comment: ''
+                            };
+                            this.costumeItem.push(newItem);
+                            notifier.success('Barang costumer added');
+                        }
+
+                        // Reset xbarangdata and any other necessary state
+                        this.xbarangdata = {
+                            id: '',
+                            title: '',
+                            qty: 0,
+                            price: 0,
+                            total: 0,
+                            comment: ''
+                        };
+                        this.filtersearch = '';
+                    },
+
+                    xothercsdata: {
+                        title: '',
+                        qty: 0,
+                        price: 0,
+                        comment: ''
+                    },
+                    addItemCostumeOther() {
+                        const errors = [];
+                        if (!this.xothercsdata.title.trim()) errors.push('Nama barang tidak boleh kosong');
+                        if (this.xothercsdata.qty <= 0) errors.push('Jumlah barang harus lebih dari 0');
+                        if (this.xothercsdata.price <= 0) errors.push('Harga barang harus lebih dari 0');
+
+                        if (errors.length) {
+                            errors.forEach(error => notifier.warning(error)); // Menampilkan setiap error secara terpisah
+                            return;
+                        }
+                        const data = {
+                            status: true,
+                            item_id: uuid(),
+                            item_name: this.xothercsdata.title,
+                            item_qty: this.xothercsdata.qty,
+                            item_price: this.xothercsdata.price,
+                            total: this.xothercsdata.qty * this.xothercsdata.price,
+                            comment: ""
+                        }
+                        this.costumeItem.push(data);
+                        notifier.success('Barang lain added');
+                        this.xothercsdata = {
+                            title: '',
+                            qty: 0,
+                            price: 0,
+                            comment: ''
+                        }
+                    },
+
+                    deleteItemCostumeBarang(itemId) {
+                        this.costumeItem = this.costumeItem.filter(item => item.item_id !== itemId);
+                    },
+
+                    getTotalCostumePrice() {
+                        let subtotalBelanja = 0;
+                        this.costumeItem.forEach(element => {
+                            subtotalBelanja += element.total;
+                        });
+                        return subtotalBelanja;
+                    },
+
+                    addItemCostume() {
+                        let productPrice = parseInt(this.costumeForm.product_price);
+                        let costumeTotal = parseInt(this.getTotalCostumePrice());
+                        let total = productPrice + costumeTotal;
+                        const data = {
+                            'product_id': this.costumeForm.product_id,
+                            'product_name': this.costumeForm.product_name,
+                            'product_qty': this.costumeForm.product_qty,
+                            'product_price': productPrice,
+                            'total_price': total,
+                            'product_costume': true,
+                            'product_costume_details': this.costumeItem,
+                            'costume_total': costumeTotal,
+                            'img_url': this.costumeForm.img_url
+                        }
+                        const findItems = this.items.find(arraydata => arraydata.product_id === data.product_id);
+                        if (findItems) {
+                            notifier.alert(`Item product sudah ada`)
+                            return
+                        } else {
+                            this.items.push(data);
+                            notifier.success(`Item ${data.product_name} added.`)
+                        }
+                        this.funcSubtotal();
+                        this.costumeItem = [];
+                        this.closeCostumeModal();
+                        this.costumeForm = {
+                            product_id: "",
+                            product_name: "",
+                            product_qty: 1,
+                            product_price: 0,
+                            total_price: 0,
+                            product_costume: true,
+                            product_costume_details: this.costumeItem,
+                            img_url: "",
+                            price_rupiah_view: 0,
+                        };
                     },
 
                     init() {

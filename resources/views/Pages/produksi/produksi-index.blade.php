@@ -165,6 +165,27 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <div class="py-2">
+                        <nav class="flex items-center gap-x-1">
+                            <button type="button" class="btn btn-outline btn-sm" @click="prevPageFunc"
+                                :disabled="!prevPage">Previous</button>
+                            <div class="flex items-center gap-x-1">
+
+                                {{-- <button type="button"
+                                    class="btn btn-outline btn-square aria-[current='page']:text-border-primary aria-[current='page']:bg-primary/10">1</button>
+                                <button type="button"
+                                    class="btn btn-outline btn-square aria-[current='page']:text-border-primary aria-[current='page']:bg-primary/10"
+                                    aria-current="page">2</button>
+                                <button type="button"
+                                    class="btn btn-outline btn-square aria-[current='page']:text-border-primary aria-[current='page']:bg-primary/10">3</button> --}}
+
+                            </div>
+                            <button type="button" class="btn btn-outline btn-sm" :disabled="!nextPage"
+                                @click="nextPageFunc">Next</button>
+                        </nav>
+                    </div>
+
                 </div>
 
                 {{-- modal detail --}}
@@ -215,7 +236,6 @@
                         </div>
                     </div>
                 </div>
-
 
             </div>
 
@@ -289,17 +309,33 @@
             function productionIndex() {
                 return {
                     data: [],
-                    getData() {
-                        const url = "/produksi/get-data-produksi";
+                    links: [],
+                    nextPage: '',
+                    prevPage: '',
+                    getData(url = "") {
+                        if (!url) {
+                            url = `/produksi/get-data-produksi`;
+                        }
                         axios.get(url).then(res => {
-                            const data = res.data.data;
-                            this.data = data;
+                            const response = res.data.data;
+                            this.data = response.data;
+                            this.links = response.links;
+                            this.nextPage = response.next_page_url;
+                            this.prevPage = response.prev_page_url;
                         }).catch(erres => {
-
-                        }).finally(() => {
+                            console.log(erres);
 
                         })
                     },
+
+                    nextPageFunc() {
+                        this.getData(this.nextPage);
+                    },
+
+                    prevPageFunc() {
+                        this.getData(this.prevPage);
+                    },
+
                     toComplate(index) {
                         Swal.fire({
                             title: "Konfirmasi",

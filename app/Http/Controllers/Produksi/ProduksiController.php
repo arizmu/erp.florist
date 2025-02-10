@@ -159,7 +159,7 @@ class ProduksiController extends Controller
             'status' => 'ok',
             'code' => 200,
             'message' => 'Data fetch successfully.',
-            'data' => $query->get()
+            'data' => $query->paginate(15)
         ]);
     }
 
