@@ -1,162 +1,178 @@
-<x-master-layout>
-    @push('css')
-        <style>
-            /* Mengatur ukuran kertas saat dicetak */
-            @media print {
-                @page {
-                    size: 57mm auto;
-                    /* Lebar 57mm, panjang menyesuaikan isi */
-                    margin: 0;
-                    /* Menghilangkan margin */
-                }
+<!DOCTYPE html>
+<html lang="en">
 
-                footer {
-                    display: none !important;
-                }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Nota Bayar - {{ $data['costumer']['nama'] }} || {{ $data['costumer']['telpon'] }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            width: 58mm;
+            margin: 0 auto;
+        }
 
-                header {
-                    display: none!important;
-                }
+        .receipt {
+            width: 58mm;
+            padding: 10mm;
+            margin: auto;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-                body {
-                    font-family: Arial, sans-serif;
-                    font-size: 12px;
-                    width: 57mm;
-                    margin: 0;
-                    padding: 0px;
-                }
+        .receipt-title {
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
 
-                .nota {
-                    text-align: center;
-                    border-bottom: 1px dashed black;
-                    padding-bottom: 5px;
-                    margin-bottom: 5px;
-                }
+        .receipt-date {
+            text-align: center;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
 
-                .items {
-                    width: 100%;
-                    border-bottom: 1px dashed black;
-                    margin-bottom: 5px;
-                    padding-bottom: 5px;
-                }
+        .receipt-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 1em;
+        }
 
-                .items td {
-                    padding: 3px;
-                }
+        .receipt-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
 
-                .total {
-                    font-weight: bold;
-                    font-size: 13px;
-                }
+        .receipt-footer {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
 
-                /* Sembunyikan tombol cetak saat mencetak */
-                .print-btn {
-                    display: none;
-                }
-            }
+        hr {
+            border: none;
+            border-top: 1px dashed #ddd;
+            margin: 10px 0;
+        }
 
-            /* Style untuk tampilan layar */
+        @media print {
             body {
-                font-family: Arial, sans-serif;
-                font-size: 12px;
-                width: 57mm;
-                margin: auto;
-                padding: 10px;
-                background: #f8f8f8;
+                width: 58mm;
+                /* Lebar konten */
+                margin: 0 auto;
+                /* Tambahkan properti untuk mengatur tinggi kertas jika perlu */
+                height: auto;
+                /* Biarkan browser menentukan tinggi secara otomatis */
             }
 
-            .nota {
-                text-align: center;
-                border-bottom: 1px dashed black;
-                padding-bottom: 5px;
-                margin-bottom: 5px;
+            /* Atur ukuran kertas secara spesifik jika diperlukan (misal: A4) */
+            @page {
+                size: 58mm auto;
+                /* Lebar 58mm, tinggi otomatis */
             }
 
-            table {
+            .receipt {
+                /* Gaya untuk elemen receipt */
                 width: 100%;
-                border-collapse: collapse;
-
-                border-bottom: 1px dashed black;
+                /* Agar elemen receipt memenuhi seluruh lebar */
             }
+        }
+    </style>
+</head>
 
-            .items td,
-            .total td {
-                padding: 3px;
-            }
-
-            .total {
-                font-weight: bold;
-            }
-
-            .footer {
-                text-align: center;
-                font-size: 11px;
-                margin-top: 5px;
-            }
-
-            .print-btn {
-                display: block;
-                width: 100%;
-                padding: 10px;
-                margin-top: 10px;
-                font-size: 14px;
-                background-color: #007bff;
-                color: white;
-                border: none;
-                cursor: pointer;
-            }
-
-            .print-btn:hover {
-                background-color: #0056b3;
-            }
-        </style>
-    @endpush
-
-    <section>
-        <div class="flex justify-center">
-            <img src="https://cdn.pixabay.com/photo/2016/04/20/21/17/png-1342113_1280.png" alt=""
-                class="max-w-20 object-cover">
+<body onload="print()" style="color: black">
+    <div class="text-center">
+        <div>
+            <img class="py-2" src="{{$headers['logo']}}" alt="" style="width: 50pt;">
+            <h4>{{ $headers['toko'] }}</h4>
+            <p style="font-size: 10pt">
+                {{ $headers['alamat'] }}
+                <br>
+                {{ $headers['telpon'] }}
+            </p>
         </div>
-        <div class="nota mt-2">
-            <div class="flex gap-0 flex-col">
-                <span class="capitalize font-semibold" style="font-size: 16px">** Naira Gift **</span>
-                <span>- Craft & Flowrist -</span>
+    </div>
+    <hr>
+    <div class="mb-3" style="color: black; font-size: 10pt">
+        @foreach ($data->details as $item)
+            <div class="py-1">
+                <span class="">{{ $item->item_name }}</span>
+                <i>
+                    {{ $item->status_costume ? ' - Costume Amount' : '' }} 
+                    @if ($item->costume_status)
+                    <span class=""> - Costume</span>
+                    @endif
+                </i>
+                <div class="d-flex justify-content-between">
+                    <span>
+                        {{ formatRupiah($item->cost_item + $item->costume_total) }}
+                    </span>
+                    <span>
+                        x{{ $item->amount_item }}
+                    </span>
+                    <span>
+                        {{ formatRupiah($item->total_cost) }}
+                    </span>
+                </div>
             </div>
-            <p style="margin: 0;">Jl. Contoh No. 123, Kota</p>
+        @endforeach
+    </div>
+
+
+    <hr>
+    <hr>
+
+
+    <div class="py-2" style="font-size: 10pt">
+        <div class="d-flex justify-content-between">
+            <span>
+                SUBTOTAL
+            </span>
+            <span>Rp.
+                {{ number_format($data->total_payment) }}
+            </span>
         </div>
-
-        <table class="items">
-            @foreach ($data->details as $item)
-                <tr class="">
-                    <td>{{ $item->item_name }}</td>
-                    <td>{{ $item->amount_item }} x {{ $item->cost_item }}</td>
-                    <td>{{ $item->total_cost }}</td>
-                </tr>
-            @endforeach
-        </table>
-
-        <table class="total">
-            <tr>
-                <td>Subtotal</td>
-                <td style="text-align: right">{{ $data->total_payment }}</td>
-            </tr>
-            <tr>
-                <td>Paid</td>
-                <td style="text-align: right">{{ $data->total_paid }}</td>
-            </tr>
-            <tr>
-                <td>Jumlah Bayar</td>
-                <td style="text-align: right">{{ $data->payment->first()->total_paid }}</td>
-            </tr>
-            <tr>
-                <td>Unpaid</td>
-                <td style="text-align: right">{{ $data->total_unpaid }}</td>
-            </tr>
-        </table>
-
-        <div class="footer flex gap-0 flex-col items-center align-middle">
-            <span class="text-center">Terima kasih telah berbelanja!</span>
-            {{-- <span>Hub : 078999</span> --}}
+        <div class="d-flex justify-content-between">
+            <span>
+                Paid
+            </span>
+            <span>Rp.
+                {{ number_format($data->total_paid) }}
+            </span>
         </div>
-    </section>
-</x-master-layout>
+        <hr>
+        <div class="d-flex justify-content-between">
+            <span>
+                Jumlah Bayar
+            </span>
+            <span>Rp.
+                {{ number_format($data->payment->first()->total_paid) }}
+            </span>
+        </div>
+        <div class="d-flex justify-content-between">
+            <span>
+                Piutang
+            </span>
+            <span class="h5 text-waring">Rp.
+                {{ number_format($data->total_unpaid) }}
+            </span>
+        </div>
+    </div>
+
+
+    <div style="text-align: center; margin-top: 20pt">
+        <div style="text-align: center; margin-top: 15px">
+            Terima Kasih!!!!
+            <br>
+            ----
+        </div>
+</body>
+
+</html>

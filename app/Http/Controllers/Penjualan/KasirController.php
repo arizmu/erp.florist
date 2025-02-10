@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Penjualan;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppSetting;
 use App\Models\Barang;
 use App\Models\Costumer;
 use App\Models\Product\Product;
@@ -285,7 +286,19 @@ class KasirController extends Controller
         $queryTransaksi = Transaction::with(['details', 'costumer', 'payment' => function ($query) use ($invoice_id) {
             $query->where('id', $invoice_id);
         }])->find($transaksi_id);
-        return view('Pages.penjualan.invoice', ['data' => $queryTransaksi]);
+        
+        $app = AppSetting::first();
+        $headers = [
+            'toko' => $app->app_name,
+            'alamat' => $app->alamat,
+            'telpon' => $app->telpon,
+            'logo' => $app->foto
+        ];
+        
+        return view('Pages.penjualan.invoice', [
+            'data' =>   $queryTransaksi,
+            'headers' => $headers
+        ]);
     }
 
     public function bbCostume()
