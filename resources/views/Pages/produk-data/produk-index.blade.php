@@ -375,7 +375,9 @@
                                         text: "Invalid deleted request.",
                                         icon: "error"
                                     });
-                                }
+                                } finally(() => {
+                                    this.loadJson();
+                                })
                             }
                         });
                     },
