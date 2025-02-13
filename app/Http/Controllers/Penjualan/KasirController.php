@@ -50,6 +50,7 @@ class KasirController extends Controller
 
     public function prosesTransaksi(Request $request)
     {
+        // return $request->all();
         DB::beginTransaction();
         try {
             $detailsTransaksi = $request['items'];
@@ -70,8 +71,12 @@ class KasirController extends Controller
                     'code_product' => $product->code,
                     'details' => $item['product_costume_details']
                 ];
-                $totalPrice = intval($item['product_price']) * intval($item['product_qty']);
-                $subtotalPembayaran += intval($totalPrice);
+                $costumeTotal = intval($item['costume_total']);
+                $productPrice = intval($item['product_price']);
+                $productQty = intval($item['product_qty']);
+                $productTotal = $costumeTotal + $productPrice;
+                $totalPrice = $productTotal * $productQty;
+                $subtotalPembayaran += $totalPrice;
 
                 if ($product->qty < $item['product_qty']) {
                     return response()->json([
@@ -108,7 +113,7 @@ class KasirController extends Controller
                     'cost_item' => $value['cost_item'],
                     'total_cost' => $value['total_cost'],
                 ]);
-                
+
                 foreach ($value['details'] as $val) {
                     CostumeDetailTransaction::create([
                         'details_transactions_id' => $details->id,
@@ -286,7 +291,7 @@ class KasirController extends Controller
         $queryTransaksi = Transaction::with(['details', 'costumer', 'payment' => function ($query) use ($invoice_id) {
             $query->where('id', $invoice_id);
         }])->find($transaksi_id);
-        
+
         $app = AppSetting::first();
         $headers = [
             'toko' => $app->app_name,
@@ -294,7 +299,7 @@ class KasirController extends Controller
             'telpon' => $app->telpon,
             'logo' => $app->foto
         ];
-        
+
         return view('Pages.penjualan.invoice', [
             'data' =>   $queryTransaksi,
             'headers' => $headers

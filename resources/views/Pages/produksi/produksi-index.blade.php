@@ -339,7 +339,7 @@
                         keyword: '',
                         crafter: '',
                         status: "",
-                        range: 5,
+                        range: 15,
                         estimasi: ''
                     },
                     getData(url = "") {
