@@ -78,10 +78,11 @@
                                     </div>
                                     <div class="card-footer">
                                         <div class="flex gap-2 md:justify-start justify-center flex-wrap">
-                                            <button
-                                                class="btn btn-primary btn-circle btn-soft shadow-md" type="button">
+                                            <button class="btn btn-primary btn-circle btn-soft shadow-md" type="button"
+                                                x-on:click="barcode(item)">
                                                 <span class="icon-[bx--barcode-reader] size-5"></span>
                                             </button>
+
                                             <button x-on:click="openEdit(item)"
                                                 class="btn btn-secondary btn-circle btn-soft shadow-md" type="button">
                                                 <span class="icon-[line-md--upload-loop] size-6"></span>
@@ -234,7 +235,35 @@
                 </div>
             </div>
         </div>
+    </div>
 
+
+    <div for="barcode-view">
+        <button id="open-barcode-modal" type="button" class="btn btn-primary hidden" aria-haspopup="dialog"
+            aria-expanded="false" aria-controls="barcode-modal" data-overlay="#barcode-modal"> Open modal </button>
+
+        <div id="barcode-modal" class="overlay modal overlay-open:opacity-100 hidden" role="dialog" tabindex="-1">
+            <div class="modal-dialog overlay-open:opacity-100">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Dialog Title</h3>
+                        <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3"
+                            aria-label="Close" data-overlay="#basic-modal">
+                            <span class="icon-[tabler--x] size-4"></span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-soft btn-secondary"
+                            data-overlay="#basic-modal">Close</button>
+                        <button type="button" class="btn btn-primary">
+                            Cetak Barcode
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     @push('js')
@@ -375,11 +404,17 @@
                                         text: "Invalid deleted request.",
                                         icon: "error"
                                     });
-                                } finally(() => {
+                                } finally {
                                     this.loadJson();
-                                })
+                                }
                             }
                         });
+                    },
+
+                    barcode(index) {
+                        console.log(index);
+
+                        return BarcodeFunc(index);
                     },
 
                     init() {
@@ -387,6 +422,7 @@
                     }
                 }
             }
+ 
         </script>
     @endpush
 </x-base-layout>

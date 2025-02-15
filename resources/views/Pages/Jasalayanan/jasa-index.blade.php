@@ -34,7 +34,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <template x-for="(item, index) in xtableData" :key="index">
+                                <template x-for="(item, index) in data" :key="index">
                                     <tr>
                                         <td x-text="item.crafter.pegawai_name"></td>
                                         <td x-text="item.code_production"></td>
@@ -53,6 +53,22 @@
                             </tbody>
                         </table>
                     </div>
+                    
+                    <div class="py-4">
+                        <nav class="flex justify-end gap-x-1">
+                            <button type="button" class="btn btn-secondary btn-outline min-w-28" @click="prevPageFunc"
+                                :disabled="!prevPage">
+                                <span class="icon-[heroicons-outline--arrow-circle-left] size-5"></span>
+                                Previous
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-outline min-w-28" :disabled="!nextPage"
+                                @click="nextPageFunc">
+                                Next
+                                <span class="icon-[heroicons-outline--arrow-circle-right] size-5"></span>
+                            </button>
+                        </nav>
+                    </div>
+
                 </div>
             </div>
 
@@ -66,7 +82,7 @@
                 <div class="card-body">
                     <div class="p-4 pt-3 flex flex-col gap-5">
                         <div class="relative w-auto">
-                            <input type="text" placeholder="" class="input input-floating peer"
+                            <input type="text" placeholder="" class="input input-floating peer" x-model="search.estimasi"
                                 id="flatpickr-range" />
 
                             <label class="input-floating-label" for="floatingInput">
@@ -75,12 +91,7 @@
                         </div>
                         <div class="relative w-auto">
                             <select class="select select-floating" aria-label="Select floating label"
-                                id="selectFloating">
-                                <option>The Godfather</option>
-                                <option>The Shawshank Redemption</option>
-                                <option>Pulp Fiction</option>
-                                <option>The Dark Knight</option>
-                                <option>Schindler's List</option>
+                                id="selectFloating" x-model="search.crafter">
                             </select>
                             <label class="select-floating-label" for="selectFloating">
                                 Crafter
@@ -88,11 +99,11 @@
                         </div>
                         <div class="relative w-auto">
                             <select class="select select-floating" aria-label="Select floating label"
-                                id="selectFloating">
-                                <option>15</option>
-                                <option>25</option>
-                                <option>50</option>
-                                <option>100</option>
+                                id="selectFloating" x-model="search.range">
+                                <option value="15">15</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
                             </select>
                             <label class="select-floating-label" for="selectFloating">
                                 Data Range
@@ -102,7 +113,7 @@
                 </div>
                 <div class="card-footer text-center border-t py-2">
                     <div class="p-4">
-                        <button class="btn btn-outline btn-primary w-full">Filter</button>
+                        <button class="btn btn-outline btn-primary w-full" @click="searchFunc">Filter</button>
                     </div>
                 </div>
             </div>
@@ -112,20 +123,88 @@
         <script>
             function helloCrafter() {
                 return {
-                    xtableData: [],
-                    dataLoads() {
-                        axios.get(`/ref-jasa/jasa-crafter`)
-                        .then((res) => {
-                            const data = res.data.data;
-                            console.log(data);
-                            this.xtableData = data;
-                            
-                        }).catch((err) => {
-                            console.log(err);
-                        })
+                    data: [],
+                    links: [],
+                    nextPage: '',
+                    prevPage: '',
+
+                    search: {
+                        crafter: '',
+                        range: 15,
+                        estimasi: ''
                     },
+
+                    getData(url = "") {
+                        if (!url) {
+                            const params = new URLSearchParams({
+                                crafter: this.search.crafter ?? "",
+                                range: this.search.range ?? "",
+                                estimasi:this.search.estimasi ?? ""
+                            });
+                            url = `/ref-jasa/jasa-crafter?${params.toString()}`;
+                        }
+
+                        axios.get(url)
+                            .then(res => {
+                                const response = res.data.data;
+                                this.data = response.data;
+                                this.links = this.processPaginationLinks(response.links);
+                                this.nextPage = response.next_page_url ? this.addParamsToUrl(response.next_page_url) : null;
+                                this.prevPage = response.prev_page_url ? this.addParamsToUrl(response.prev_page_url) : null;
+                            })
+                            .catch(erres => {
+                                console.log(erres);
+                            });
+                    },
+                    processPaginationLinks(links) {
+                        return links.map(link => {
+                            if (link.url) {
+                                return {
+                                    ...link,
+                                    url: this.addParamsToUrl(link.url)
+                                };
+                            }
+                            return link;
+                        });
+                    },
+                    addParamsToUrl(url) {
+                        if (!url) return null;
+                        const newUrl = new URL(url);
+                        const searchParams = new URLSearchParams(newUrl.search);
+                        searchParams.set('crafter', this.search.crafter);
+                        searchParams.set('range', this.search.range);
+                        searchParams.set('estimasi', this.search.estimasi);
+                        newUrl.search = searchParams.toString();
+                        return newUrl.toString();
+                    },
+
+                    nextPageFunc() {
+                        if (this.nextPage) {
+                            this.getData(this.nextPage);
+                        }
+                    },
+
+                    prevPageFunc() {
+                        if (this.prevPage) {
+                            this.getData(this.prevPage);
+                        }
+                    },
+
+                    searchFunc() {
+
+                        console.log('Search params before send:', this.search);
+                        const params = new URLSearchParams({
+                            crafter: this.search.crafter,
+                            range: this.search.range,
+                            estimasi: this.search.estimasi
+                        });
+                        url = `/ref-jasa/jasa-crafter?${params.toString()}`;
+                        console.log('Final URL:', url);
+                        this.getData(url);
+                    },
+
                     init() {
-                        this.dataLoads()
+                        this.getData()
                     }
                 }
             }

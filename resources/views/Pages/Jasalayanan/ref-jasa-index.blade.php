@@ -20,7 +20,7 @@
             <div class="card shadow-lg">
                 <div class="card-body">
                     <div for="filter" class="border p-4 rounded-md flex justify-between flex-wrap gap-4">
-                        <input type="text" class="input input-lg max-w-4xl" x-model="search.keyword">
+                        <input type="text" class="input input-lg max-w-4xl" x-model="search.keyword" @keyup.enter="searchFunc">
                         <button class="btn btn-lg btn-soft btn-primary px-6" @click="searchFunc">
                             <span class="icon-[teenyicons--search-circle-outline]"></span>
                             Filter
@@ -64,7 +64,7 @@
                         </div>
                     </div>
                     <div class="py-4">
-                        <nav class="flex justify-between gap-x-1">
+                        <nav class="flex justify-end gap-x-1">
                             <button type="button" class="btn btn-secondary btn-outline min-w-28" @click="prevPageFunc"
                                 :disabled="!prevPage">
                                 <span class="icon-[heroicons-outline--arrow-circle-left] size-5"></span>
