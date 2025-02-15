@@ -98,12 +98,15 @@ class RJasaCraftingController extends Controller
 
     public function getJson()
     {
-        $query = RefSeviceCharge::query();
+        $query = RefSeviceCharge::when(request()->keywords, function ($key) {
+            $key->where('title', 'like', '%' . request()->keywords . '%');
+        })->latest();
         return response()->json([
             'status' => 'success',
             'code' => 200,
             'message' => 'data fetch!',
-            'data' => $query->paginate(15)
+            'data' => $query->paginate(15),
+            'request' => request()->all()
         ]);
     }
 

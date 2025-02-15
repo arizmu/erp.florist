@@ -85,4 +85,6 @@ class ProductController extends Controller
             return getResponseJson('Error', 500, 'Opps. data gagal dihapus!', true, $th->getMessage());
         }
     }
+
+    
 }

@@ -20,8 +20,8 @@
             <div class="card shadow-lg">
                 <div class="card-body">
                     <div for="filter" class="border p-4 rounded-md flex justify-between flex-wrap gap-4">
-                        <input type="text" class="input input-lg max-w-4xl">
-                        <button class="btn btn-lg btn-soft btn-primary px-6">
+                        <input type="text" class="input input-lg max-w-4xl" x-model="search.keyword">
+                        <button class="btn btn-lg btn-soft btn-primary px-6" @click="searchFunc">
                             <span class="icon-[teenyicons--search-circle-outline]"></span>
                             Filter
                         </button>
@@ -40,7 +40,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <template x-for="item in xdataTable">
+                                    <template x-for="item in data">
                                         <tr>
                                             <td x-text="item.title"></td>
                                             <td x-text="item.min_cost"></td>
@@ -54,7 +54,7 @@
                                                 </button>
                                                 <button x-on:click="hapus(item.id)">
                                                     <span class="icon-[tabler--trash-x]"
-                                                    style="width: 24px; height: 24px;"></span>
+                                                        style="width: 24px; height: 24px;"></span>
                                                 </button>
                                             </td>
                                         </tr>
@@ -62,6 +62,31 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                    <div class="py-4">
+                        <nav class="flex justify-between gap-x-1">
+                            <button type="button" class="btn btn-secondary btn-outline min-w-28" @click="prevPageFunc"
+                                :disabled="!prevPage">
+                                <span class="icon-[heroicons-outline--arrow-circle-left] size-5"></span>
+                                Previous
+                            </button>
+                            <div class="flex items-center gap-x-1">
+
+                                {{-- <button type="button"
+                                    class="btn btn-outline btn-square aria-[current='page']:text-border-primary aria-[current='page']:bg-primary/10">1</button>
+                                <button type="button"
+                                    class="btn btn-outline btn-square aria-[current='page']:text-border-primary aria-[current='page']:bg-primary/10"
+                                    aria-current="page">2</button>
+                                <button type="button"
+                                    class="btn btn-outline btn-square aria-[current='page']:text-border-primary aria-[current='page']:bg-primary/10">3</button> --}}
+
+                            </div>
+                            <button type="button" class="btn btn-secondary btn-outline min-w-28" :disabled="!nextPage"
+                                @click="nextPageFunc">
+                                Next
+                                <span class="icon-[heroicons-outline--arrow-circle-right] size-5"></span>
+                            </button>
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -71,7 +96,8 @@
                 <form @submit.prevent="isUpdated ? update : store">
                     <div class="card-header border-b flex gap-4 items-center">
                         <span class="icon-[oui--index-edit] size-6"></span>
-                        <h4 class="text-xl font-semibold font-space" x-text="isUpdated ? 'Update Form':'Form Input'">Form Input</h4>
+                        <h4 class="text-xl font-semibold font-space" x-text="isUpdated ? 'Update Form':'Form Input'">
+                            Form Input</h4>
                     </div>
                     <div class="card-body">
                         <div class="py-4 grid grid-cols-1 gap-2">
@@ -170,11 +196,72 @@
                         const response = await axios.post(url);
                         this.getData();
                     },
-                    async getData(key) {
-                        const url = '/ref-jasa/get-data-json';
-                        const response = await axios.get(url);
-                        const data = response.data.data;
-                        this.xdataTable = data.data;
+
+                    data: [],
+                    links: [],
+                    nextPage: '',
+                    prevPage: '',
+                    search: {
+                        keyword: ''
+                    },
+                    getData(url = "") {
+                        if (!url) {
+                            const params = new URLSearchParams({
+                                keywords: this.search.keyword ?? "",
+                            });
+                            url = `/ref-jasa/get-data-json?${params.toString()}`;
+                        }
+
+                        axios.get(url)
+                            .then(res => {
+                                // this.data = [];
+                                const response = res.data.data;
+                                this.data = response.data;
+                                // Update link pagination dengan parameter pencarian terkini
+                                this.links = this.processPaginationLinks(response.links);
+                                this.nextPage = response.next_page_url ? this.addParamsToUrl(response.next_page_url) : null;
+                                this.prevPage = response.prev_page_url ? this.addParamsToUrl(response.prev_page_url) : null;
+                            })
+                            .catch(erres => {
+                                console.log(erres);
+                            });
+                    },
+                    processPaginationLinks(links) {
+                        return links.map(link => {
+                            if (link.url) {
+                                return {
+                                    ...link,
+                                    url: this.addParamsToUrl(link.url)
+                                };
+                            }
+                            return link;
+                        });
+                    },
+                    addParamsToUrl(url) {
+                        if (!url) return null;
+                        const newUrl = new URL(url);
+                        const searchParams = new URLSearchParams(newUrl.search);
+                        searchParams.set('keywords', this.search.keyword);
+
+                        newUrl.search = searchParams.toString();
+                        return newUrl.toString();
+                    },
+                    nextPageFunc() {
+                        if (this.nextPage) {
+                            this.getData(this.nextPage);
+                        }
+                    },
+                    prevPageFunc() {
+                        if (this.prevPage) {
+                            this.getData(this.prevPage);
+                        }
+                    },
+                    searchFunc() {
+                        const params = new URLSearchParams({
+                            keywords: this.search.keyword
+                        });
+                        url = `/ref-jasa/get-data-json?${params.toString()}`;
+                        this.getData(url);
                     },
                     resetForm() {
                         this.xform = {
