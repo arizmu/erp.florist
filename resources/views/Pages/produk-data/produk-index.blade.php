@@ -78,8 +78,8 @@
                                     </div>
                                     <div class="card-footer">
                                         <div class="flex gap-2 md:justify-start justify-center flex-wrap">
-                                            <button
-                                                class="btn btn-primary btn-circle btn-soft shadow-md" type="button">
+                                            <button class="btn btn-primary btn-circle btn-soft shadow-md"
+                                                type="button">
                                                 <span class="icon-[bx--barcode-reader] size-5"></span>
                                             </button>
                                             <button x-on:click="openEdit(item)"
@@ -375,9 +375,9 @@
                                         text: "Invalid deleted request.",
                                         icon: "error"
                                     });
-                                } finally(() => {
+                                } finally {
                                     this.loadJson();
-                                })
+                                }
                             }
                         });
                     },

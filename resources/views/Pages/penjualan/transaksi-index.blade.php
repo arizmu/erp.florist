@@ -201,7 +201,7 @@
                                             </a>
                                             @if ($item->status_transaction == 'd')
                                                 <button class="btn btn-soft btn-circle btn-error"
-                                                    x-on:click="deleteTransaction({{ $item }})">
+                                                    x-on:click="archiveTransaction({{ $item }})">
                                                     <span class="icon-[tabler--trash]"></span>
                                                 </button>
                                             @endif
@@ -227,10 +227,53 @@
 
             function transaction() {
                 return {
-                    deleteTransaction(params) {
-                        
+                    archiveTransaction(index) {
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: "You won't be able to revert this!",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Yes, delete it!"
+                        }).then(async (result) => {
+                            if (result.isConfirmed) {
+                                Swal.fire({
+                                    icon: 'info',
+                                    title: "Loading...",
+                                    html: "Harap tunggu...",
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                });
+                                try {
+                                    const url = `/transaksi/archive/${index.id}`;
+                                    const response = await axios.post(url, index);
+                                    const result = response.data;
+                                    
+                                    setTimeout(() => {
+                                    // refresh halaman
+                                    // show alert
+                                    Swal.fire(
+                                        "Berhasil!",
+                                        "Data telah dimuat.",
+                                        "success"
+                                    );
+                                    }, 1500);
+                                     
+                                    location.reload();
+                                } catch (error) {
+                                    Swal.fire({
+                                        title: "Invalid!",
+                                        text: "Invalid deleted data.!",
+                                        icon: "error"
+                                    });
+                                }
 
-                    }
+                            }
+                        });
+                    },
                 }
             }
         </script>

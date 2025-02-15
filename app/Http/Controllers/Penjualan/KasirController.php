@@ -13,6 +13,7 @@ use App\Models\Transaction\PaymentTransaction;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -20,7 +21,7 @@ class KasirController extends Controller
 {
     public function index()
     {
-        $query = Transaction::query()->with('details')->orderBy('created_at', 'desc');
+        $query = Transaction::where('deleted_status', false)->with('details')->orderBy('created_at', 'desc');
         return view('Pages.penjualan.transaksi-index', [
             'data' => $query->paginate(15),
             'chart' => [
@@ -315,5 +316,43 @@ class KasirController extends Controller
             'status' => 'ok',
             'data' => $queryData
         ]);
+    }
+
+    public function archiveTransaksi(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $queryTransaksi = Transaction::find($id);
+            if ($queryTransaksi->preorder_status) {
+                $details = $queryTransaksi->details()->where('order_status', true)->get();
+            } else {
+                $details = $queryTransaksi->details()->where('order_status', false)->get();
+                foreach ($details as $value) {
+                    // return $value;
+                    if ($value->costume_status) {
+                        $costumeDetail = CostumeDetailTransaction::where('details_transactions_id', $value->id)->where('status_item', false)->get();
+
+                        foreach ($costumeDetail as $costume) {
+                            $barang = Barang::find($costume->code_item);
+                            $barang->stock += $costume->qty;
+                            $barang->save();
+                        }
+                    }
+                    $returnProduct = Product::find($value->production_id_or_product_id);
+                    $returnProduct->qty += $value->amount_item;
+                    $returnProduct->save();
+                }
+            }
+            $queryTransaksi->deleted_status = true;
+            $queryTransaksi->deleted_at = Carbon::now();
+            $queryTransaksi->deleted_by_user = Auth::user()->name;
+            $queryTransaksi->save();
+            DB::commit();
+            return getResponseJson('Success', 200, 'Data archive successful', $request->all(), false);
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            return getResponseJson('Error', 500, 'Data archive failed', $request->all(), $th->getMessage());
+        }
     }
 }

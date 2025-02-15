@@ -135,7 +135,18 @@ class PreoderController extends Controller
 
     public function preOrderStore(Request $request)
     {
-        // return $request->product;
+        $formValidasi = Validator::make($request->all(), [
+            // 'costumer.*' => ['required'],
+            'costumer.name' => ['required'],
+            'costumer.phone' => ['required', 'numeric'],
+            'costumer.point_use' => ['required', 'boolean'],
+            'costumer.point' => '',
+            'product' => ['required', 'array'],
+            'estimasi' => ['required', 'string']
+        ]);
+        if ($formValidasi->fails()) {
+            return getResponseJson('error', 400, 'validation failed', $request->all(), $formValidasi->errors()->all());
+        }
         DB::beginTransaction();
         try {
             // fungsi cek costumer;
@@ -143,13 +154,13 @@ class PreoderController extends Controller
             $costumerId = $costumerFunc['costumer_id'];
             $pointStatus = $costumerFunc['point_status'];
             $point = $costumerFunc['point'];
-            
+
             // fungsi crate proudotion barang
             $tanggal = explode("to", $request['estimasi']);
             $tanggalStart = Carbon::parse($tanggal[0]);
             $tanggalEnd = count($tanggal) > 1 ? Carbon::parse($tanggal[1]) : $tanggalStart;
             $production = $this->productionOrdering($request->product, $tanggalStart, $tanggalEnd);
-            
+
             // fungsi transaksi pereorder
             $totalPrice = 0;
             $detailTransaksi = [];
@@ -197,7 +208,7 @@ class PreoderController extends Controller
                 'error_line' => $th->getLine(),
             ]);
             return getResponseJson('errors', 500, 'internal server error', $request->all(), [
-                'error_id' => $errorId, 
+                'error_id' => $errorId,
                 'error_message' => $th->getMessage(),
             ]);
         }

@@ -407,7 +407,7 @@
                                         <label class="label label-text text-base" for="radioType4"> Wanita </label>
                                     </div>
                                 </div>
-                                <div class="w-full">
+                                <div class="w-full hidden">
                                     <label class="label label-text" for=""> Alamat Costumer</label>
                                     <textarea x-model="xcostumer.address" type="text" placeholder="Alamat..." class="textarea" id=""></textarea>
                                 </div>
@@ -417,13 +417,13 @@
                                         <input x-model="xcostumer.phone" @keyup.enter="findCostumer" type="text"
                                             placeholder="08..." class="input" id="" />
                                     </div>
-                                    <div class="w-full">
+                                    <div class="w-full hidden">
                                         <label class="label label-text" for="">Email</label>
                                         <input x-model="xcostumer.email" type="text" placeholder=".....@mail.com"
                                             class="input" id="" />
                                     </div>
                                 </div>
-                                <div class="w-full">
+                                <div class="w-full hidden">
                                     <label class="label label-text" for="">Sosial Media
                                         (FB/IG/Tiktok/Lainnya)</label>
                                     <input x-model="xcostumer.sosmed" type="text" placeholder="@username-sosmed"
@@ -626,11 +626,11 @@
                     },
                     async storeFinish() {
                         const data = {
-                            // items: this.xitems,
                             costumer: this.xcostumer,
-                            // production: this.xproduction
                             product: this.xproduct,
-                            estimasi: this.xproduction.estimasi
+                            estimasi: this.xproduction.estimasi,
+                            subtotal: this.subtotalPreorder,
+                            keterangan: this.xproduction.comment
                         }
                         this.isStoring = true;
                         try {
