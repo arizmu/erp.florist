@@ -19,29 +19,31 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mt-2" x-data="kasirIndex">
         <div class="md:col-span-1 lg:col-span-3 order-last md:order-first">
             <div class="bg-white p-6 rounded-lg shadow-lg">
-                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-7 gap-3">
+                <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-4 items-center gap-3">
                     <div class="md:col-span-1 lg:col-span-2">
-                        <div class="relative">
-                            <input type="text" placeholder="masukkan pencarian..." class="input input-floating peer"
-                                id="barcode-input" />
-                            <label class="input-floating-label" for="barcode-input">
-                                Barcode Scane
-                            </label>
+                        <div class="input-group ">
+                            <span class="input-group-text">
+                                <span class="icon-[tabler--search] text-base-content/80 size-6"></span>
+                            </span>
+                            <input type="search" x-model="search.keyword" @keyup.enter="searchFunc" class="input input-lg grow"
+                                placeholder="Search" id="kbdInput" />
+                            <label class="sr-only" for="kbdInput">Search</label>
+                            <span class="input-group-text gap-2">
+                                <kbd class="kbd kbd-sm">⌘</kbd>
+                                <kbd class="kbd kbd-sm">K</kbd>
+                            </span>
                         </div>
                     </div>
-                    <div class="md:col-span-2 lg:col-span-4">
-                        <div class="relative">
-                            <input type="text" placeholder="masukkan pencarian..." class="input input-floating peer"
-                                id="search-input" />
-                            <label class="input-floating-label" for="search-input">
-                                Search
-                            </label>
+                    <div class="md:col-span-1 lg:col-span-2">
+                        <div class="flex md:justify-end  gap-2">
+                            <button type="button" @click="searchFunc"
+                                class="btn btn-outline btn-lg btn-primary w-full rounded-full max-w-40">
+                                Filter
+                            </button>
+                            <button class="btn btn-outline btn-lg btn-error w-full rounded-full max-w-40">
+                                Barcode
+                            </button>
                         </div>
-                    </div>
-                    <div class="md:col-span-3 lg:col-span-1">
-                        <button class="btn btn-outline btn-primary w-full">
-                            Filter
-                        </button>
                     </div>
                 </div>
             </div>
@@ -102,6 +104,21 @@
                     </div>
                 </template>
             </div>
+            
+            <div class="py-4 pl-4">
+                <nav class="flex justify-start gap-x-1">
+                    <button type="button" class="btn btn-secondary btn-outline min-w-28" @click="prevPageFunc"
+                        :disabled="!prevPage">
+                        <span class="icon-[heroicons-outline--arrow-circle-left] size-5"></span>
+                        Previous
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-outline min-w-28" :disabled="!nextPage"
+                        @click="nextPageFunc">
+                        Next
+                        <span class="icon-[heroicons-outline--arrow-circle-right] size-5"></span>
+                    </button>
+                </nav>
+            </div>
         </div>
         <div class="md:col-span-1 lg:col-span-2 font-space">
             <div class="w-full bg-white shadow-lg relative ml-auto h-auto rounded-lg">
@@ -137,7 +154,8 @@
                                                 HARGA :
                                                 <span x-text="formatRupiah(item.product_price)"></span>
                                             </div>
-                                            <div class="badge badge-sm badge-soft badge-warning" x-show="item.product_costume">
+                                            <div class="badge badge-sm badge-soft badge-warning"
+                                                x-show="item.product_costume">
                                                 COSTUME :
                                                 <span x-text="formatRupiah(item.costume_total)"></span>
                                             </div>
@@ -560,14 +578,63 @@
                     },
 
                     dataTable: [],
-                    getProduct() {
-                        const url = "/transaksi/product-json";
-                        axios.get(url).then(res => {
-                            const data = res.data.data.data;
-                            this.dataTable = data;
-                        }).catch(err => {
+                    links: [],
+                    nextPage: '',
+                    prevPage: '',
+                    search: {
+                        keyword: '',
+                        range: 15,
+                    },
+                    getProduct(url = "") {
+                        if (!url) {
+                            const params = new URLSearchParams({
+                                keywords: this.search.keyword ?? "",
+                                range: this.search.range ?? ""
+                            });
+                            url = `/transaksi/product-json?${params.toString()}`;
+                        }
+                        axios.get(url).then((res) => {
+                            const response = res.data.data;
+                            this.dataTable = response.data;
+                            this.links = this.processPaginationLinks(response.links);
+                            this.nextPage = response.next_page_url ? this.addParamsToUrl(response.next_page_url) : null;
+                            this.prevPage = response.prev_page_url ? this.addParamsToUrl(response.prev_page_url) : null;
+                        }).catch((err) => {
                             console.log(err);
                         })
+                    },
+
+                    addParamsToUrl(url) {
+                        if (!url) return null;
+                        const newUrl = new URL(url);
+                        const searchParams = new URLSearchParams(newUrl.search);
+                        searchParams.set('keywords', this.search.keyword);
+                        searchParams.set('range', this.search.range);
+
+                        newUrl.search = searchParams.toString();
+                        return newUrl.toString();
+                    },
+
+                    nextPageFunc() {
+                        if (this.nextPage) {
+                            this.getProduct(this.nextPage);
+                        }
+                    },
+
+                    prevPageFunc() {
+                        if (this.prevPage) {
+                            this.getProduct(this.prevPage);
+                        }
+                    },
+
+                    searchFunc() {
+                        const params = new URLSearchParams({
+                            keywords: this.search.keyword,
+                            range: this.search.range
+                        });
+                        url = `/product/product-json?${params.toString()}`;
+                        console.log('Final URL:', url);
+                        this.getProduct(url);
                     },
 
                     resetItems() {

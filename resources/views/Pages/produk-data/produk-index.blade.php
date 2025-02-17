@@ -333,8 +333,7 @@
                             notifier.error("Failed to update product");
                         }
                     },
-
-                    data: [],
+                    
                     data: [],
                     links: [],
                     nextPage: '',
