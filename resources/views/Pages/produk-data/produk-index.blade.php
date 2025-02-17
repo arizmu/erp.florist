@@ -43,7 +43,7 @@
                         </h5>
                         <div
                             class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 py-4 max-h-screen overflow-auto rounded-lg">
-                            <template x-for="item in productData">
+                            <template x-for="item in data">
                                 <div class="card shadow-lg" :title="item.product_name" :alt="item.product_name">
                                     <figure class="min-h-44 max-h-44">
                                         <template x-if="item.img">
@@ -96,6 +96,20 @@
                                 </div>
                             </template>
                         </div>
+                        <div class="py-4 pl-4">
+                            <nav class="flex justify-start gap-x-1">
+                                <button type="button" class="btn btn-secondary btn-outline min-w-28" @click="prevPageFunc"
+                                    :disabled="!prevPage">
+                                    <span class="icon-[heroicons-outline--arrow-circle-left] size-5"></span>
+                                    Previous
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-outline min-w-28" :disabled="!nextPage"
+                                    @click="nextPageFunc">
+                                    Next
+                                    <span class="icon-[heroicons-outline--arrow-circle-right] size-5"></span>
+                                </button>
+                            </nav>
+                        </div>
                     </div>
                     <div class="md:col-span-2 order-first md:order-2">
                         <h5 class="font-semibold text-xl text-gray-600 flex justify-start gap-4 items-center">
@@ -106,7 +120,8 @@
                             <span class="input-group-text">
                                 <span class="icon-[tabler--search] text-base-content/80 size-6"></span>
                             </span>
-                            <input type="search" class="input input-lg grow" placeholder="Search" id="kbdInput" />
+                            <input type="search" x-model="search.keyword" class="input input-lg grow"
+                                placeholder="Search" id="kbdInput" />
                             <label class="sr-only" for="kbdInput">Search</label>
                             <span class="input-group-text gap-2">
                                 <kbd class="kbd kbd-sm">⌘</kbd>
@@ -114,17 +129,17 @@
                             </span>
                         </div>
                         <div class="relative w-full mt-4">
-                            <select class="select select-floating " aria-label="Select floating label"
-                                id="selectFloating">
-                                <option>15</option>
-                                <option>25</option>
-                                <option>50</option>
-                                <option>100</option>
+                            <select x-model="search.range" class="select select-floating "
+                                aria-label="Select floating label" id="selectFloating">
+                                <option value="15">15</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
                             </select>
                             <label class="select-floating-label" for="selectFloating">Data Range</label>
                         </div>
                         <div class="flex justify-between flex-wrap gap-2 mt-4">
-                            <button class="btn btn-primary btn-soft">
+                            <button class="btn btn-primary btn-soft" @click="searchFunc" type="button">
                                 <span class="icon-[tabler--user-search]"></span>
                                 Filter
                             </button>
@@ -319,16 +334,65 @@
                         }
                     },
 
-                    productData: [],
-                    loadJson() {
-                        this.productData = [];
-                        const url = `/product/product-json`;
+                    data: [],
+                    data: [],
+                    links: [],
+                    nextPage: '',
+                    prevPage: '',
+                    search: {
+                        keyword: '',
+                        range: 15,
+                    },
+                    loadJson(url = "") {
+                        if (!url) {
+                            const params = new URLSearchParams({
+                                keywords: this.search.keyword ?? "",
+                                range: this.search.range ?? ""
+                            });
+                            url = `/product/product-json?${params.toString()}`;
+                        }
                         axios.get(url).then((res) => {
-                            const data = res.data.data.data
-                            this.productData = data;
+                            const response = res.data.data;
+                            this.data = response.data;
+                            this.links = this.processPaginationLinks(response.links);
+                            this.nextPage = response.next_page_url ? this.addParamsToUrl(response.next_page_url) : null;
+                            this.prevPage = response.prev_page_url ? this.addParamsToUrl(response.prev_page_url) : null;
                         }).catch((err) => {
                             console.log(err);
                         })
+                    },
+
+                    addParamsToUrl(url) {
+                        if (!url) return null;
+                        const newUrl = new URL(url);
+                        const searchParams = new URLSearchParams(newUrl.search);
+                        searchParams.set('keywords', this.search.keyword);
+                        searchParams.set('range', this.search.range);
+
+                        newUrl.search = searchParams.toString();
+                        return newUrl.toString();
+                    },
+
+                    nextPageFunc() {
+                        if (this.nextPage) {
+                            this.loadJson(this.nextPage);
+                        }
+                    },
+
+                    prevPageFunc() {
+                        if (this.prevPage) {
+                            this.loadJson(this.prevPage);
+                        }
+                    },
+
+                    searchFunc() {
+                        const params = new URLSearchParams({
+                            keywords: this.search.keyword,
+                            range: this.search.range
+                        });
+                        url = `/product/product-json?${params.toString()}`;
+                        console.log('Final URL:', url);
+                        this.loadJson(url);
                     },
 
                     openModal() {
@@ -422,7 +486,6 @@
                     }
                 }
             }
- 
         </script>
     @endpush
 </x-base-layout>

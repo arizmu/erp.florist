@@ -16,14 +16,22 @@ class ProductController extends Controller
         return view('Pages.produk-data.produk-index');
     }
 
-    public function proudctJson()
+    public function proudctJson(Request $request)
     {
-        $query = Product::query()->isDelete(false);
+        $query = Product::query()->isDelete(false)->latest();
+
+        $query->when($request->keywords, function ($q) use ($request) {
+            $q->where(function ($subQuery) use ($request) {
+                $subQuery->where('product_name', 'LIKE', '%' . $request->keywords . '%')
+                    ->orWhere('code', 'LIKE', '%' . $request->keywords . '%');
+            });
+        });
+
         return response()->json([
             'status' => 'success',
             'code' => 200,
             'message' => 'Data fetch successfully',
-            'data' => $query->paginate(15)
+            'data' => $query->paginate($request->range ?? 15)
         ]);
     }
 
