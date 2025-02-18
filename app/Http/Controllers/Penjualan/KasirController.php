@@ -43,7 +43,9 @@ class KasirController extends Controller
                     });
             });
         });
-        // filter estimasi
+        $query->when($request->status, function ($subQuery) use ($request) {
+            $subQuery->where('status_transaction', $request->status);
+        });
         if ($request->estimasi) {
             $tanggal = explode("to", $request->estimasi);
             $tanggalStart = Carbon::parse($tanggal[0]);
