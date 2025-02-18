@@ -96,6 +96,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::get('/cetak-invoice/{transaksi_id}/{invoice_id}', 'invoice');
             Route::get('/get-barang', 'bbCostume');
             Route::post('archive/{transaksi_id}', 'archiveTransaksi');
+            Route::get('/index-transaksi-json/', 'transaksiJsonIndex');
         });
         Route::controller(PreoderController::class)->group(function () {
             Route::get('/pre-order-form', 'formLayout')->name('preoder.form.layout');

@@ -16,12 +16,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-
 class KasirController extends Controller
 {
     public function index()
     {
-        $query = Transaction::where('deleted_status', false)->with('details')->orderBy('created_at', 'desc');
+        $query = Transaction::where('deleted_status', 0)->with('details')->orderBy('created_at', 'desc');
         return view('Pages.penjualan.transaksi-index', [
             'data' => $query->paginate(15),
             'chart' => [
@@ -29,6 +28,35 @@ class KasirController extends Controller
                 'paid' => 0,
                 'unpaid' => 0
             ]
+        ]);
+    }
+
+    public function transaksiJsonIndex(Request $request)
+    {
+        $query = Transaction::query()->isDelete(false)->with('details','costumer')->orderBy('created_at', 'desc');
+        $query->when($request->keywords, function ($q) use ($request) {
+            $q->where(function ($subQuery) use ($request) {
+                $subQuery->where('code', 'LIKE', '%' . $request->keywords . '%')
+                    ->orWhereHas('costumer', function ($costumerQuery) use ($request) {
+                        $costumerQuery->where('name', 'LIKE', '%' . $request->keywords . '%')
+                        ->orWhere('no_telp', 'LIKE', '%' . $request->keywords . '%');
+                    });
+            });
+        });
+        // filter estimasi
+        if ($request->estimasi) {
+            $tanggal = explode("to", $request->estimasi);
+            $tanggalStart = Carbon::parse($tanggal[0]);
+            $tanggalEnd = count($tanggal) > 1 ? Carbon::parse($tanggal[1]) : $tanggalStart;
+            $query->whereBetween('transaction_date', [$tanggalStart->format('Y-m-d'), $tanggalEnd->format('Y-m-d')]);
+        } else {
+            $query->where('transaction_date', Carbon::now()->format('Y-m-d'));
+        }
+        return response()->json([
+            'status' => 'success',
+            'code' => 200,
+            'message' => 'Data fetch successfully',
+            'data' => $query->paginate($request->range ?? 15)
         ]);
     }
 

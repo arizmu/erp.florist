@@ -28,4 +28,8 @@ class Transaction extends Model
     {
         return $this->belongsTo(Costumer::class, 'costumer_id', 'id');
     }
+
+    public function scopeIsDelete() {
+        return $this->where('deleted_status', false);
+    }
 }
