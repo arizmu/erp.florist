@@ -25,8 +25,8 @@
                             <span class="input-group-text">
                                 <span class="icon-[tabler--search] text-base-content/80 size-6"></span>
                             </span>
-                            <input type="search" x-model="search.keyword" @keyup.enter="searchFunc" class="input input-lg grow"
-                                placeholder="Search" id="kbdInput" />
+                            <input type="search" x-model="search.keyword" @keyup.enter="searchFunc"
+                                class="input input-lg grow" placeholder="Search" id="kbdInput" />
                             <label class="sr-only" for="kbdInput">Search</label>
                             <span class="input-group-text gap-2">
                                 <kbd class="kbd kbd-sm">⌘</kbd>
@@ -37,10 +37,12 @@
                     <div class="md:col-span-1 lg:col-span-2">
                         <div class="flex md:justify-end  gap-2">
                             <button type="button" @click="searchFunc"
-                                class="btn btn-outline btn-lg btn-primary w-full rounded-full max-w-40">
+                                class="btn btn-outline btn-lg btn-primary w-full rounded-full max-w-40 font-space">
                                 Filter
                             </button>
-                            <button class="btn btn-outline btn-lg btn-error w-full rounded-full max-w-40">
+                            <button class="btn btn-outline btn-lg btn-error w-full rounded-full font-space max-w-40"
+                                aria-haspopup="dialog" aria-expanded="false" aria-controls="modal-barcode-add-item"
+                                data-overlay="#modal-barcode-add-item">
                                 Barcode
                             </button>
                         </div>
@@ -104,7 +106,7 @@
                     </div>
                 </template>
             </div>
-            
+
             <div class="py-4 pl-4">
                 <nav class="flex justify-start gap-x-1">
                     <button type="button" class="btn btn-secondary btn-outline min-w-28" @click="prevPageFunc"
@@ -141,7 +143,8 @@
                                         <template x-if="item.img_url">
                                             <img :src='item.img_url' class="w-full h-full object-cover" />
                                         </template>
-                                        <span x-show="!item.img_url" class="icon-[fxemoji--whiteflower] size-24"></span>
+                                        <span x-show="!item.img_url"
+                                            class="icon-[fxemoji--whiteflower] size-24"></span>
                                     </div>
 
                                     <div class="flex flex-col">
@@ -411,6 +414,34 @@
                             <button type="button" class="btn btn-primary" @click="addItemCostume">Add
                                 Product</button>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div for="modal barcode">
+            <div id="modal-barcode-add-item"
+                class="overlay modal overlay-open:opacity-100 modal-middle hidden [--overlay-backdrop:static] rounded-3xl"
+                role="dialog" tabindex="-1">
+                <div class="modal-dialog overlay-open:opacity-100">
+                    <div class="modal-content">
+                        {{-- <form @submit.prevernt="addItemByBarcode" event.stopPropagation()> --}}
+                            <div class="modal-header">
+                                <h3 class="font-semibold font-space text-gray-400">Barcode Scan</h3>
+                                <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3"
+                                    aria-label="Close" data-overlay="#modal-barcode-add-item">
+                                    <span class="icon-[tabler--x] size-4"></span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="text" class="input input-lg text-center text-black rounded-full" x-model="bInput" :disabled="bAction">
+                            </div>
+                            <div class="modal-footer flex justify-center">
+                                <button type="button" x-on:click="addItemByBarcode"
+                                    class="btn btn-error btn-soft rounded-full w-full font-space font-semibold">
+                                    <span x-text="bAction ? 'Load...':'Enter'"></span>
+                                </button>
+                            </div>
+                        {{-- </form> --}}
                     </div>
                 </div>
             </div>
@@ -842,6 +873,20 @@
                             img_url: "",
                             price_rupiah_view: 0,
                         };
+                    },
+
+                    bInput: '',
+                    bAction: false,
+                    addItemByBarcode() {
+                        this.bAction = true;
+                        console.log(this.bInput);
+                        console.log('oke');
+                        // sleep for 10 seconds
+                        setTimeout(() => {
+                            this.bAction = false;
+                            this.bInput = '';
+                            this.searchProduct(this.bInput);
+                        }, 1000);
                     },
 
                     init() {

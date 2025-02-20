@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+
 class KasirController extends Controller
 {
     public function index()
@@ -33,27 +34,31 @@ class KasirController extends Controller
 
     public function transaksiJsonIndex(Request $request)
     {
-        $query = Transaction::query()->isDelete(false)->with('details','costumer')->orderBy('created_at', 'desc');
-        $query->when($request->keywords, function ($q) use ($request) {
+        $query = Transaction::query()->isDelete(false)->with('details', 'costumer')->latest()->when($request->keywords, function ($q) use ($request) {
             $q->where(function ($subQuery) use ($request) {
                 $subQuery->where('code', 'LIKE', '%' . $request->keywords . '%')
                     ->orWhereHas('costumer', function ($costumerQuery) use ($request) {
                         $costumerQuery->where('name', 'LIKE', '%' . $request->keywords . '%')
-                        ->orWhere('no_telp', 'LIKE', '%' . $request->keywords . '%');
+                            ->orWhere('no_telp', 'LIKE', '%' . $request->keywords . '%');
                     });
             });
-        });
-        $query->when($request->status, function ($subQuery) use ($request) {
+        })->when(in_array($request->status, ['d', 's', 'p']), function ($subQuery) use ($request) {
             $subQuery->where('status_transaction', $request->status);
         });
-        if ($request->estimasi) {
-            $tanggal = explode("to", $request->estimasi);
-            $tanggalStart = Carbon::parse($tanggal[0]);
-            $tanggalEnd = count($tanggal) > 1 ? Carbon::parse($tanggal[1]) : $tanggalStart;
-            $query->whereBetween('transaction_date', [$tanggalStart->format('Y-m-d'), $tanggalEnd->format('Y-m-d')]);
-        } else {
-            $query->where('transaction_date', Carbon::now()->format('Y-m-d'));
-        }
+        // if ($request->estimasi) {
+        //     $tanggal = explode("to", $request->estimasi);
+        //     $tanggalStart = Carbon::parse($tanggal[0]);
+        //     $tanggalEnd = count($tanggal) > 1 ? Carbon::parse($tanggal[1]) : $tanggalStart;
+        //     $query->whereBetween('transaction_date', [$tanggalStart->format('Y-m-d'), $tanggalEnd->format('Y-m-d')]);
+        // } else {
+        //     $query->where('transaction_date', Carbon::now()->format('Y-m-d'));
+        // }
+
+        $tanggal = $request->estimasi ? explode("to", $request->estimasi) : [Carbon::now()->toDateString()];
+        $tanggalStart = Carbon::parse($tanggal[0])->format('Y-m-d');
+        $tanggalEnd = isset($tanggal[1]) ? Carbon::parse($tanggal[1])->format('Y-m-d') : $tanggalStart;
+        $query->whereBetween('transaction_date', [$tanggalStart, $tanggalEnd]);
+        
         return response()->json([
             'status' => 'success',
             'code' => 200,

@@ -133,11 +133,13 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::get('/user-get-pegawai', 'getPegawai');
         });
     });
+
     Route::prefix('product')->controller(ProductController::class)->group(function () {
         Route::get('/', 'index')->name('product.index');
         Route::get('/product-json', 'proudctJson');
         Route::post('/update-product-data/{key}', 'update');
         Route::post('/delete-product-data/{key}', 'delete');
+        Route::get('/product-barcode/{key}', 'generateBarcode');
     });
 
     Route::prefix('jenis-product')->controller(JenisProductController::class)->group(function () {

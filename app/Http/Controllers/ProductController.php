@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Picqer\Barcode\BarcodeGeneratorHTML;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ProductController extends Controller
 {
@@ -71,7 +73,8 @@ class ProductController extends Controller
         }
     }
 
-    public function delete(Request $request, $key) {
+    public function delete(Request $request, $key)
+    {
         $valid = Validator::make($request->all(), [
             'id' => ['required', 'exists:products,id']
         ]);
@@ -94,5 +97,15 @@ class ProductController extends Controller
         }
     }
 
-    
+    public function generateBarcode($key)
+    {
+        $generator = new BarcodeGeneratorHTML();
+        $barcode = $generator->getBarcode($key, $generator::TYPE_CODE_128);
+        $pdf = Pdf::loadView('pdf.invoice', [
+            'barcode' => $barcode,
+            'code' => $key
+        ]);
+        $pdf->setPaper([0, 0, 198, 85]);
+        return $pdf->stream('invoice.pdf'); 
+    }
 }

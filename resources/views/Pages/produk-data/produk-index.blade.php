@@ -98,13 +98,13 @@
                         </div>
                         <div class="py-4 pl-4">
                             <nav class="flex justify-start gap-x-1">
-                                <button type="button" class="btn btn-secondary btn-outline min-w-28" @click="prevPageFunc"
-                                    :disabled="!prevPage">
+                                <button type="button" class="btn btn-secondary btn-outline min-w-28"
+                                    @click="prevPageFunc" :disabled="!prevPage">
                                     <span class="icon-[heroicons-outline--arrow-circle-left] size-5"></span>
                                     Previous
                                 </button>
-                                <button type="button" class="btn btn-secondary btn-outline min-w-28" :disabled="!nextPage"
-                                    @click="nextPageFunc">
+                                <button type="button" class="btn btn-secondary btn-outline min-w-28"
+                                    :disabled="!nextPage" @click="nextPageFunc">
                                     Next
                                     <span class="icon-[heroicons-outline--arrow-circle-right] size-5"></span>
                                 </button>
@@ -333,7 +333,7 @@
                             notifier.error("Failed to update product");
                         }
                     },
-                    
+
                     data: [],
                     links: [],
                     nextPage: '',
@@ -476,7 +476,8 @@
 
                     barcode(index) {
                         console.log(index);
-
+                        // js link to route 
+                        window.open(`/product/product-barcode/${index.code}`, '_blank');
                         return BarcodeFunc(index);
                     },
 

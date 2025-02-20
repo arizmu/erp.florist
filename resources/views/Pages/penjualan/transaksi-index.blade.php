@@ -136,6 +136,7 @@
                                         <th>Subtotal</th>
                                         <th>Paid</th>
                                         <th>Unpaid</th>
+                                        <th>Tgl</th>
                                         <th>status</th>
                                         <th>#</th>
                                     </tr>
@@ -169,6 +170,7 @@
                                                     Pre-order
                                                 </span>
                                             </td>
+                                            <td x-text="item.transaction_date"></td>
                                             <td>
                                                 <a class="btn btn-soft btn-circle btn-primary"
                                                     x-show="item.status_transaction == 'd' || item.status_transaction == 'p'"
@@ -217,11 +219,19 @@
     @push('js')
         <script>
             window.addEventListener('load', function() {
-                // Range Date Picker
                 flatpickr('#flatpickr-range', {
-                    mode: 'range'
-                })
+                    mode: 'range',
+                    // defaultDate: [formattedDate, formattedDate] // Set default sebagai range tanggal hari ini
+                });
             })
+
+            const today = new Date();
+            const formattedDate = today.getFullYear() + '-' +
+                String(today.getMonth() + 1).padStart(2, '0') + '-' +
+                String(today.getDate()).padStart(2, '0');
+
+            console.log(formattedDate); // Output: 2025-02-19
+
 
             function transaction() {
                 return {
@@ -276,7 +286,7 @@
                     search: {
                         keyword: '',
                         range: 15,
-                        estimasi: '',
+                        estimasi: `${formattedDate}`,
                         status: ''
                     },
                     getProduct(url = "") {
@@ -373,6 +383,8 @@
 
                     init() {
                         this.getProduct();
+                        const tanggal = new Date("YYYY-MM-DD");
+                        console.log(formattedDate);
 
                     }
                 }
