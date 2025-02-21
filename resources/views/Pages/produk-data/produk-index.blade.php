@@ -78,10 +78,18 @@
                                     </div>
                                     <div class="card-footer">
                                         <div class="flex gap-2 md:justify-start justify-center flex-wrap">
+
                                             <button class="btn btn-primary btn-circle btn-soft shadow-md" type="button"
                                                 x-on:click="barcode(item)">
                                                 <span class="icon-[bx--barcode-reader] size-5"></span>
                                             </button>
+
+                                            <a class="btn btn-success btn-circle btn-soft shadow-md" href="#"
+                                                @click.prevent="window.open(`/barcode?barcode=${item.code}`, '_blank', 'width=600,height=400,left=200,top=100')">
+                                                <span class="icon-[bx--barcode-reader] size-5"></span>
+                                            </a>
+
+
 
                                             <button x-on:click="openEdit(item)"
                                                 class="btn btn-secondary btn-circle btn-soft shadow-md" type="button">
@@ -475,9 +483,7 @@
                     },
 
                     barcode(index) {
-                        console.log(index);
-                        // js link to route 
-                        window.open(`/product/product-barcode/${index.code}`, '_blank');
+                        window.open(`/product/product-barcode/${index.code}`, '_blank', 'width=600,height=400,left=200,top=100');
                         return BarcodeFunc(index);
                     },
 

@@ -171,5 +171,9 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         Route::get('/', 'index')->name('jasa.crafter.index');
         Route::get('/data-json', 'dataJson');
     });
+    
+    Route::get('/barcode', function() {
+        return view('pdf.barcode');
+    });
 
 });

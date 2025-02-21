@@ -101,11 +101,16 @@ class ProductController extends Controller
     {
         $generator = new BarcodeGeneratorHTML();
         $barcode = $generator->getBarcode($key, $generator::TYPE_CODE_128);
+
+        $barcodeUrl = "https://barcode.tec-it.com/barcode.ashx?data=$key&code=Code128&translate-esc=on";
+        $barcodeImage = base64_encode(file_get_contents($barcodeUrl));
+        $barcodeSrc = 'data:image/png;base64,' . $barcodeImage;
+
         $pdf = Pdf::loadView('pdf.invoice', [
             'barcode' => $barcode,
-            'code' => $key
+            'code' => $barcodeSrc
         ]);
-        $pdf->setPaper([0, 0, 198, 85]);
+        $pdf->setPaper([0, 0, 163, 130], 'portrait');
         return $pdf->stream('invoice.pdf'); 
     }
 }
