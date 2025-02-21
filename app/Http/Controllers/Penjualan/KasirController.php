@@ -396,4 +396,21 @@ class KasirController extends Controller
             return getResponseJson('Error', 500, 'Data archive failed', $request->all(), $th->getMessage());
         }
     }
+
+    public function scanBarcode(Request $request) {
+        $query = Product::where('code', $request->barcode)
+        ->isDelete(false)
+        ->where('qty', '>=', 1)
+        ->first();
+        if (!$query) {
+            return response()->json([
+               'status' => 'error',
+               'message' => 'Barang tidak ditemukan',
+            ], 404);
+        }
+        return response()->json([
+           'status' =>'success',
+            'data' => $query,
+        ], 200);
+    }
 }

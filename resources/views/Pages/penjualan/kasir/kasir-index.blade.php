@@ -431,7 +431,7 @@
                         </div>
                         <div class="modal-body">
                             <input type="text" class="input input-lg text-center text-black rounded-full"
-                                x-model="bInput" :disabled="bAction" x-on:keyup.enter="addItemByBarcode">
+                                x-model="bInput" :disabled="bAction" @keyup="bInputAct" autofocus id="bInput">
                         </div>
                         <div class="modal-footer flex justify-center">
                             <button type="button" x-on:click="addItemByBarcode"
@@ -447,8 +447,6 @@
     </div>
 
     @push('js')
-        <!-- Alpine Core -->
-        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <script>
             window.addEventListener('load', function() {
                 flatpickr('#flatpickr-range', {
@@ -880,8 +878,6 @@
                     addItemByBarcode() {
                         this.bAction = true;
                         const findIndex = this.dataTable.find(findata => findata.code == this.bInput);
-                        // get first findIndex value
-                        // findIndex.first();
                         if (findIndex) {
                             const data = {
                                 'product_id': findIndex.id,
@@ -902,16 +898,49 @@
                                 notifier.success(`Item ${data.product_name} added.`)
                             }
                         } else {
-
+                            const url = '/transaksi/barcode-scan';
+                            axios.post(url, {
+                                    barcode: this.bInput
+                                })
+                                .then(response => {
+                                    const data = response.data.data;
+                                    const findItems = this.items.find(arraydata => arraydata.product_id === data.id);
+                                    if (findItems) {
+                                        notifier.warning(`Item product sudah ada`)
+                                    } else {
+                                        const product = {
+                                            'product_id': data.id,
+                                            'product_name': data.product_name,
+                                            'product_qty': 1,
+                                            'product_price': data.price,
+                                            'total_price': data.price * 1,
+                                            'product_costume': false,
+                                            'product_costume_details': [],
+                                            'costume_total': 0,
+                                            'img_url': data.img
+                                        }
+                                        this.items.push(product);
+                                        notifier.success(`Item ${data.product_name} added.`)
+                                    }
+                                })
+                                .catch(error => {
+                                    if (error.status === 404) {
+                                        notifier.warning(error.response.data.message);
+                                        return;
+                                    }
+                                    notifier.alert(error.message);
+                                });
                         }
-
                         this.funcSubtotal();
-
-                        setTimeout(() => {
-                            this.bAction = false;
-                            this.bInput = '';
-                            this.bInput.autofocus;
-                        }, 1000);
+                        this.bInput = '';
+                        const textInput = document.getElementById('bInput');
+                        textInput.focus();
+                        this.bAction = false;
+                    },
+                    bInputAct() {
+                        if (this.bInput.length === 8) {
+                            this.addItemByBarcode();
+                        }
                     },
 
                     init() {

@@ -97,6 +97,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::get('/get-barang', 'bbCostume');
             Route::post('archive/{transaksi_id}', 'archiveTransaksi');
             Route::get('/index-transaksi-json/', 'transaksiJsonIndex');
+            Route::post('/barcode-scan', 'scanBarcode');
         });
         Route::controller(PreoderController::class)->group(function () {
             Route::get('/pre-order-form', 'formLayout')->name('preoder.form.layout');
