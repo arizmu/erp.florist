@@ -100,19 +100,23 @@
         </div>
 
         {{-- modal add --}}
-        <div id="modal-form-data" class="overlay modal overlay-open:opacity-100 hidden" role="dialog" tabindex="-1">
+        <div id="modal-form-data" class="overlay modal overlay-open:opacity-100 hidden [--body-scroll:true]"
+            role="dialog" tabindex="-1">
             <div class="modal-dialog overlay-open:opacity-100">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3 class="modal-title" x-text="isSubmitting ? 'Form Updated' : 'Form Created'"></h3>
+                        <div class="flex gap-4 justify-start">
+                            <span class="icon-[mynaui--user-diamond] size-6"></span>
+                        <h3 class="font-semibold font-space text-xl text-gray-500" x-text="isSubmitting ? 'Form Updated' : 'Form Created'"></h3>
+                        </div>
                         <button type="button" class="btn hidden btn-text btn-circle btn-sm absolute end-3 top-3"
                             aria-label="Close" data-overlay="#modal-form-data" id="modal-close">
                             <span class="icon-[tabler--x] size-4"></span>
                         </button>
                     </div>
-                    <form enctype="multipart/form-data" @submit.prevent="!isSubmitting ? storeData:UpdatedData">
-                        <div class="modal-body">
-                            <div class="flex flex-col gap-3">
+                    <div class="modal-body ">
+                        <form enctype="multipart/form-data" @submit.prevent="!isSubmitting ? storeData:UpdatedData">
+                            <div class="flex flex-col gap-3 p-4 rounded-lg border">
                                 <div class="w-full">
                                     <label class="label label-text" for="">
                                         Nama Lengkap
@@ -180,15 +184,15 @@
                                         id="" />
                                 </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-soft btn-secondary"
-                                @click="modalClose">Close</button>
-                            <button type="submit" class="btn btn-primary"
-                                x-text="isLoad ? 'is loading...':'Created Data'" :disabled="isLoad">Save
-                                changes</button>
-                        </div>
-                    </form>
+                            <div class="flex justify-end gap-4 py-4">
+                                <button type="button" class="btn btn-soft btn-secondary rounded-full font-space"
+                                    @click="modalClose">Close</button>
+                                <button type="submit" class="btn btn-primary rounded-full px-4 font-space"
+                                    x-text="isLoad ? 'is loading...':'Created Data'" :disabled="isLoad">Save
+                                    changes</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -297,7 +301,7 @@
         {{-- end modal --}}
     </div>
 
-    @push("js")
+    @push('js')
         <script>
             window.addEventListener('load', function() {
                 flatpickr('#flatpickr-range', {

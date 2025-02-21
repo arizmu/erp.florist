@@ -18,10 +18,10 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mt-2" x-data="kasirIndex">
         <div class="md:col-span-1 lg:col-span-3 order-last md:order-first">
-            <div class="bg-white p-6 rounded-lg shadow-lg">
-                <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-4 items-center gap-3">
-                    <div class="md:col-span-1 lg:col-span-2">
-                        <div class="input-group ">
+            <div class=" p-6 rounded-lg shadow-lg">
+                <div class="flex justify-start flex-wrap gap-3">
+                    <div>
+                        <div class="input-group w-full">
                             <span class="input-group-text">
                                 <span class="icon-[tabler--search] text-base-content/80 size-6"></span>
                             </span>
@@ -34,18 +34,15 @@
                             </span>
                         </div>
                     </div>
-                    <div class="md:col-span-1 lg:col-span-2">
-                        <div class="flex md:justify-end  gap-2">
-                            <button type="button" @click="searchFunc"
-                                class="btn btn-outline btn-lg btn-primary w-full rounded-full max-w-40 font-space">
-                                Filter
-                            </button>
-                            <button class="btn btn-outline btn-lg btn-error w-full rounded-full font-space max-w-40"
-                                aria-haspopup="dialog" aria-expanded="false" aria-controls="modal-barcode-add-item"
-                                data-overlay="#modal-barcode-add-item">
-                                Barcode
-                            </button>
-                        </div>
+                    <div class="flex justify-start gap-2">
+                        <button type="button" @click="searchFunc" class="btn btn-soft btn-lg btn-warning btn-circle">
+                            <span class="icon-[ci--note-search] size-6"></span>
+                        </button>
+                        <button class="btn btn-soft btn-lg btn-error btn-circle" aria-haspopup="dialog"
+                            aria-expanded="false" aria-controls="modal-barcode-add-item"
+                            data-overlay="#modal-barcode-add-item">
+                            <span class="icon-[material-symbols--barcode-scanner-rounded] size-6"></span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -425,22 +422,23 @@
                 <div class="modal-dialog overlay-open:opacity-100">
                     <div class="modal-content">
                         {{-- <form @submit.prevernt="addItemByBarcode" event.stopPropagation()> --}}
-                            <div class="modal-header">
-                                <h3 class="font-semibold font-space text-gray-400">Barcode Scan</h3>
-                                <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3"
-                                    aria-label="Close" data-overlay="#modal-barcode-add-item">
-                                    <span class="icon-[tabler--x] size-4"></span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <input type="text" class="input input-lg text-center text-black rounded-full" x-model="bInput" :disabled="bAction">
-                            </div>
-                            <div class="modal-footer flex justify-center">
-                                <button type="button" x-on:click="addItemByBarcode"
-                                    class="btn btn-error btn-soft rounded-full w-full font-space font-semibold">
-                                    <span x-text="bAction ? 'Load...':'Enter'"></span>
-                                </button>
-                            </div>
+                        <div class="modal-header">
+                            <h3 class="font-semibold font-space text-gray-400">Barcode Scan</h3>
+                            <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3"
+                                aria-label="Close" data-overlay="#modal-barcode-add-item">
+                                <span class="icon-[tabler--x] size-4"></span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="text" class="input input-lg text-center text-black rounded-full"
+                                x-model="bInput" :disabled="bAction" x-on:keyup.enter="addItemByBarcode">
+                        </div>
+                        <div class="modal-footer flex justify-center">
+                            <button type="button" x-on:click="addItemByBarcode"
+                                class="btn btn-error btn-soft rounded-full w-full font-space font-semibold">
+                                <span x-text="bAction ? 'Load...':'Enter'"></span>
+                            </button>
+                        </div>
                         {{-- </form> --}}
                     </div>
                 </div>
@@ -449,6 +447,8 @@
     </div>
 
     @push('js')
+        <!-- Alpine Core -->
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <script>
             window.addEventListener('load', function() {
                 flatpickr('#flatpickr-range', {
@@ -879,13 +879,38 @@
                     bAction: false,
                     addItemByBarcode() {
                         this.bAction = true;
-                        console.log(this.bInput);
-                        console.log('oke');
-                        // sleep for 10 seconds
+                        const findIndex = this.dataTable.find(findata => findata.code == this.bInput);
+                        // get first findIndex value
+                        // findIndex.first();
+                        if (findIndex) {
+                            const data = {
+                                'product_id': findIndex.id,
+                                'product_name': findIndex.product_name ?? '[404]',
+                                'product_qty': 1,
+                                'product_price': findIndex.price,
+                                'total_price': findIndex.price * 1,
+                                'product_costume': false,
+                                'product_costume_details': [],
+                                'costume_total': 0,
+                                'img_url': findIndex.img
+                            }
+                            const findItems = this.items.find(arraydata => arraydata.product_id === data.product_id);
+                            if (findItems) {
+                                notifier.alert(`Item product sudah ada`)
+                            } else {
+                                this.items.push(data);
+                                notifier.success(`Item ${data.product_name} added.`)
+                            }
+                        } else {
+
+                        }
+
+                        this.funcSubtotal();
+
                         setTimeout(() => {
                             this.bAction = false;
                             this.bInput = '';
-                            this.searchProduct(this.bInput);
+                            this.bInput.autofocus;
                         }, 1000);
                     },
 
