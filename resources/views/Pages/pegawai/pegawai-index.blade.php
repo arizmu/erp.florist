@@ -107,7 +107,8 @@
                     <div class="modal-header">
                         <div class="flex gap-4 justify-start">
                             <span class="icon-[mynaui--user-diamond] size-6"></span>
-                        <h3 class="font-semibold font-space text-xl text-gray-500" x-text="isSubmitting ? 'Form Updated' : 'Form Created'"></h3>
+                            <h3 class="font-semibold font-space text-xl text-gray-500"
+                                x-text="isSubmitting ? 'Form Updated' : 'Form Created'"></h3>
                         </div>
                         <button type="button" class="btn hidden btn-text btn-circle btn-sm absolute end-3 top-3"
                             aria-label="Close" data-overlay="#modal-form-data" id="modal-close">
@@ -128,8 +129,8 @@
                                     <label class="label label-text" for="">
                                         Nomor Identitas
                                     </label>
-                                    <input x-model="form.no_identitas" type="text" placeholder="..." class="input"
-                                        id="" />
+                                    <input x-model="form.no_identitas" type="text" placeholder="..."
+                                        class="input" id="" />
                                 </div>
                                 <div class="w-full">
                                     <label class="label label-text" for="">
@@ -211,15 +212,19 @@
             <div class="modal-dialog overlay-open:opacity-100">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3 class="modal-title">Form Update</h3>
+
+                        <div class="flex gap-4 justify-start">
+                            <span class="icon-[mynaui--user-diamond] size-6"></span>
+                            <h3 class="font-semibold font-space text-xl text-gray-500">Form Update</h3>
+                        </div>
                         <button type="button" class="btn hidden btn-text btn-circle btn-sm absolute end-3 top-3"
                             aria-label="Close" data-overlay="#modal-open-edit" id="modal-close">
                             <span class="icon-[tabler--x] size-4"></span>
                         </button>
                     </div>
-                    <form enctype="multipart/form-data" @submit.prevent="UpdatedData">
-                        <div class="modal-body">
-                            <div class="flex flex-col gap-3">
+                    <div class="modal-body">
+                        <form enctype="multipart/form-data" @submit.prevent="UpdatedData">
+                            <div class="flex flex-col gap-3 p-4 py-2 border rounded-lg">
                                 <div class="w-full">
                                     <label class="label label-text" for="">
                                         Nama Lengkap
@@ -287,14 +292,15 @@
                                         id="" />
                                 </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-soft btn-secondary" aria-label="Close"
-                                data-overlay="#modal-open-edit" id="modal-edit-close">Close</button>
-                            <button type="submit" class="btn btn-primary" :disabled="isLoad"
-                                x-text="isLoad ? 'is loading...':'Updated data'"></button>
-                        </div>
-                    </form>
+                            <div class="flex gap-4 justify-end mt-4">
+                                <button type="button" class="btn btn-soft font-space btn-secondary rounded-full"
+                                    aria-label="Close" data-overlay="#modal-open-edit"
+                                    id="modal-edit-close">Close</button>
+                                <button type="submit" class="btn btn-soft font-space btn-error rounded-full px-4"
+                                    :disabled="isLoad" x-text="isLoad ? 'is loading...':'Updated data'"></button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
