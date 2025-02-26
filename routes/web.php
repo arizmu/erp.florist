@@ -160,6 +160,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         Route::post('/delete-data/{key}', 'delete');
         Route::get('/get-data-json', 'getJson');
         Route::get('/jasa-crafter', 'jasaLayanan');
+        Route::get('/export-pdf', 'exportPDF');
     });
 
     Route::controller(CostumerController::class)->group(function() {

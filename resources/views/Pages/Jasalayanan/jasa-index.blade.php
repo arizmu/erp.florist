@@ -92,6 +92,10 @@
                         <div class="relative w-auto">
                             <select class="select select-floating" aria-label="Select floating label"
                                 id="selectFloating" x-model="search.crafter">
+                                <option value="">All</option>
+                                <template x-for="crafter in crafters">
+                                    <option :value="crafter.id" x-text="crafter.pegawai_name"></option>
+                                </template>
                             </select>
                             <label class="select-floating-label" for="selectFloating">
                                 Crafter
@@ -111,9 +115,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer text-center border-t py-2">
+                <div class="card-footer border-t py-2">
                     <div class="p-4">
-                        <button class="btn btn-outline btn-primary w-full" @click="searchFunc">Filter</button>
+                        <button class="btn btn-outline btn-primary " @click="searchFunc">
+                            <span class="icon-[stash--filter] size-5"></span>
+                            Filter
+                        </button>
+                        <button class="btn btn-outline btn-error ml-2" @click="exportPDF">
+                            <span class="icon-[foundation--page-export-pdf]"></span>
+                            PDF Export
+                        </button>
                     </div>
                 </div>
             </div>
@@ -203,7 +214,28 @@
                         this.getData(url);
                     },
 
+                    crafters : '',
+                    getCrafter() {
+                        axios.get('/transaksi/get-crafter')
+                           .then(res => {
+                                const crafters = res.data;
+                                this.crafters = crafters.data;
+                           })
+                           .catch(err => {
+                                console.log(err);
+                            }); 
+                    },
+
+                    exportPDF() {
+                        if (this.search.estimasi === '') {
+                            alert('Harap pilih periode terlebih dahulu!');
+                            return;
+                        }
+                        window.open(`/ref-jasa/export-pdf?crafter=${this.search.crafter}&estimasi=${this.search.estimasi}`, '_blank', 'width=800, height=800');
+                    },
+
                     init() {
+                        this.getCrafter()
                         this.getData()
                     }
                 }

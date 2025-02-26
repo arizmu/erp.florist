@@ -43,4 +43,9 @@ class Production extends Model
     {
         return $this->hasMany(ProductionOtherDetail::class, 'production_id', 'id');
     }
+
+    public function scopeIsDelete($query) {
+        $query->where('delete_status', false);
+        return $query;
+    }
 }
