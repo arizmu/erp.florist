@@ -47,11 +47,11 @@
                     <span class="icon-[tabler--category] size-6"></span>
                     <span class="">Production</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                {{-- <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
                     href="{{ route('jenis.product.index') }}">
                     <span class="icon-[tabler--paperclip] size-6"></span>
                     <span class="">Jenis Product</span>
-                </a>
+                </a> --}}
             </div>
         </div>
         <div class="flex gap-4 flex-col">
@@ -79,14 +79,14 @@
                     <span class="">Invetory Masuk</span>
                 </a>
 
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                {{-- <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
                     href="{{ route('inventory.form') }}">
                     <span class="icon-[basil--history-outline] size-6" style="width: 24px; height: 24px;"></span>
                     <span class="">
                         History
 
                     </span>
-                </a>
+                </a> --}}
             </div>
         </div>
         <div class="flex gap-4 flex-col">
@@ -122,7 +122,7 @@
                 Manajemen Pelaporan
             </h4>
             <div class="flex flex-col gap-1 border-l px-2">
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
+                {{-- <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -130,8 +130,9 @@
                     </svg>
 
                     <span class="">Laporan Invetaris</span>
-                </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
+                </a> --}}
+                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                    href="{{ route('laporanPenjualanLayout') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -140,7 +141,7 @@
 
                     <span class="">Laporan Penjualan</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
+                {{-- <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -148,7 +149,7 @@
                     </svg>
 
                     <span class="">Laporan Produksi</span>
-                </a>
+                </a> --}}
             </div>
         </div>
         <div class="flex gap-4 flex-col">

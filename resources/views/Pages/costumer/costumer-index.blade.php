@@ -21,9 +21,9 @@
                 <div class="card-body">
                     <div for="filter"
                         class="flex justify-start md:justify-end flex-wrap gap-4 items-center align-middle">
-                        <input type="text" class="input max-w-96 rounded-full" x-model="xsearch"
-                            placeholder="ketik untuk mencari ..." @keyup.enter="getData">
-                        <button class="btn btn-circle btn-soft btn-info" type="button" @click="getData">
+                        <input type="text" class="input max-w-96 rounded-full" x-model="search.key"
+                            placeholder="ketik untuk mencari ..." @keyup.enter="searchFunc">
+                        <button class="btn btn-circle btn-soft btn-info" type="button" @click="searchFunc">
                             <span class="icon-[tabler--user-search]" style="width: 24px; height: 24px;"></span>
                         </button>
                     </div>
@@ -52,6 +52,10 @@
                                                     class="btn btn-soft btn-warning btn-circle btn-sm">
                                                     <span class="icon-[material-symbols--edit-square-outline]"></span>
                                                 </button>
+                                                <button x-on:click="hapus(item)"
+                                                    class="btn btn-soft btn-error btn-circle btn-sm">
+                                                    <span class="icon-[mi--delete]"></span>
+                                                </button>
                                             </td>
                                         </tr>
                                     </template>
@@ -60,19 +64,20 @@
                         </div>
                     </div>
 
-                    <nav class="flex items-center gap-x-1 mt-4">
-                        <button type="button" class="btn btn-soft">Previous</button>
-                        <div class="flex items-center gap-x-1">
-                            <button type="button"
-                                class="btn btn-soft btn-square aria-[current='page']:text-bg-soft-primary">1</button>
-                            <button type="button"
-                                class="btn btn-soft btn-square aria-[current='page']:text-bg-soft-primary"
-                                aria-current="page">2</button>
-                            <button type="button"
-                                class="btn btn-soft btn-square aria-[current='page']:text-bg-soft-primary">3</button>
-                        </div>
-                        <button type="button" class="btn btn-soft">Next</button>
-                    </nav>
+                    <div class="py-4">
+                        <nav class="flex justify-end gap-x-1">
+                            <button type="button" class="btn btn-secondary btn-outline min-w-28" @click="prevPageFunc"
+                                :disabled="!prevPage">
+                                <span class="icon-[heroicons-outline--arrow-circle-left] size-5"></span>
+                                Previous
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-outline min-w-28" :disabled="!nextPage"
+                                @click="nextPageFunc">
+                                Next
+                                <span class="icon-[heroicons-outline--arrow-circle-right] size-5"></span>
+                            </button>
+                        </nav>
+                    </div>
 
                 </div>
             </div>
@@ -89,37 +94,29 @@
                         <div class="py-4 grid grid-cols-1 gap-2 font-space">
                             <div class="flex flex-col gap-2">
                                 <label for="">Costumer</label>
-                                <input type="text" class="input">
+                                <input type="text" class="input" x-model="xform.costumer">
                             </div>
-                            <div class="flex  gap-2 py-1">
-                                <div class="flex items-center gap-1">
-                                    <input type="radio" name="radio-4"
-                                        class="radio checked:border-yellow-500 checked:bg-yellow-500"
-                                        id="radioCustomColor1" />
-                                    <label class="label label-text text-base" for="radioCustomColor1"> Laki-laki
-                                    </label>
-                                </div>
-                                <div class="flex items-center gap-1">
-                                    <input type="radio" name="radio-4"
-                                        class="radio checked:border-purple-500 checked:bg-purple-500"
-                                        id="radioCustomColor2" checked />
-                                    <label class="label label-text text-base" for="radioCustomColor2"> Perempuan
-                                    </label>
-                                </div>
+                            <div class=" flex flex-col gap-2">
+                                <label for="">Jenis kelamin</label>
+                                <select class="select" x-model="xform.gender">
+                                    <option value="L">Laki-laki</option>
+                                    <option value="P">Perempuan</option>
+                                </select>
+                                
                             </div>
                             <div class="flex flex-col gap-2">
                                 <div class="flex flex-col gap-2">
                                     <label for="">Address</label>
-                                    <textarea class="textarea" placeholder=""></textarea>
+                                    <textarea class="textarea" placeholder="" x-model="xform.address"></textarea>
                                 </div>
                             </div>
                             <div class="flex flex-col gap-2">
                                 <label for="">Telpon</label>
-                                <input type="text" class="input">
+                                <input type="text" class="input" x-model="xform.telpon">
                             </div>
                             <div class="flex flex-col gap-2">
                                 <label for="">Email</label>
-                                <input type="text" class="input">
+                                <input type="text" class="input" x-model="xform.email">
                             </div>
                         </div>
                     </div>
@@ -164,33 +161,194 @@
                     },
                     getEdit(index) {
                         this.isUpdated = true;
-
+                        this.xform.id = index.id
+                        this.xform.costumer = index.name
+                        this.xform.gender = index.jenis_kelamin
+                        this.xform.address = index.alamat
+                        this.xform.telpon = index.no_telp
+                        this.xform.email = index.email
+                        this.id = index.id
+                        console.log(this.xform);
+                        
                     },
+
                     async update() {
                         this.isSubmit = true;
-
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: "udpate this data !",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Yes, update it!"
+                        }).then(async (result) => {
+                            if (result.isConfirmed) {
+                                try {
+                                    const url = `/costumers/update`;
+                                    const res = await axios.post(url, this.xform);
+                                    if (res.status === 200) {
+                                        this.getData();
+                                        Swal.fire({
+                                            title: "Updated!",
+                                            text: "Your file has been updated.",
+                                            icon: "success"
+                                        });
+                                        this.isUpdated = false;
+                                        this.resetForm();
+                                    } else {
+                                        Swal.fire({
+                                            title: "Error!",
+                                            text: "Something went wrong.",
+                                            icon: "error"
+                                        });
+                                    }
+                                    this.isSubmit = false;
+                                } catch (error) {
+                                    console.error(error);
+                                    this.isSubmit = false;
+                                    Swal.fire({
+                                        title: "Error!",
+                                        text: "Something went wrong.",
+                                        icon: "error"
+                                    });
+                                }
+                            }
+                        });
                     },
-                    async hapus(key) {
 
+                    resetForm() {
+                        this.isUpdated = false;
+                        this.xsearch = '';
+                        this.xdataTable = [];
+                        this.xform = {
+                            id: '',
+                            costumer: '',
+                            gender: '',
+                            address: '',
+                            telpon: '',
+                            email: '',
+                            point: ''
+                        };
                     },
-                    async getData() {
-                        try {
-                            console.log(this.xsearch);
 
-                            const url = '/costumer/data-json?key=' + this.xsearch;
-                            const response = await axios.get(url);
-                            const data = response.data.data;
-                            this.xdataTable = data.data;
-                        } catch (error) {
-                            console.log(error);
+                    hapus(key) {
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: "You won't be able to revert this!",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Yes, delete it!"
+                        }).then(async (result) => {
+                            if (result.isConfirmed) {
+                                try {
+                                    console.log(key);
+                                    const url = `/costumers/delete`;
+                                    const res = await axios.post(url, key);
+                                    if (res.status === 200) {
+                                        this.getData();
+                                        Swal.fire({
+                                            title: "Deleted!",
+                                            text: "Your file has been deleted.",
+                                            icon: "success"
+                                        });
+                                    } else {
+                                        console.log(res.status);
+                                        Swal.fire({
+                                            title: "Deleted!",
+                                            text: "Failed to delete your file.",
+                                            icon: "error"
+                                        });
+                                    }
+                                } catch (error) {
+                                    console.log(error.message);
+                                    Swal.fire({
+                                        title: "Deleted!",
+                                        text: "Invalid deleted request.",
+                                        icon: "error"
+                                    });
+                                }
+                            }
+                        });
+                    },
+
+                    data: [],
+                    links: [],
+                    nextPage: '',
+                    prevPage: '',
+                    search: {
+                        key: ''
+                    },
+                    getData(url = "") {
+                        if (!url) {
+                            const params = new URLSearchParams({
+                                key: this.search.key ?? "",
+                            });
+                            url = `/costumer/data-json?${params.toString()}`;
+                        }
+                        axios.get(url)
+                            .then(res => {
+                                const response = res.data.data;
+                                this.xdataTable = response.data;
+                                this.links = this.processPaginationLinks(response.links);
+                                this.nextPage = response.next_page_url ? this.addParamsToUrl(response.next_page_url) : null;
+                                this.prevPage = response.prev_page_url ? this.addParamsToUrl(response.prev_page_url) : null;
+
+                            })
+                            .catch(erres => {
+                                console.log(erres);
+                            });
+                    },
+
+                    processPaginationLinks(links) {
+                        return links.map(link => {
+                            if (link.url) {
+                                return {
+                                    ...link,
+                                    url: this.addParamsToUrl(link.url)
+                                };
+                            }
+                            return link;
+                        });
+                    },
+
+                    addParamsToUrl(url) {
+                        if (!url) return null;
+                        const newUrl = new URL(url);
+                        const searchParams = new URLSearchParams(newUrl.search);
+                        searchParams.set('crafter', this.search.crafter);
+                        searchParams.set('range', this.search.range);
+                        searchParams.set('estimasi', this.search.estimasi);
+                        newUrl.search = searchParams.toString();
+                        return newUrl.toString();
+                    },
+
+                    nextPageFunc() {
+                        if (this.nextPage) {
+                            this.getData(this.nextPage);
                         }
                     },
-                    resetForm() {
 
+                    prevPageFunc() {
+                        if (this.prevPage) {
+                            this.getData(this.prevPage);
+                        }
                     },
+
+                    searchFunc() {
+                        console.log('Search params before send:', this.search);
+                        const params = new URLSearchParams({
+                            key: this.search.key,
+                        });
+                        url = `/costumer/data-json?${params.toString()}`;
+                        console.log('Final URL:', url);
+                        this.getData(url);
+                    },
+
                     init() {
                         this.getData();
-                        this.resetForm();
                     }
                 }
             }

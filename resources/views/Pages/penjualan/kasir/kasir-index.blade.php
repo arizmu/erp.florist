@@ -60,7 +60,7 @@
                         <div class="card-body">
                             <h5 class="card-title text-lg font-space" style="margin-top: -10pt"
                                 :title="item.product_name">
-                                <span x-text="shortText(item.product_name, 25) ?? '[404]'" class="capitalize">Nama
+                                <span x-text="item.product_name ?? '[404]'" class="capitalize">Nama
                                     Product</span>
                             </h5>
                             <div class="p-2 border rounded-lg -mb-2 mt-2 shadow">

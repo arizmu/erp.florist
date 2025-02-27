@@ -7,6 +7,7 @@ use App\Http\Controllers\CraftingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\invetory\InventoryController;
 use App\Http\Controllers\JenisProductController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\management\PegawaiController;
 use App\Http\Controllers\Penjualan\KasirController;
 use App\Http\Controllers\PreoderController;
@@ -98,6 +99,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::post('archive/{transaksi_id}', 'archiveTransaksi');
             Route::get('/index-transaksi-json/', 'transaksiJsonIndex');
             Route::post('/barcode-scan', 'scanBarcode');
+            Route::get('/dash-transaksi-json/', 'dashTransactions');
         });
         Route::controller(PreoderController::class)->group(function () {
             Route::get('/pre-order-form', 'formLayout')->name('preoder.form.layout');
@@ -166,11 +168,22 @@ Route::group(['middleware' => 'auth.manuals'], function () {
     Route::controller(CostumerController::class)->group(function() {
         Route::get('costumers', 'index')->name('costumer.index');
         Route::get('costumer/data-json', 'jsonData');
+        Route::post('costumers/delete', 'hapus');
+        Route::post('costumers/update', 'update');
     });
 
     Route::controller(CraftingController::class)->prefix('jasa-crafter')->group(function() {
         Route::get('/', 'index')->name('jasa.crafter.index');
         Route::get('/data-json', 'dataJson');
+    });
+
+    Route::group([
+        'prefix' => 'laporan',
+        'controller' => LaporanController::class
+    ], function() {
+        Route::get('/transaksi-penjualan', 'laporanPenjualanLayout')->name('laporanPenjualanLayout');
+        Route::get('/penjualan/export-pdf', 'PdfExportPenjualan');
+        Route::get('/json-data', 'laporanPenjualanJson');
     });
     
     Route::get('/barcode', function() {

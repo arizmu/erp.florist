@@ -34,31 +34,24 @@ class KasirController extends Controller
 
     public function transaksiJsonIndex(Request $request)
     {
-        $query = Transaction::query()->isDelete(false)->with('details', 'costumer')->latest()->when($request->keywords, function ($q) use ($request) {
-            $q->where(function ($subQuery) use ($request) {
-                $subQuery->where('code', 'LIKE', '%' . $request->keywords . '%')
-                    ->orWhereHas('costumer', function ($costumerQuery) use ($request) {
-                        $costumerQuery->where('name', 'LIKE', '%' . $request->keywords . '%')
-                            ->orWhere('no_telp', 'LIKE', '%' . $request->keywords . '%');
-                    });
+        $query = Transaction::query()->isDelete(false)->with('details', 'costumer')->latest()
+            ->when($request->keywords, function ($q) use ($request) {
+                $q->where(function ($subQuery) use ($request) {
+                    $subQuery->where('code', 'LIKE', '%' . $request->keywords . '%')
+                        ->orWhereHas('costumer', function ($costumerQuery) use ($request) {
+                            $costumerQuery->where('name', 'LIKE', '%' . $request->keywords . '%')
+                                ->orWhere('no_telp', 'LIKE', '%' . $request->keywords . '%');
+                        });
+                });
+            })->when(in_array($request->status, ['d', 's', 'p']), function ($subQuery) use ($request) {
+                $subQuery->where('status_transaction', $request->status);
             });
-        })->when(in_array($request->status, ['d', 's', 'p']), function ($subQuery) use ($request) {
-            $subQuery->where('status_transaction', $request->status);
-        });
-        // if ($request->estimasi) {
-        //     $tanggal = explode("to", $request->estimasi);
-        //     $tanggalStart = Carbon::parse($tanggal[0]);
-        //     $tanggalEnd = count($tanggal) > 1 ? Carbon::parse($tanggal[1]) : $tanggalStart;
-        //     $query->whereBetween('transaction_date', [$tanggalStart->format('Y-m-d'), $tanggalEnd->format('Y-m-d')]);
-        // } else {
-        //     $query->where('transaction_date', Carbon::now()->format('Y-m-d'));
-        // }
 
         $tanggal = $request->estimasi ? explode("to", $request->estimasi) : [Carbon::now()->toDateString()];
         $tanggalStart = Carbon::parse($tanggal[0])->format('Y-m-d');
         $tanggalEnd = isset($tanggal[1]) ? Carbon::parse($tanggal[1])->format('Y-m-d') : $tanggalStart;
         $query->whereBetween('transaction_date', [$tanggalStart, $tanggalEnd]);
-        
+
         return response()->json([
             'status' => 'success',
             'code' => 200,
@@ -397,20 +390,39 @@ class KasirController extends Controller
         }
     }
 
-    public function scanBarcode(Request $request) {
+    public function scanBarcode(Request $request)
+    {
         $query = Product::where('code', $request->barcode)
-        ->isDelete(false)
-        ->where('qty', '>=', 1)
-        ->first();
+            ->isDelete(false)
+            ->where('qty', '>=', 1)
+            ->first();
         if (!$query) {
             return response()->json([
-               'status' => 'error',
-               'message' => 'Barang tidak ditemukan',
+                'status' => 'error',
+                'message' => 'Barang tidak ditemukan',
             ], 404);
         }
         return response()->json([
-           'status' =>'success',
+            'status' => 'success',
             'data' => $query,
         ], 200);
+    }
+
+
+    public function dashTransactions(Request $request)
+    {
+        $query = Transaction::query()->isDelete(false)->where(function ($result) use ($request) {
+            $tanggal = $request->estimasi ? explode("to", $request->estimasi) : [Carbon::now()->toDateString()];
+            $tanggalStart = Carbon::parse($tanggal[0])->format('Y-m-d');
+            $tanggalEnd = isset($tanggal[1]) ? Carbon::parse($tanggal[1])->format('Y-m-d') : $tanggalStart;
+            $result->whereBetween('transaction_date', [$tanggalStart, $tanggalEnd]);
+        })->get();
+
+        $data = [
+            'total_paid' => $query->sum('total_paid'),
+            'total_unpaid' => $query->sum('total_unpaid'),
+            'total_penjualan' => $query->sum('total_payment'),
+        ];
+        return response()->json($data);
     }
 }

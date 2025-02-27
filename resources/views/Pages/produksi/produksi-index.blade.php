@@ -22,11 +22,11 @@
                 <img src="https://readymadeui.com/management-img.webp" alt="Image"
                     class="rounded-md object-cover w-full h-full" />
             </div>
-            <div class="flex flex-col gap-4 md:gap-6 w-full md:11/12 lg:w-10/12">
+            <div class="flex flex-col items-center gap-4 md:gap-6 w-full md:11/12 lg:w-10/12">
                 <h2 class="text-3xl font-extrabold text-purple-700 mb-4 font-space">
                     Managemen Produksi
                 </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg gap-4">
+                {{-- <div class="grid grid-cols-1 md:grid-cols-2 lg gap-4">
                     <div
                         class="col-span-1 md:col-span-2 bg-orange-300 rounded-2xl p-5 shadow flex justify-start gap-8 align-middle items-center">
                         <div class="">
@@ -86,7 +86,7 @@
                             <span class="text-gray-50 font-semibold">Complate</span>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>

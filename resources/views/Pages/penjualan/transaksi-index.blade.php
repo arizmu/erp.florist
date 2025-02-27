@@ -32,7 +32,9 @@
                             class="col-span-1 md:col-span-2 bg-blue-300 rounded-2xl p-5 shadow flex justify-between gap-8 align-middle items-center">
                             <div class="flex flex-col gap-0">
                                 <span class="text-gray-50 font-semibold">Total Revenue</span>
-                                <span class="font-bold text-4xl text-white">Rp. {{ $chart['pendapatan'] }}</span>
+                                <span class="font-bold text-4xl text-white">
+                                    Rp. <span x-text="totalRevenue"></span>
+                                </span>
                             </div>
                             <div class="">
                                 <div class="border-2 rounded-full bg-white p-3 border-red-500">
@@ -53,7 +55,9 @@
                             class="bg-red-300  rounded-2xl p-5 shadow flex flex-wrap gap-8 align-middle items-center justify-between lg:justify-between"">
                             <div class="flex flex-col gap-0">
                                 <span class="text-gray-50 font-semibold">Total Unpaid</span>
-                                <span class="font-bold text-4xl text-white">Rp. {{ $chart['unpaid'] }}</span>
+                                <span class="font-bold text-4xl text-white">Rp. 
+                                    <span x-text="totalPaid"></span>
+                                </span>
                             </div>
                             <div class="">
                                 <div class="border-2 rounded-full bg-white p-3 border-yellow-500 text-yellow-500">
@@ -71,7 +75,9 @@
                             class="bg-green-300 rounded-2xl p-5 shadow flex flex-wrap gap-8 align-middle items-center justify-between lg:justify-between">
                             <div class="flex flex-col gap-0">
                                 <span class="text-gray-50 font-semibold">Total Paid</span>
-                                <span class="font-bold text-4xl text-white">Rp. {{ $chart['paid'] }}</span>
+                                <span class="font-bold text-4xl text-white">Rp.
+                                    <span x-text="totalUnpaid"></span>
+                                </span>
                             </div>
                             <div class="">
                                 <div class="border-2 rounded-full bg-white p-3 border-yellow-500 text-yellow-500">
@@ -305,8 +311,6 @@
                             this.nextPage = response.next_page_url ? this.addParamsToUrl(response.next_page_url) : null;
                             this.prevPage = response.prev_page_url ? this.addParamsToUrl(response.prev_page_url) : null;
 
-                            console.log(response);
-
                         }).catch((err) => {
                             console.log(err);
                         })
@@ -346,11 +350,11 @@
                         });
                         url = `/transaksi/index-transaksi-json?${params.toString()}`;
                         console.log('Final URL:', url);
+                        this.dashInfo();
                         this.getProduct(url);
                     },
 
                     toPayment(index) {
-
                         Swal.fire({
                             title: "Are you sure?",
                             text: "to proccess payment transaction!",
@@ -381,10 +385,25 @@
                         window.location.href = `/transaksi/kasir-transaksi-detail/${index}`;
                     },
 
+                    totalRevenue: 0,
+                    totalPaid: 0,
+                    totalUnpaid: 0,
+                    dashInfo() {
+                        const url = `/transaksi/dash-transaksi-json?estimasi=${this.search.estimasi}`;
+                        axios.get(url).then((res) => {
+                            const response = res.data;
+                            this.totalRevenue = formatRupiah(response.total_penjualan);
+                            this.totalPaid = formatRupiah(response.total_paid);
+                            this.totalUnpaid = formatRupiah(response.total_unpaid);
+
+                        });
+                    },
+
                     init() {
                         this.getProduct();
-                        const tanggal = new Date("YYYY-MM-DD");
-                        console.log(formattedDate);
+                        this.dashInfo();
+                        // const tanggal = new Date("YYYY-MM-DD");
+
 
                     }
                 }

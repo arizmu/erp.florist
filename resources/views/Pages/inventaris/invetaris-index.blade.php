@@ -16,7 +16,7 @@
         </ol>
     </div>
     <div x-data ="IndexInventory">
-        <div class="w-auto px-6 py-8 bg-white rounded-lg shadow-md mb-2 mt-2">
+        {{-- <div class="w-auto px-6 py-8 bg-white rounded-lg shadow-md mb-2 mt-2">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 align-middle">
                 <div class="max-h-80">
                     <img src="https://readymadeui.com/management-img.webp" alt="Image"
@@ -72,7 +72,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-9 py-3 gap-5">
             <div class="md:col-span-4 lg:col-span-6">
