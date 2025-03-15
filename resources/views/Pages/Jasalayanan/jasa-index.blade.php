@@ -188,19 +188,16 @@
                         newUrl.search = searchParams.toString();
                         return newUrl.toString();
                     },
-
                     nextPageFunc() {
                         if (this.nextPage) {
                             this.getData(this.nextPage);
                         }
                     },
-
                     prevPageFunc() {
                         if (this.prevPage) {
                             this.getData(this.prevPage);
                         }
                     },
-
                     searchFunc() {
 
                         console.log('Search params before send:', this.search);

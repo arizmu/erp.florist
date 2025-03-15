@@ -15,9 +15,9 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=Lilita+One&family=MuseoModerno:ital,wght@0,100..900;1,100..900&family=Space+Grotesk:wght@300..700&display=swap"
         rel="stylesheet">
-    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+    <!-- @vite(['resources/css/app.css', 'resources/js/app.js']) -->
 
-    <link rel="stylesheet" href="{{ asset('build/assets/app-FqsMf6B5.css') }}">
+    <link rel="stylesheet" href="{{ asset('build/assets/app-Chdlbbgx.css') }}">
     <script src="{{ asset('build/assets/app-BjL84nCd.js') }}" defer></script>
 
     <style>

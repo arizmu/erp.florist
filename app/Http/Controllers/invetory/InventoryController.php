@@ -85,14 +85,24 @@ class InventoryController extends Controller
     public function IndexJsonInventory()
     {
         $query = Inventory::query();
+
+        if (request()->estimasi) {
+            $tanggal = request()->estimasi ? explode("to", request()->estimasi) : [Carbon::now()->toDateString()];
+            $tanggalStart = Carbon::parse($tanggal[0])->format('Y-m-d');
+            $tanggalEnd = isset($tanggal[1]) ? Carbon::parse($tanggal[1])->format('Y-m-d') : $tanggalStart;
+            $query->whereBetween('tanggal', [$tanggalStart, $tanggalEnd]);
+        }
+
         return response()->json([
             'status' => 'Ok',
-            'data' => $query->take(15)->get(),
-            'message' => 'Data retrieved successfully.'
+            'data' => $query->paginate(request()->range ? request()->range : 15),
+            'message' => 'Data retrieved successfully.',
+            'request' => request()->all()
         ]);
     }
 
-    public function detailInventory() {
+    public function detailInventory()
+    {
         $query = InventoryDetail::where('inventory_id', request()->key)->with('barang')->get();
         return response()->json([
             'status' => 'Ok',

@@ -100,6 +100,8 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::get('/index-transaksi-json/', 'transaksiJsonIndex');
             Route::post('/barcode-scan', 'scanBarcode');
             Route::get('/dash-transaksi-json/', 'dashTransactions');
+            Route::get('point-use-validation', 'pointUseValidation');
+            Route::get('/discount-check/{transaksi_id}', 'checkDiscountStatus');
         });
         Route::controller(PreoderController::class)->group(function () {
             Route::get('/pre-order-form', 'formLayout')->name('preoder.form.layout');

@@ -12,10 +12,12 @@ use App\Models\Transaction\DetailsTransaction;
 use App\Models\Transaction\PaymentTransaction;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
+use GuzzleHttp\Psr7\Request as Psr7Request;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Psy\Readline\Transient;
 
 class KasirController extends Controller
 {
@@ -196,112 +198,6 @@ class KasirController extends Controller
             'key' => $key
         ]);
     }
-    public function prosesBayarPost(Request $request, $key)
-    {
-        // add-validation
-        $validasi = Validator::make($request->all(), [
-            'metode_bayar' => 'required',
-            'jumlah_bayar' => 'required|numeric',
-            'kembali' => 'required|numeric',
-            'costumer.nama' => 'required|string',
-            'costumer.telpon' => 'required|numeric'
-        ]);
-        if ($validasi->fails()) {
-            return getResponseJson('error', 400, 'bad Reqeust', $request->all(), $validasi->errors());
-        }
-        //
-
-        DB::beginTransaction();
-        try {
-            $transaksi = Transaction::find($key);
-            $totalPayment = $transaksi->total_payment;
-            $totalPaid = $transaksi->total_paid;
-            $totalUnpaid = $transaksi->total_unpaid;
-            $metodePayment = $request['metode_bayar'];
-            $cashMoney = $request['jumlah_bayar'];
-            $cashBack = $request['kembali'];
-
-            $checkCostumer = $transaksi->costumer_id;
-            if ($checkCostumer == null) {
-                $getCs = $request['costumer'];
-                $costumer = [
-                    'name' => $getCs['nama'],
-                    'no_telp' => $getCs['telpon'],
-                    'alamat' => $getCs['alamat'] ?? "-",
-                    // 'jenis_kelamain' => 'L',
-                    'email' => '',
-                    'status' => false
-                ];
-                $querycostumer = Costumer::create($costumer);
-                $costumerId = $querycostumer->id;
-            } else {
-                $costumerId = $transaksi->costumer_id;
-            }
-
-            $hitungTotalTerbayar = $totalPaid + $cashMoney;
-            $hitungTotalPiutang = $totalPayment - $hitungTotalTerbayar;
-
-            $checkPayment = $transaksi->payment;
-            if ($checkPayment) {
-                $paymentQuery = PaymentTransaction::create([
-                    'factur_number' => $this->generateFactur(),
-                    'transaction_id' => $transaksi->id,
-                    'payment_method' => $metodePayment,
-                    'total_payment' => $totalPayment,
-                    'total_paid' => $cashMoney,
-                    'total_unpaid' => $hitungTotalPiutang > 0 ? $hitungTotalPiutang : 0,
-                    'total_cashback' => $cashBack,
-                ]);
-
-                $cekTotalUnpaid = $hitungTotalPiutang > 0 ? $hitungTotalPiutang : 0;
-                $transaksi->update([
-                    'costumer_id' => $transaksi->costumer_id ?? $costumerId,
-                    'total_paid' => $hitungTotalTerbayar >= $totalPayment ? $totalPayment : $hitungTotalTerbayar,
-                    'total_unpaid' => $cekTotalUnpaid,
-                    // 'status_transaction' => $cashMoney >= $totalPayment ? 's' : 'p',
-                    'status_transaction' => $hitungTotalPiutang > 0 ? 'p' : 's'
-                ]);
-            } else {
-                $paymentQuery =  PaymentTransaction::create([
-                    'factur_number' => $this->generateFactur(),
-                    'transaction_id' => $transaksi->id,
-                    'payment_method' => $metodePayment,
-                    'total_payment' => $totalPayment,
-                    'total_paid' => $cashMoney,
-                    'total_cashback' => $cashBack,
-                    'total_unpaid' => $cashBack,
-                ]);
-
-                $transaksi->update([
-                    'costumer_id' => $transaksi->costumer_id ?? $costumerId,
-                    'total_paid' => $cashMoney >= $totalPayment ? $totalPayment : $cashMoney,
-                    'total_unpaid' => $hitungTotalPiutang > 0 ? $hitungTotalPiutang : 0,
-                    'costumer_id' => $querycostumer->id,
-                    'status_transaction' => $cashMoney >= $totalPayment ? 's' : 'p',
-                ]);
-            }
-
-            DB::commit();
-            return response()->json([
-                'status' => 'success',
-                'code' => 200,
-                'message' => 'proses pembayaran berhasil',
-                'data' => [
-                    'transaksi_id' => $transaksi->id,
-                    'payment_id' => $paymentQuery->id,
-                    'factur_number' => $this->generateFactur(),
-                ]
-            ], 200);
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'code' => 500,
-                'message' => 'proses pembayaran gagal',
-                'details' => $th->getMessage()
-            ], 500);
-        }
-    }
 
     public function generateFactur()
     {
@@ -424,5 +320,322 @@ class KasirController extends Controller
             'total_penjualan' => $query->sum('total_payment'),
         ];
         return response()->json($data);
+    }
+
+    public function pointUseValidation()
+    {
+        try {
+            $transaksiQuery = Transaction::find(request()->key);
+            if ($transaksiQuery->point > 0) {
+                // if true, the transaction can't use point costumer
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Maaf, transaksi ini dapat menggunakan poin kustomer'
+                ], 403);
+            } else {
+                // if false, point member cant use to pay
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Point Members dapat digunakan!'
+                ], 200);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan',
+                'details' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    // public function prosesBayarPost(Request $request, $key)
+    // {
+    //     return $request->all();
+    //     // add-validation
+    //     $validasi = Validator::make($request->all(), [
+    //         'metode_bayar' => 'required',
+    //         'jumlah_bayar' => 'required|numeric',
+    //         'kembali' => 'required|numeric',
+    //         'costumer.nama' => 'required|string',
+    //         'costumer.telpon' => 'required|numeric'
+    //     ]);
+    //     if ($validasi->fails()) {
+    //         return getResponseJson('error', 400, 'bad Reqeust', $request->all(), $validasi->errors());
+    //     }
+    //     //
+
+    //     DB::beginTransaction();
+    //     try {
+    //         $transaksi = Transaction::find($key);
+    //         $totalPayment = $transaksi->total_payment;
+    //         $totalPaid = $transaksi->total_paid;
+    //         $totalUnpaid = $transaksi->total_unpaid;
+    //         $metodePayment = $request['metode_bayar'];
+    //         $cashMoney = $request['jumlah_bayar'];
+    //         $cashBack = $request['kembali'];
+
+    //         $checkCostumer = $transaksi->costumer_id;
+    //         // if ($checkCostumer == null) {
+    //         //     $getCs = $request['costumer'];
+    //         //     $costumer = [
+    //         //         'name' => $getCs['nama'],
+    //         //         'no_telp' => $getCs['telpon'],
+    //         //         'alamat' => $getCs['alamat'] ?? "-",
+    //         //         // 'jenis_kelamain' => 'L',
+    //         //         'email' => '',
+    //         //         'status' => false
+    //         //     ];
+    //         //     $querycostumer = Costumer::create($costumer);
+    //         //     $costumerId = $querycostumer->id;
+    //         // } else {
+    //         //     $costumerId = $transaksi->costumer_id;
+    //         // }
+
+    //         $hitungTotalTerbayar = $totalPaid + $cashMoney;
+    //         $hitungTotalPiutang = $totalPayment - $hitungTotalTerbayar;
+
+    //         $checkPayment = $transaksi->payment;
+    //         $this->costumerMember($request->costumer, $request->pembayaran, $checkPayment, $checkCostumer);
+    //         if ($checkPayment) {
+    //             $paymentQuery = PaymentTransaction::create([
+    //                 'factur_number' => $this->generateFactur(),
+    //                 'transaction_id' => $transaksi->id,
+    //                 'payment_method' => $metodePayment,
+    //                 'total_payment' => $totalPayment,
+    //                 'total_paid' => $cashMoney,
+    //                 'total_unpaid' => $hitungTotalPiutang > 0 ? $hitungTotalPiutang : 0,
+    //                 'total_cashback' => $cashBack,
+    //             ]);
+
+    //             $cekTotalUnpaid = $hitungTotalPiutang > 0 ? $hitungTotalPiutang : 0;
+    //             $transaksi->update([
+    //                 'costumer_id' => $transaksi->costumer_id ?? $costumerId,
+    //                 'total_paid' => $hitungTotalTerbayar >= $totalPayment ? $totalPayment : $hitungTotalTerbayar,
+    //                 'total_unpaid' => $cekTotalUnpaid,
+    //                 // 'status_transaction' => $cashMoney >= $totalPayment ? 's' : 'p',
+    //                 'status_transaction' => $hitungTotalPiutang > 0 ? 'p' : 's'
+    //             ]);
+    //         } else {
+    //             $paymentQuery =  PaymentTransaction::create([
+    //                 'factur_number' => $this->generateFactur(),
+    //                 'transaction_id' => $transaksi->id,
+    //                 'payment_method' => $metodePayment,
+    //                 'total_payment' => $totalPayment,
+    //                 'total_paid' => $cashMoney,
+    //                 'total_cashback' => $cashBack,
+    //                 'total_unpaid' => $cashBack,
+    //             ]);
+
+    //             $transaksi->update([
+    //                 'costumer_id' => $transaksi->costumer_id ?? $costumerId,
+    //                 'total_paid' => $cashMoney >= $totalPayment ? $totalPayment : $cashMoney,
+    //                 'total_unpaid' => $hitungTotalPiutang > 0 ? $hitungTotalPiutang : 0,
+    //                 'costumer_id' => $querycostumer->id,
+    //                 'status_transaction' => $cashMoney >= $totalPayment ? 's' : 'p',
+    //             ]);
+    //         }
+
+    //         DB::commit();
+    //         return response()->json([
+    //             'status' => 'success',
+    //             'code' => 200,
+    //             'message' => 'proses pembayaran berhasil',
+    //             'data' => [
+    //                 'transaksi_id' => $transaksi->id,
+    //                 'payment_id' => $paymentQuery->id,
+    //                 'factur_number' => $this->generateFactur(),
+    //             ]
+    //         ], 200);
+    //     } catch (\Throwable $th) {
+    //         DB::rollBack();
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'code' => 500,
+    //             'message' => 'proses pembayaran gagal',
+    //             'details' => $th->getMessage()
+    //         ], 500);
+    //     }
+    // }
+
+    // public function costumerMember($costumer, $payment, $checkPayment, $checkCostumer) {}
+
+    public function prosesBayarPost(Request $request, $key)
+    {
+        $validasi = Validator::make($request->all(), [
+            'metode_bayar' => 'required',
+            'jumlah_bayar' => 'required|numeric',
+            'kembali' => 'required|numeric',
+            'costumer.nama' => 'required|string',
+            'costumer.telpon' => 'required|numeric'
+        ]);
+        if ($validasi->fails()) {
+            return getResponseJson('error', 400, 'bad Reqeust', $request->all(), $validasi->errors());
+        }
+
+        DB::beginTransaction();
+        try {
+            $payment = [
+                'metode' => $request->metode_bayar,
+                'total' => $request->pembayaran['subtotal'],
+                'paid' => 0,
+                'unpaid' => $request->pembayaran['total_bayar'],
+                'pay' => intval($request->jumlah_bayar),
+            ];
+            $discounts = [
+                'status' => $request->pembayaran['discount']['status'] == true ? true : false,
+                'percent' => $request->pembayaran['discount']['persen'] ?? 0,
+                'value' => $request->pembayaran['discount']['nilai'] ?? 0,
+            ];
+            $costumer = [
+                'name' => $request->costumer['nama'],
+                'jk' => 'L',
+                'telpon' => $request->costumer['telpon'],
+                'alamat' => $request->costumer['alamat'],
+                'email' => $request->costumer['email'] ?? '',
+                'status' => false,
+                'point' => $request->pembayaran['point']['nilai'],
+                'point_use' => $request->pembayaran['point']['status'] == true ? true : false,
+            ];
+
+            $transaksi = Transaction::find($key);
+            $transaksiPoint = $transaksi->point > 0 ? false : true; // check point use
+            $costumerData = $this->costumerMembers($costumer, $transaksiPoint, $payment['total']);
+            // return $costumerData;
+            $subtotal = $transaksi->total_payment;
+            $paid = $transaksi->total_paid;
+            $unpaid = intval($transaksi->total_unpaid);
+            $bayar = $payment['pay'];
+            $discount = intval($discounts['value']);
+            $pointMember = intval($costumer['point']);
+
+            if ($transaksi->discount > 0) {
+                $discount = 0;
+            }
+            if ($transaksi->point > 0) {
+                $pointMember = 0;
+            }
+
+            $totalTerbayar = $discount + $pointMember + $bayar;
+            $sisaBayar = $unpaid - $totalTerbayar;
+
+            $qeryPembayaran = PaymentTransaction::create([
+                'transaction_id' => $transaksi->id,
+                'total_payment' => $transaksi->total_payment,
+                'total_paid' => $totalTerbayar,
+                'total_unpaid' => $sisaBayar > 0 ? $sisaBayar : 0,
+                'total_cashback' => 0,
+                'factur_number' => $this->generateFactur(),
+                'payment_method' => $payment['metode']
+            ]);
+
+            //
+            $trTerbayar = $paid + $totalTerbayar;
+            $status = $subtotal <= $trTerbayar ? "s" : "p";
+            $discountVal = $discounts['status'] ? $discount : $transaksi->discount;
+
+            $transaksi->update([
+                'costumer_id' => $costumerData,
+                'total_paid' => $trTerbayar >= $subtotal ? $subtotal : $trTerbayar,
+                'total_unpaid' => $sisaBayar > 0 ? $sisaBayar : 0,
+                'discount' => $discountVal,
+                'point' => intval($pointMember ?? 0),
+                'status_transaction' =>  $status
+            ]);
+
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'proses pembayaran berhasil',
+                'data' => [
+                    'transaksi_id' => $transaksi->id,
+                    'payment_id' => $qeryPembayaran->id,
+                    'factur_number' => $qeryPembayaran->factur_number,
+                ]
+            ], 200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'code' => 500,
+                'message' => 'proses pembayaran gagal',
+                'details' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function costumerMembers($data, $statusPoint, $totalTransaction)
+    {
+        $costumer = Costumer::where('no_telp', $data['telpon'])->first();
+        if (!$costumer) {
+            $query = Costumer::create([
+                'name' => $data['name'],
+                'jenis_kelamin' => $data['jk'],
+                'alamat' => $data['alamat'],
+                'no_telp' => $data['telpon'],
+                'email' => $data['email'] ?? '',
+                'status' => false,
+                'point_member' => $this->createPointMembers($totalTransaction)
+            ]);
+            return $query->id;
+        } else {
+            if ($statusPoint && $data['point_use']) {
+                $costumer->update([
+                    'point_member' => 0
+                ]);
+            } else {
+                $costumer->update([
+                    'point_member' => $costumer->point_members + $this->createPointMembers($totalTransaction)
+                ]);
+            }
+            return $costumer->id;
+        }
+    }
+
+    public function createPointMembers($totalTransaction)
+    {
+        $point = 2500;
+        $kelipatan = 100000;
+        $totalTransaksi = intval($totalTransaction);
+        $pointTotal = 0;
+        if ($totalTransaksi < $kelipatan) {
+            return $pointTotal;
+        } else {
+            $pointTotal = $point * floor($totalTransaksi / $kelipatan);
+            return $pointTotal;
+        }
+    }
+
+    public function checkDiscountStatus($id)
+    {
+        try {
+            $query = Transaction::find($id);
+            if ($query->discount > 0) {
+                $data = [
+                    'status' => true,
+                    'discount' => $query->discount,
+                    'info' => 'Potongan discount tidak dapat diproses!!!',
+                ];
+            } else {
+                $data = [
+                   'status' => false,
+                    'discount' => 0,
+                    'info' => 'Potongan discount dapat diproses!!!',
+                ];
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'code' => 200,
+                'data' => $data
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 500,
+                'message' => 'gagal mengambil data',
+                'details' => $th->getMessage()
+            ], 500);
+        }
     }
 }

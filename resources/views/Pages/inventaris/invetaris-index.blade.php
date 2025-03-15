@@ -91,7 +91,7 @@
                                 </thead>
 
                                 <tbody>
-                                    <template x-for="val in inventories">
+                                    <template x-for="val in data">
                                         <tr>
                                             <td class="text-nowrap" x-text="val.supplier">supplier</td>
                                             <td x-text="val.factur_number">-</td>
@@ -114,6 +114,24 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        
+                    
+                    <div class="py-4">
+                        <nav class="flex justify-end gap-x-1">
+                            <button type="button" class="btn btn-secondary btn-outline min-w-28" @click="prevPageFunc"
+                                :disabled="!prevPage">
+                                <span class="icon-[heroicons-outline--arrow-circle-left] size-5"></span>
+                                Previous
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-outline min-w-28" :disabled="!nextPage"
+                                @click="nextPageFunc">
+                                Next
+                                <span class="icon-[heroicons-outline--arrow-circle-right] size-5"></span>
+                            </button>
+                        </nav>
+                    </div>
+                    
                     </div>
                 </div>
             </div>
@@ -126,36 +144,27 @@
                     <div class="card-body">
                         <div class="p-4 pt-3 flex flex-col gap-5">
                             <div class="relative w-auto">
-                                <input type="text" class="input max-w-auto" placeholder="YYYY-MM-DD to YYYY-MM-DD"
+                                <input x-model="search.estimasi" type="text" class="input max-w-auto" placeholder="YYYY-MM-DD to YYYY-MM-DD"
                                     id="flatpickr-range" />
                             </div>
                             <div class="relative w-auto">
-                                <select class="select select-floating" aria-label="Select floating label"
+                                <select x-model="search.status" class="select select-floating" aria-label="Select floating label"
                                     id="selectFloating">
                                     <option>Pilih ...</option>
-                                </select>
-                                <label class="select-floating-label" for="selectFloating">
-                                    Barang
-                                </label>
-                            </div>
-                            <div class="relative w-auto">
-                                <select class="select select-floating" aria-label="Select floating label"
-                                    id="selectFloating">
-                                    <option>Pilih ...</option>
-                                    <option>Invoetory Masuk</option>
-                                    <option>Invetory Keluar</option>
+                                    <option value="1">Invoetory Masuk</option>
+                                    <option value="0">Invetory Keluar</option>
                                 </select>
                                 <label class="select-floating-label" for="selectFloating">
                                     Status
                                 </label>
                             </div>
                             <div class="relative w-auto">
-                                <select class="select select-floating" aria-label="Select floating label"
+                                <select x-model="search.range" class="select select-floating" aria-label="Select floating label"
                                     id="selectFloating">
-                                    <option>15</option>
-                                    <option>25</option>
-                                    <option>50</option>
-                                    <option>100</option>
+                                    <option value="15">15</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
                                 </select>
                                 <label class="select-floating-label" for="selectFloating">
                                     Data Range
@@ -165,7 +174,7 @@
                     </div>
                     <div class="card-footer text-center">
                         <div class="grid grid-cols-2 gap-4 p-4">
-                            <button class="btn btn-outline btn-primary w-auto">Filter</button>
+                            <button class="btn btn-outline btn-primary w-auto" x-on:click="searchFunc" >Filter</button>
                             <a href="{{ route("inventory.form") }}"
                                 class="btn btn-outline btn-error w-auto">Penerimaan
                                 Barang</a>
@@ -293,18 +302,100 @@
                             });
                     },
 
-                    inventories: [],
-                    async getInventory() {
-                        const url = '/inventory/get-inventory-data';
-                        const response = await axios.get(url, {
-                            params: {
-                                'key': ''
-                            }
-                        });
-                        this.inventories = response.data.data;
+                    // inventories: [],
+                    // async getInventory() {
+                    //     const url = '/inventory/get-inventory-data';
+                    //     const response = await axios.get(url, {
+                    //         params: {
+                    //             'key': ''
+                    //         }
+                    //     });
+                    //     this.inventories = response.data.data;
+                    // },
+
+                    data: [],
+                    links: [],
+                    nextPage: '',
+                    prevPage: '',
+
+                    search: {
+                        range: 15,
+                        estimasi: '',
+                        status: ''
                     },
+
+                    getData(url = "") {
+                        if (!url) {
+                            const params = new URLSearchParams({
+                                range: this.search.range ?? "",
+                                estimasi:this.search.estimasi ?? "",
+                                status: this.search.status ?? "",
+                            });
+                            url = `/inventory/get-inventory-data?${params.toString()}`;
+                        }
+
+                        axios.get(url)
+                            .then(res => {
+                                const response = res.data.data;
+                                console.log(response.data);
+                                
+                                this.data = response.data;
+                                this.links = this.processPaginationLinks(response.links);
+                                this.nextPage = response.next_page_url ? this.addParamsToUrl(response.next_page_url) : null;
+                                this.prevPage = response.prev_page_url ? this.addParamsToUrl(response.prev_page_url) : null;
+                            })
+                            .catch(erres => {
+                                console.log(erres);
+                            });
+                    },
+                    processPaginationLinks(links) {
+                        return links.map(link => {
+                            if (link.url) {
+                                return {
+                                    ...link,
+                                    url: this.addParamsToUrl(link.url)
+                                };
+                            }
+                            return link;
+                        });
+                    },
+                    addParamsToUrl(url) {
+                        if (!url) return null;
+                        const newUrl = new URL(url);
+                        const searchParams = new URLSearchParams(newUrl.search);
+
+                        searchParams.set('status', this.search.status);
+                        searchParams.set('range', this.search.range);
+                        searchParams.set('estimasi', this.search.estimasi);
+
+                        newUrl.search = searchParams.toString();
+                        return newUrl.toString();
+                    },
+                    nextPageFunc() {
+                        if (this.nextPage) {
+                            this.getData(this.nextPage);
+                        }
+                    },
+                    prevPageFunc() {
+                        if (this.prevPage) {
+                            this.getData(this.prevPage);
+                        }
+                    },
+                    searchFunc() {
+
+                        console.log('Search params before send:', this.search);
+                        const params = new URLSearchParams({
+                            status: this.search.status,
+                            range: this.search.range,
+                            estimasi: this.search.estimasi
+                        });
+                        url = `/inventory/get-inventory-data?${params.toString()}`;
+                        console.log('Final URL:', url);
+                        this.getData(url);
+                    },
+
                     init() {
-                        this.getInventory();
+                        this.getData();
                     }
                 }
             }
