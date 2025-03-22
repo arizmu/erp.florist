@@ -9,7 +9,9 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 
 import Alpine from 'alpinejs'
+import Swal from 'sweetalert2';
 window.Alpine = Alpine;
+window.Swal = Swal;
 Alpine.start();
 
 import AWN from "awesome-notifications"
@@ -20,8 +22,6 @@ import AWN from "awesome-notifications"
 let notifier = new AWN();
 window.notifier = notifier;
 
-import Swal from 'sweetalert2';
-window.Swal = Swal;
 
 import {v4 as uuidv4} from 'uuid';
 window.uuid = uuidv4;

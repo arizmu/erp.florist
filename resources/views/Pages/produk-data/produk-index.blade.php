@@ -1,10 +1,10 @@
 <x-base-layout>
     @push('css')
-        <style>
-            .overflow-auto::-webkit-scrollbar {
-                display: none;
-            }
-        </style>
+    <style>
+        .overflow-auto::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
     @endpush
 
     <div class="breadcrumbs mb-2">
@@ -53,25 +53,25 @@
                                             class="icon-[material-symbols-light--image-search-outline-sharp] size-36 h-44 object-cover"></span>
                                     </figure>
                                     <div class="card-body">
-                                        <h5 class="card-title text-blue-400 text-xl" style="margin-top: -10pt">
-                                            <span class="capitalize mr-2"
-                                                x-text="item.product_name.substring(0, 25) ?? '[null]'"></span>...
+                                        <h5 class=" text-blue-400 text-lg font-semibold" style="margin-top: -10pt">
+                                            <span class="mr-2"
+                                                x-text="item.product_name?? '[null]'"></span>
                                         </h5>
                                         <div class="py-3 flex flex-wrap gap-2 text-xs mt-2">
-                                            <div class="flex gap-2 align-middle badge badge-info badge-soft">
-                                                <span class="icon-[proicons--qr-code] size-4"></span>
-                                                <span class="font-semibold uppercase" x-text="item.code ?? [404]">
+                                            <div class="flex gap-2 align-middle badge badge-info badge-soft badge-sm">
+                                                <span class="icon-[proicons--qr-code] size-3"></span>
+                                                <span class="uppercase" x-text="item.code ?? [404]">
 
                                                 </span>
                                             </div>
-                                            <div class="flex gap-2 align-middle badge badge-secondary badge-soft">
-                                                <span class="icon-[tabler--clipboard-check] size-4"></span>
-                                                <span class="font-semibold"><span x-text="item.qty ?? '0'"></span>
+                                            <div class="flex gap-2 align-middle badge badge-secondary badge-soft badge-sm">
+                                                <span class="icon-[tabler--clipboard-check] size-3"></span>
+                                                <span class=""><span x-text="item.qty ?? '0'"></span>
                                                     PCS</span>
                                             </div>
-                                            <div class="flex gap-2 align-middle badge badge-warning badge-soft">
-                                                <span class="icon-[tabler--moneybag] size-4"></span>
-                                                <span class="font-semibold">Rp. <span
+                                            <div class="flex gap-2 align-middle badge badge-warning badge-soft badge-sm">
+                                                <span class="icon-[tabler--moneybag] size-3"></span>
+                                                <span class="">Rp. <span
                                                         x-text="formatRupiah(item.price)"></span></span>
                                             </div>
                                         </div>
@@ -79,23 +79,20 @@
                                     <div class="card-footer">
                                         <div class="flex gap-2 md:justify-start justify-center flex-wrap">
 
-                                            <button class="btn btn-primary btn-circle btn-soft shadow-md" type="button"
+                                            <button class="btn btn-primary btn-circle btn-sm btn-soft shadow-md" type="button"
                                                 x-on:click="barcode(item)">
                                                 <span class="icon-[bx--barcode-reader] size-5"></span>
                                             </button>
 
-                                            <a class="btn btn-success btn-circle btn-soft shadow-md" href="#"
+                                            <a class="btn btn-success btn-circle btn-sm btn-soft shadow-md" href="#"
                                                 @click.prevent="window.open(`/barcode?barcode=${item.code}`, '_blank', 'width=600,height=400,left=200,top=100')">
                                                 <span class="icon-[bx--barcode-reader] size-5"></span>
                                             </a>
-
-
-
                                             <button x-on:click="openEdit(item)"
-                                                class="btn btn-secondary btn-circle btn-soft shadow-md" type="button">
+                                                class="btn btn-secondary btn-circle btn-sm btn-soft shadow-md" type="button">
                                                 <span class="icon-[line-md--upload-loop] size-6"></span>
                                             </button>
-                                            <button class="btn btn-error btn-circle btn-soft shadow-md" type="button"
+                                            <button class="btn btn-error btn-circle btn-sm btn-soft shadow-md" type="button"
                                                 x-on:click="archiveProduct(item)">
                                                 <span class="icon-[lucide--trash-2] size-5"></span>
                                             </button>
@@ -290,208 +287,238 @@
     </div>
 
     @push('js')
-        <script>
-            function productIndex() {
-                return {
-                    file: '',
-                    xform: {
+    <script>
+        function productIndex() {
+            return {
+                file: '',
+                xform: {
+                    product_id: '',
+                    bucket: '',
+                    qty: '',
+                    cost_production: '',
+                    price: '',
+                    img_file: ''
+                },
+
+                openEdit(index) {
+                    this.xform.bucket = index.product_name
+                    this.xform.qty = index.qty
+                    this.xform.cost_production = formatRupiah(index.cost_production)
+                    this.xform.price = formatRupiah(index.price)
+                    this.xform.img_file = index.img
+                    this.xform.product_id = index.id
+                    this.openModal();
+                },
+
+                file_upload(e) {
+                    this.file = e.target.files[0];
+                    this.xform.img_file = this.file;
+                    this.regis.file = this.file;
+                },
+
+                isStore: false,
+                async store() {
+                    try {
+                        this.isStore = true;
+                        const data = this.xform;
+                        console.log(this.xform);
+                        const url = `/product/update-product-data/${this.xform.product_id}`;
+                        const response = await axios.post(url, data, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            }
+                        })
+                        this.loadJson();
+                        notifier.success("Product updated successfully")
+                        this.isStore = false;
+                        const clsoe = document.getElementById('modal-file-upload-close');
+                        clsoe.click();
+                    } catch (error) {
+                        console.log(error);
+                        notifier.error("Failed to update product");
+                    }
+                },
+
+                data: [],
+                links: [],
+                nextPage: '',
+                prevPage: '',
+                search: {
+                    keyword: '',
+                    range: 15,
+                },
+                loadJson(url = "") {
+                    if (!url) {
+                        const params = new URLSearchParams({
+                            keywords: this.search.keyword ?? "",
+                            range: this.search.range ?? ""
+                        });
+                        url = `/product/product-json?${params.toString()}`;
+                    }
+                    Swal.fire({
+                        title: "Loading...",
+                        text: "Fetching product data.",
+                        icon: "info",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        willOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    axios.get(url)
+                        .then((res) => {
+                            const response = res.data.data;
+                            this.data = response.data;
+                            this.links = this.processPaginationLinks(response.links);
+                            this.nextPage = response.next_page_url ? this.addParamsToUrl(response.next_page_url) : null;
+                            this.prevPage = response.prev_page_url ? this.addParamsToUrl(response.prev_page_url) : null;
+                        })
+                        .catch((err) => {
+                            //sweetalert error, get error message
+                            // console.error(err.message);
+                            notifier.error("Failed to load product data");
+                        })
+                        .finally(() => {
+                            Swal.close();
+                        });
+                },
+
+                processPaginationLinks(links) {
+                    return links.map(link => {
+                        if (link.url) {
+                            return {
+                                ...link,
+                                url: this.addParamsToUrl(link.url)
+                            };
+                        }
+                        return link;
+                    });
+                },
+
+                addParamsToUrl(url) {
+                    if (!url) return null;
+                    const newUrl = new URL(url);
+                    const searchParams = new URLSearchParams(newUrl.search);
+                    searchParams.set('keywords', this.search.keyword);
+                    searchParams.set('range', this.search.range);
+
+                    newUrl.search = searchParams.toString();
+                    return newUrl.toString();
+                },
+
+                nextPageFunc() {
+                    if (this.nextPage) {
+                        this.loadJson(this.nextPage);
+                    }
+                },
+
+                prevPageFunc() {
+                    if (this.prevPage) {
+                        this.loadJson(this.prevPage);
+                    }
+                },
+
+                searchFunc() {
+                    const params = new URLSearchParams({
+                        keywords: this.search.keyword,
+                        range: this.search.range
+                    });
+                    url = `/product/product-json?${params.toString()}`;
+                    console.log('Final URL:', url);
+                    this.loadJson(url);
+                },
+
+                openModal() {
+                    const openModal = document.getElementById('modal-edit-prouduct');
+                    openModal.click();
+                },
+
+                closeModal() {
+                    const openModal = document.getElementById('model-close-layout');
+                    openModal.click();
+                },
+
+                resetForm() {
+                    this.xform = {
                         product_id: '',
                         bucket: '',
                         qty: '',
                         cost_production: '',
                         price: '',
                         img_file: ''
-                    },
+                    }
+                },
 
-                    openEdit(index) {
-                        this.xform.bucket = index.product_name
-                        this.xform.qty = index.qty
-                        this.xform.cost_production = formatRupiah(index.cost_production)
-                        this.xform.price = formatRupiah(index.price)
-                        this.xform.img_file = index.img
-                        this.xform.product_id = index.id
-                        this.openModal();
-                    },
+                registerFrom() {
+                    const openModal = document.getElementById('modal-open-register');
+                    openModal.click();
+                },
 
-                    file_upload(e) {
-                        this.file = e.target.files[0];
-                        this.xform.img_file = this.file;
-                        this.regis.file = this.file;
-                    },
-
-                    isStore: false,
-                    async store() {
-                        try {
-                            this.isStore = true;
-                            const data = this.xform;
-                            console.log(this.xform);
-                            const url = `/product/update-product-data/${this.xform.product_id}`;
-                            const response = await axios.post(url, data, {
-                                headers: {
-                                    'Content-Type': 'multipart/form-data'
-                                }
-                            })
-                            this.loadJson();
-                            notifier.success("Product updated successfully")
-                            this.isStore = false;
-                            const clsoe = document.getElementById('modal-file-upload-close');
-                            clsoe.click();
-                        } catch (error) {
-                            console.log(error);
-                            notifier.error("Failed to update product");
-                        }
-                    },
-
-                    data: [],
-                    links: [],
-                    nextPage: '',
-                    prevPage: '',
-                    search: {
-                        keyword: '',
-                        range: 15,
-                    },
-                    loadJson(url = "") {
-                        if (!url) {
-                            const params = new URLSearchParams({
-                                keywords: this.search.keyword ?? "",
-                                range: this.search.range ?? ""
-                            });
-                            url = `/product/product-json?${params.toString()}`;
-                        }
-                        axios.get(url).then((res) => {
-                            const response = res.data.data;
-                            this.data = response.data;
-                            this.links = this.processPaginationLinks(response.links);
-                            this.nextPage = response.next_page_url ? this.addParamsToUrl(response.next_page_url) : null;
-                            this.prevPage = response.prev_page_url ? this.addParamsToUrl(response.prev_page_url) : null;
-                        }).catch((err) => {
-                            console.log(err);
-                        })
-                    },
-
-                    addParamsToUrl(url) {
-                        if (!url) return null;
-                        const newUrl = new URL(url);
-                        const searchParams = new URLSearchParams(newUrl.search);
-                        searchParams.set('keywords', this.search.keyword);
-                        searchParams.set('range', this.search.range);
-
-                        newUrl.search = searchParams.toString();
-                        return newUrl.toString();
-                    },
-
-                    nextPageFunc() {
-                        if (this.nextPage) {
-                            this.loadJson(this.nextPage);
-                        }
-                    },
-
-                    prevPageFunc() {
-                        if (this.prevPage) {
-                            this.loadJson(this.prevPage);
-                        }
-                    },
-
-                    searchFunc() {
-                        const params = new URLSearchParams({
-                            keywords: this.search.keyword,
-                            range: this.search.range
-                        });
-                        url = `/product/product-json?${params.toString()}`;
-                        console.log('Final URL:', url);
-                        this.loadJson(url);
-                    },
-
-                    openModal() {
-                        const openModal = document.getElementById('modal-edit-prouduct');
-                        openModal.click();
-                    },
-
-                    closeModal() {
-                        const openModal = document.getElementById('model-close-layout');
-                        openModal.click();
-                    },
-
-                    resetForm() {
-                        this.xform = {
-                            product_id: '',
-                            bucket: '',
-                            qty: '',
-                            cost_production: '',
-                            price: '',
-                            img_file: ''
-                        }
-                    },
-
-                    registerFrom() {
-                        const openModal = document.getElementById('modal-open-register');
-                        openModal.click();
-                    },
-
-                    regis: {
-                        name: '',
-                        price: '',
-                        file: ''
-                    },
-                    async storeProduct() {
-                        try {
-                            const url = "/register-product";
-                            const response = await axios.post(url, this.regis, {
-                                headers: {
-                                    'Content-Type': 'multipart/form-data'
-                                }
-                            });
-                            const data = response.data.data;
-                        } catch (error) {
-
-                        }
-                    },
-
-                    async archiveProduct(params) {
-                        Swal.fire({
-                            title: "Are you sure?",
-                            text: "You won't be able to revert this!",
-                            icon: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#3085d6",
-                            cancelButtonColor: "#d33",
-                            confirmButtonText: "Yes, delete it!"
-                        }).then(async (result) => {
-                            if (result.isConfirmed) {
-                                try {
-                                    const data = params;
-                                    const url = `/product/delete-product-data/${data.id}`;
-                                    const res = await axios.post(url, {
-                                        id: data.id
-                                    });
-                                    Swal.fire({
-                                        title: "Deleted!",
-                                        text: "Your file has been deleted.",
-                                        icon: "success"
-                                    });
-                                } catch (error) {
-                                    Swal.fire({
-                                        title: "Deleted!",
-                                        text: "Invalid deleted request.",
-                                        icon: "error"
-                                    });
-                                } finally {
-                                    this.loadJson();
-                                }
+                regis: {
+                    name: '',
+                    price: '',
+                    file: ''
+                },
+                async storeProduct() {
+                    try {
+                        const url = "/register-product";
+                        const response = await axios.post(url, this.regis, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
                             }
                         });
-                    },
+                        const data = response.data.data;
+                    } catch (error) {
 
-                    barcode(index) {
-                        window.open(`/product/product-barcode/${index.code}`, '_blank', 'width=600,height=400,left=200,top=100');
-                        return BarcodeFunc(index);
-                    },
-
-                    init() {
-                        this.loadJson()
                     }
+                },
+
+                async archiveProduct(params) {
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, delete it!"
+                    }).then(async (result) => {
+                        if (result.isConfirmed) {
+                            try {
+                                const data = params;
+                                const url = `/product/delete-product-data/${data.id}`;
+                                const res = await axios.post(url, {
+                                    id: data.id
+                                });
+                                Swal.fire({
+                                    title: "Deleted!",
+                                    text: "Your file has been deleted.",
+                                    icon: "success"
+                                });
+                            } catch (error) {
+                                Swal.fire({
+                                    title: "Deleted!",
+                                    text: "Invalid deleted request.",
+                                    icon: "error"
+                                });
+                            } finally {
+                                this.loadJson();
+                            }
+                        }
+                    });
+                },
+
+                barcode(index) {
+                    window.open(`/product/product-barcode/${index.code}`, '_blank', 'width=600,height=400,left=200,top=100');
+                    return BarcodeFunc(index);
+                },
+
+                init() {
+                    this.loadJson()
                 }
             }
-        </script>
+        }
+    </script>
     @endpush
 </x-base-layout>

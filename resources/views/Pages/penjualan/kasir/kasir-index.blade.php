@@ -1,4 +1,4 @@
-<x-base-layout style="bg-gray-200">
+<x-base-layout class="bg-gray-200">
     <div class="breadcrumbs">
         <ol>
             <li>
@@ -447,240 +447,456 @@
     </div>
 
     @push('js')
-        <script>
-            window.addEventListener('load', function() {
-                flatpickr('#flatpickr-range', {
-                    mode: 'range'
-                })
+    <script>
+        window.addEventListener('load', function() {
+            flatpickr('#flatpickr-range', {
+                mode: 'range'
             })
+        })
 
-            function kasirIndex() {
-                return {
-                    isLoadTrasaction: false,
-                    transaksiProsses() {
-                        if (this.items.length <= 0) {
-                            notifier.warning('Item is empty.')
-                            return;
-                        }
-                        if (this.subtotal === '') {
-                            notifier.warning('Product title tidak boleh kosong.')
-                            return;
-                        }
-                        Swal.fire({
-                            title: "Informasi",
-                            text: "Yakin, ingin proses transaksi ini ?",
-                            icon: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#3085d6",
-                            cancelButtonColor: "#d33",
-                            confirmButtonText: "Ya, Proses Transaksi!",
-                            cancelButtonText: "Tidak!",
-                        }).then(async (result) => {
-                            if (result.isConfirmed) {
-                                this.isLoadTrasaction = true;
+        function kasirIndex() {
+            return {
+                isLoadTrasaction: false,
+                transaksiProsses() {
+                    if (this.items.length <= 0) {
+                        notifier.warning('Item is empty.')
+                        return;
+                    }
+                    if (this.subtotal === '') {
+                        notifier.warning('Product title tidak boleh kosong.')
+                        return;
+                    }
+                    Swal.fire({
+                        title: "Informasi",
+                        text: "Yakin, ingin proses transaksi ini ?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Ya, Proses Transaksi!",
+                        cancelButtonText: "Tidak!",
+                    }).then(async (result) => {
+                        if (result.isConfirmed) {
+                            this.isLoadTrasaction = true;
+                            Swal.fire({
+                                title: "Is loading...",
+                                text: "Silakan tunggu, transaksi sedang diproses...",
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
+                            try {
+                                const url = '/transaksi/on-proses';
+                                const data = {
+                                    'items': this.items,
+                                    'subtotal': this.subtotalGet
+                                }
+                                const response = await axios.post(url, data);
+                                const result = response.data.data;
+                                const key = result.transaction_id;
+
+                                this.isLoadTrasaction = false;
+                                this.resetItems();
+
                                 Swal.fire({
-                                    title: "Is loading...",
-                                    text: "Silakan tunggu, transaksi sedang diproses...",
-                                    allowOutsideClick: false,
-                                    didOpen: () => {
-                                        Swal.showLoading();
+                                    title: "Payment",
+                                    text: "Lanjutkan untuk proses pembayaran",
+                                    icon: "info",
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#3085d6",
+                                    cancelButtonColor: "#d33",
+                                    confirmButtonText: "Proses pembayaran!"
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.href = `/transaksi/kasir-proses-bayar/${key}`;
                                     }
                                 });
+                            } catch (error) {
+                                this.isLoadTrasaction = false;
+                                Swal.close()
+                                const response = error.response.data;
+                                console.log(error);
 
-                                try {
-                                    const url = '/transaksi/on-proses';
-                                    const data = {
-                                        'items': this.items,
-                                        'subtotal': this.subtotalGet
-                                    }
-                                    const response = await axios.post(url, data);
-                                    const result = response.data.data;
-                                    const key = result.transaction_id;
-
-                                    this.isLoadTrasaction = false;
-                                    this.resetItems();
-
+                                if (error.status === 422) {
                                     Swal.fire({
-                                        title: "Payment",
-                                        text: "Lanjutkan untuk proses pembayaran",
-                                        icon: "info",
-                                        showCancelButton: true,
-                                        confirmButtonColor: "#3085d6",
-                                        cancelButtonColor: "#d33",
-                                        confirmButtonText: "Proses pembayaran!"
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            window.location.href = `/transaksi/kasir-proses-bayar/${key}`;
-                                        }
-                                    });
-                                } catch (error) {
-                                    this.isLoadTrasaction = false;
-                                    Swal.close()
-                                    const response = error.response.data;
-                                    console.log(error);
-
-                                    if (error.status === 422) {
-                                        Swal.fire({
-                                            title: "Invalid!",
-                                            html: `<span class="capitalize text-wrap max-w-42">${response.message}</span>`,
-                                            icon: "warning"
-                                        })
-                                    } else {
-                                        Swal.fire({
-                                            title: "Error!",
-                                            text: "Terjadi kesalahan dalam proses transaksi",
-                                            icon: "error"
-                                        })
-                                    }
-
+                                        title: "Invalid!",
+                                        html: `<span class="capitalize text-wrap max-w-42">${response.message}</span>`,
+                                        icon: "warning"
+                                    })
+                                } else {
+                                    Swal.fire({
+                                        title: "Error!",
+                                        text: "Terjadi kesalahan dalam proses transaksi",
+                                        icon: "error"
+                                    })
                                 }
 
-
                             }
+
+
+                        }
+                    });
+
+                },
+
+                items: [],
+                subtotal: 0,
+                subtotalGet: 0,
+                addItem(index) {
+                    const data = {
+                        'product_id': index.id,
+                        'product_name': index.product_name ?? '[404]',
+                        'product_qty': 1,
+                        'product_price': index.price,
+                        'total_price': index.price * 1,
+                        'product_costume': false,
+                        'product_costume_details': [],
+                        'costume_total': 0,
+                        'img_url': index.img
+                    }
+                    const findItems = this.items.find(arraydata => arraydata.product_id === data.product_id);
+                    if (findItems) {
+                        notifier.alert(`Item product sudah ada`)
+                        return
+                    } else {
+                        this.items.push(data);
+                        notifier.success(`Item ${data.product_name} added.`)
+                    }
+                    this.funcSubtotal();
+                },
+
+                removeItem(indexKey) {
+                    const arrayFilter = this.items.filter(item => item.product_id !== indexKey);
+                    this.items = arrayFilter;
+                    this.funcSubtotal()
+                },
+
+                addQty(key) {
+                    const data = this.items.find(index => index.product_id === key);
+                    let qty = data['product_qty'] += 1;
+                    let price = data['product_price'];
+                    let costumeCost = data['costume_total'];
+                    let total = parseFloat(price) + parseFloat(costumeCost);
+                    data['total_price'] = total * qty;
+                    this.funcSubtotal();
+                },
+
+                reduceQty(key) {
+                    const data = this.items.find(index => index.product_id === key);
+                    if (data['product_qty'] <= 1) {
+                        notifier.alert('Jumlah item tidak boleh kurang dari 1.')
+                        return;
+                    }
+                    let qty = data['product_qty'] -= 1;
+                    let price = data['product_price'];
+                    let costumeCost = data['costume_total'];
+                    let total = parseFloat(price) + parseFloat(costumeCost);
+                    data['total_price'] = total * qty;
+                    this.funcSubtotal();
+                },
+
+                funcSubtotal() {
+                    let subtotalBelanja = 0;
+                    this.items.forEach(element => {
+                        subtotalBelanja += parseFloat(element.total_price);
+                    });
+                    this.subtotalGet = subtotalBelanja;
+                    this.subtotal = formatRupiah(subtotalBelanja.toFixed(0)) ?? '0';
+                },
+
+                dataTable: [],
+                links: [],
+                nextPage: '',
+                prevPage: '',
+                search: {
+                    keyword: '',
+                    range: 15,
+                },
+                getProduct(url = "") {
+                    if (!url) {
+                        const params = new URLSearchParams({
+                            keywords: this.search.keyword ?? "",
+                            range: this.search.range ?? ""
                         });
+                        url = `/transaksi/product-json?${params.toString()}`;
+                    }
 
-                    },
-
-                    items: [],
-                    subtotal: 0,
-                    subtotalGet: 0,
-                    addItem(index) {
-                        const data = {
-                            'product_id': index.id,
-                            'product_name': index.product_name ?? '[404]',
-                            'product_qty': 1,
-                            'product_price': index.price,
-                            'total_price': index.price * 1,
-                            'product_costume': false,
-                            'product_costume_details': [],
-                            'costume_total': 0,
-                            'img_url': index.img
+                    Swal.fire({
+                        title: "Loading...",
+                        text: "Fetching product data.",
+                        icon: "info",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        willOpen: () => {
+                            Swal.showLoading();
                         }
-                        const findItems = this.items.find(arraydata => arraydata.product_id === data.product_id);
-                        if (findItems) {
-                            notifier.alert(`Item product sudah ada`)
-                            return
-                        } else {
-                            this.items.push(data);
-                            notifier.success(`Item ${data.product_name} added.`)
-                        }
-                        this.funcSubtotal();
-                    },
+                    });
 
-                    removeItem(indexKey) {
-                        const arrayFilter = this.items.filter(item => item.product_id !== indexKey);
-                        this.items = arrayFilter;
-                        this.funcSubtotal()
-                    },
-
-                    addQty(key) {
-                        const data = this.items.find(index => index.product_id === key);
-                        let qty = data['product_qty'] += 1;
-                        let price = data['product_price'];
-                        let costumeCost = data['costume_total'];
-                        let total = parseFloat(price) + parseFloat(costumeCost);
-                        data['total_price'] = total * qty;
-                        this.funcSubtotal();
-                    },
-
-                    reduceQty(key) {
-                        const data = this.items.find(index => index.product_id === key);
-                        if (data['product_qty'] <= 1) {
-                            notifier.alert('Jumlah item tidak boleh kurang dari 1.')
-                            return;
-                        }
-                        let qty = data['product_qty'] -= 1;
-                        let price = data['product_price'];
-                        let costumeCost = data['costume_total'];
-                        let total = parseFloat(price) + parseFloat(costumeCost);
-                        data['total_price'] = total * qty;
-                        this.funcSubtotal();
-                    },
-
-                    funcSubtotal() {
-                        let subtotalBelanja = 0;
-                        this.items.forEach(element => {
-                            subtotalBelanja += parseFloat(element.total_price);
-                        });
-                        this.subtotalGet = subtotalBelanja;
-                        this.subtotal = formatRupiah(subtotalBelanja.toFixed(0)) ?? '0';
-                    },
-
-                    dataTable: [],
-                    links: [],
-                    nextPage: '',
-                    prevPage: '',
-                    search: {
-                        keyword: '',
-                        range: 15,
-                    },
-                    getProduct(url = "") {
-                        if (!url) {
-                            const params = new URLSearchParams({
-                                keywords: this.search.keyword ?? "",
-                                range: this.search.range ?? ""
-                            });
-                            url = `/transaksi/product-json?${params.toString()}`;
-                        }
-                        axios.get(url).then((res) => {
+                    axios.get(url)
+                        .then((res) => {
                             const response = res.data.data;
                             this.dataTable = response.data;
                             this.links = this.processPaginationLinks(response.links);
                             this.nextPage = response.next_page_url ? this.addParamsToUrl(response.next_page_url) : null;
                             this.prevPage = response.prev_page_url ? this.addParamsToUrl(response.prev_page_url) : null;
-                        }).catch((err) => {
-                            console.log(err);
                         })
-                    },
-
-                    addParamsToUrl(url) {
-                        if (!url) return null;
-                        const newUrl = new URL(url);
-                        const searchParams = new URLSearchParams(newUrl.search);
-                        searchParams.set('keywords', this.search.keyword);
-                        searchParams.set('range', this.search.range);
-
-                        newUrl.search = searchParams.toString();
-                        return newUrl.toString();
-                    },
-
-                    nextPageFunc() {
-                        if (this.nextPage) {
-                            this.getProduct(this.nextPage);
-                        }
-                    },
-
-                    prevPageFunc() {
-                        if (this.prevPage) {
-                            this.getProduct(this.prevPage);
-                        }
-                    },
-
-                    searchFunc() {
-                        const params = new URLSearchParams({
-                            keywords: this.search.keyword,
-                            range: this.search.range
+                        .catch((err) => {
+                            console.error(err);
+                            Swal.fire({
+                                title: "Error!",
+                                text: "Failed to fetch product data.",
+                                icon: "error"
+                            });
+                        })
+                        .finally(() => {
+                            Swal.close();
                         });
-                        url = `/product/product-json?${params.toString()}`;
-                        console.log('Final URL:', url);
-                        this.getProduct(url);
-                    },
+                },
 
-                    resetItems() {
-                        this.items = [];
-                        this.subtotal = '';
-                    },
 
-                    shortText(value, length) {
-                        return `${value.substring(0, length)}  ...`;
-                    },
+                processPaginationLinks(links) {
+                    return links.map(link => {
+                        if (link.url) {
+                            return {
+                                ...link,
+                                url: this.addParamsToUrl(link.url)
+                            };
+                        }
+                        return link;
+                    });
+                },
 
-                    closeCostumeModal() {
-                        const btn = document.getElementById("close-modal-costume-product")
-                        btn.click()
-                    },
+                addParamsToUrl(url) {
+                    if (!url) return null;
+                    const newUrl = new URL(url);
+                    const searchParams = new URLSearchParams(newUrl.search);
+                    searchParams.set('keywords', this.search.keyword);
+                    searchParams.set('range', this.search.range);
 
-                    costumeForm: {
+                    newUrl.search = searchParams.toString();
+                    return newUrl.toString();
+                },
+
+                nextPageFunc() {
+                    if (this.nextPage) {
+                        this.getProduct(this.nextPage);
+                    }
+                },
+
+                prevPageFunc() {
+                    if (this.prevPage) {
+                        this.getProduct(this.prevPage);
+                    }
+                },
+
+                searchFunc() {
+                    const params = new URLSearchParams({
+                        keywords: this.search.keyword,
+                        range: this.search.range
+                    });
+                    url = `/product/product-json?${params.toString()}`;
+                    console.log('Final URL:', url);
+                    this.getProduct(url);
+                },
+
+                resetItems() {
+                    this.items = [];
+                    this.subtotal = '';
+                },
+
+                shortText(value, length) {
+                    return `${value.substring(0, length)}  ...`;
+                },
+
+                closeCostumeModal() {
+                    const btn = document.getElementById("close-modal-costume-product")
+                    btn.click()
+                },
+
+                costumeForm: {
+                    product_id: "",
+                    product_name: "",
+                    product_qty: 1,
+                    product_price: 0,
+                    total_price: 0,
+                    product_costume: true,
+                    product_costume_details: this.costumeItem,
+                    img_url: "",
+                    nilaiRupiah: 0,
+                },
+                costumeItem: [],
+                openCostumeModal(indexResult) {
+                    const btn = document.getElementById(`open-modal-costume-product`);
+                    btn.click();
+                    const data = indexResult;
+                    this.costumeForm = {
+                        product_id: data.id,
+                        product_name: data.product_name,
+                        product_qty: 1,
+                        product_price: data.price,
+                        total_price: data.price * 1,
+                        product_costume: true,
+                        product_costume_details: this.costumeItem,
+                        img_url: data.img,
+                        price_rupiah_view: formatRupiah(data.price)
+                    };
+
+                },
+
+                filtersearch: '',
+                filterdata: [],
+                filterbarangcostumer() {
+                    axios.get(`/transaksi/get-barang?search=${this.filtersearch}`)
+                        .then((response) => {
+                            const data = response.data.data;
+                            this.filterdata = data;
+
+                        }).catch((error) => {
+                            console.log(error);
+                        })
+                },
+
+                selectBarang(data) {
+                    this.filterdata = [];
+                    this.filtersearch = data.nama_barang;
+                    this.xbarangdata = {
+                        id: data.id,
+                        title: data.nama_barang,
+                        qty: 1,
+                        price: data.price,
+                        total: data.price * 1,
+                        comment: ''
+                    }
+                },
+
+                xbarangdata: {
+                    id: '',
+                    title: '',
+                    qty: 0,
+                    price: 0,
+                    total: 0,
+                    comment: ''
+                },
+                addItemCostumeBarang() {
+                    const errors = [];
+                    if (!this.xbarangdata.title.trim()) errors.push('Nama barang tidak boleh kosong');
+                    if (this.xbarangdata.qty <= 0) errors.push('Jumlah barang harus lebih dari 0');
+                    if (this.xbarangdata.price <= 0) errors.push('Harga barang harus lebih dari 0');
+                    if (errors.length) {
+                        errors.forEach(error => notifier.warning(error)); // Menampilkan setiap error satu per satu
+                        return;
+                    }
+
+                    const existingItemIndex = this.costumeItem.findIndex(item => item.item_id === this.xbarangdata.id);
+                    if (existingItemIndex !== -1) {
+                        // Update existing item
+                        this.costumeItem[existingItemIndex].item_qty = this.xbarangdata.qty;
+                        this.costumeItem[existingItemIndex].total = this.xbarangdata.qty * this.xbarangdata.price;
+                        notifier.warning('barang costumer updated');
+                    } else {
+                        // Add new item
+                        const newItem = {
+                            status: false,
+                            item_id: this.xbarangdata.id,
+                            item_name: this.xbarangdata.title,
+                            item_qty: this.xbarangdata.qty,
+                            item_price: this.xbarangdata.price,
+                            total: this.xbarangdata.qty * this.xbarangdata.price,
+                            comment: ''
+                        };
+                        this.costumeItem.push(newItem);
+                        notifier.success('Barang costumer added');
+                    }
+
+                    // Reset xbarangdata and any other necessary state
+                    this.xbarangdata = {
+                        id: '',
+                        title: '',
+                        qty: 0,
+                        price: 0,
+                        total: 0,
+                        comment: ''
+                    };
+                    this.filtersearch = '';
+                },
+
+                xothercsdata: {
+                    title: '',
+                    qty: 0,
+                    price: 0,
+                    comment: ''
+                },
+                addItemCostumeOther() {
+                    const errors = [];
+                    if (!this.xothercsdata.title.trim()) errors.push('Nama barang tidak boleh kosong');
+                    if (this.xothercsdata.qty <= 0) errors.push('Jumlah barang harus lebih dari 0');
+                    if (this.xothercsdata.price <= 0) errors.push('Harga barang harus lebih dari 0');
+
+                    if (errors.length) {
+                        errors.forEach(error => notifier.warning(error)); // Menampilkan setiap error secara terpisah
+                        return;
+                    }
+                    const data = {
+                        status: true,
+                        item_id: uuid(),
+                        item_name: this.xothercsdata.title,
+                        item_qty: this.xothercsdata.qty,
+                        item_price: this.xothercsdata.price,
+                        total: this.xothercsdata.qty * this.xothercsdata.price,
+                        comment: ""
+                    }
+                    this.costumeItem.push(data);
+                    notifier.success('Barang lain added');
+                    this.xothercsdata = {
+                        title: '',
+                        qty: 0,
+                        price: 0,
+                        comment: ''
+                    }
+                },
+
+                deleteItemCostumeBarang(itemId) {
+                    this.costumeItem = this.costumeItem.filter(item => item.item_id !== itemId);
+                },
+
+                getTotalCostumePrice() {
+                    let subtotalBelanja = 0;
+                    this.costumeItem.forEach(element => {
+                        subtotalBelanja += element.total;
+                    });
+                    return subtotalBelanja;
+                },
+
+                addItemCostume() {
+                    let productPrice = parseInt(this.costumeForm.product_price);
+                    let costumeTotal = parseInt(this.getTotalCostumePrice());
+                    let total = productPrice + costumeTotal;
+                    const data = {
+                        'product_id': this.costumeForm.product_id,
+                        'product_name': this.costumeForm.product_name,
+                        'product_qty': this.costumeForm.product_qty,
+                        'product_price': productPrice,
+                        'total_price': total,
+                        'product_costume': true,
+                        'product_costume_details': this.costumeItem,
+                        'costume_total': costumeTotal,
+                        'img_url': this.costumeForm.img_url
+                    }
+                    const findItems = this.items.find(arraydata => arraydata.product_id === data.product_id);
+                    if (findItems) {
+                        notifier.alert(`Item product sudah ada`)
+                        return
+                    } else {
+                        this.items.push(data);
+                        notifier.success(`Item ${data.product_name} added.`)
+                    }
+                    this.funcSubtotal();
+                    this.costumeItem = [];
+                    this.closeCostumeModal();
+                    this.costumeForm = {
                         product_id: "",
                         product_name: "",
                         product_qty: 1,
@@ -689,265 +905,85 @@
                         product_costume: true,
                         product_costume_details: this.costumeItem,
                         img_url: "",
-                        nilaiRupiah: 0,
-                    },
-                    costumeItem: [],
-                    openCostumeModal(indexResult) {
-                        const btn = document.getElementById(`open-modal-costume-product`);
-                        btn.click();
-                        const data = indexResult;
-                        this.costumeForm = {
-                            product_id: data.id,
-                            product_name: data.product_name,
-                            product_qty: 1,
-                            product_price: data.price,
-                            total_price: data.price * 1,
-                            product_costume: true,
-                            product_costume_details: this.costumeItem,
-                            img_url: data.img,
-                            price_rupiah_view: formatRupiah(data.price)
-                        };
+                        price_rupiah_view: 0,
+                    };
+                },
 
-                    },
-
-                    filtersearch: '',
-                    filterdata: [],
-                    filterbarangcostumer() {
-                        axios.get(`/transaksi/get-barang?search=${this.filtersearch}`)
-                            .then((response) => {
-                                const data = response.data.data;
-                                this.filterdata = data;
-
-                            }).catch((error) => {
-                                console.log(error);
-                            })
-                    },
-
-                    selectBarang(data) {
-                        this.filterdata = [];
-                        this.filtersearch = data.nama_barang;
-                        this.xbarangdata = {
-                            id: data.id,
-                            title: data.nama_barang,
-                            qty: 1,
-                            price: data.price,
-                            total: data.price * 1,
-                            comment: ''
-                        }
-                    },
-
-                    xbarangdata: {
-                        id: '',
-                        title: '',
-                        qty: 0,
-                        price: 0,
-                        total: 0,
-                        comment: ''
-                    },
-                    addItemCostumeBarang() {
-                        const errors = [];
-                        if (!this.xbarangdata.title.trim()) errors.push('Nama barang tidak boleh kosong');
-                        if (this.xbarangdata.qty <= 0) errors.push('Jumlah barang harus lebih dari 0');
-                        if (this.xbarangdata.price <= 0) errors.push('Harga barang harus lebih dari 0');
-                        if (errors.length) {
-                            errors.forEach(error => notifier.warning(error)); // Menampilkan setiap error satu per satu
-                            return;
-                        }
-
-                        const existingItemIndex = this.costumeItem.findIndex(item => item.item_id === this.xbarangdata.id);
-                        if (existingItemIndex !== -1) {
-                            // Update existing item
-                            this.costumeItem[existingItemIndex].item_qty = this.xbarangdata.qty;
-                            this.costumeItem[existingItemIndex].total = this.xbarangdata.qty * this.xbarangdata.price;
-                            notifier.warning('barang costumer updated');
-                        } else {
-                            // Add new item
-                            const newItem = {
-                                status: false,
-                                item_id: this.xbarangdata.id,
-                                item_name: this.xbarangdata.title,
-                                item_qty: this.xbarangdata.qty,
-                                item_price: this.xbarangdata.price,
-                                total: this.xbarangdata.qty * this.xbarangdata.price,
-                                comment: ''
-                            };
-                            this.costumeItem.push(newItem);
-                            notifier.success('Barang costumer added');
-                        }
-
-                        // Reset xbarangdata and any other necessary state
-                        this.xbarangdata = {
-                            id: '',
-                            title: '',
-                            qty: 0,
-                            price: 0,
-                            total: 0,
-                            comment: ''
-                        };
-                        this.filtersearch = '';
-                    },
-
-                    xothercsdata: {
-                        title: '',
-                        qty: 0,
-                        price: 0,
-                        comment: ''
-                    },
-                    addItemCostumeOther() {
-                        const errors = [];
-                        if (!this.xothercsdata.title.trim()) errors.push('Nama barang tidak boleh kosong');
-                        if (this.xothercsdata.qty <= 0) errors.push('Jumlah barang harus lebih dari 0');
-                        if (this.xothercsdata.price <= 0) errors.push('Harga barang harus lebih dari 0');
-
-                        if (errors.length) {
-                            errors.forEach(error => notifier.warning(error)); // Menampilkan setiap error secara terpisah
-                            return;
-                        }
+                bInput: '',
+                bAction: false,
+                addItemByBarcode() {
+                    this.bAction = true;
+                    const findIndex = this.dataTable.find(findata => findata.code == this.bInput);
+                    if (findIndex) {
                         const data = {
-                            status: true,
-                            item_id: uuid(),
-                            item_name: this.xothercsdata.title,
-                            item_qty: this.xothercsdata.qty,
-                            item_price: this.xothercsdata.price,
-                            total: this.xothercsdata.qty * this.xothercsdata.price,
-                            comment: ""
-                        }
-                        this.costumeItem.push(data);
-                        notifier.success('Barang lain added');
-                        this.xothercsdata = {
-                            title: '',
-                            qty: 0,
-                            price: 0,
-                            comment: ''
-                        }
-                    },
-
-                    deleteItemCostumeBarang(itemId) {
-                        this.costumeItem = this.costumeItem.filter(item => item.item_id !== itemId);
-                    },
-
-                    getTotalCostumePrice() {
-                        let subtotalBelanja = 0;
-                        this.costumeItem.forEach(element => {
-                            subtotalBelanja += element.total;
-                        });
-                        return subtotalBelanja;
-                    },
-
-                    addItemCostume() {
-                        let productPrice = parseInt(this.costumeForm.product_price);
-                        let costumeTotal = parseInt(this.getTotalCostumePrice());
-                        let total = productPrice + costumeTotal;
-                        const data = {
-                            'product_id': this.costumeForm.product_id,
-                            'product_name': this.costumeForm.product_name,
-                            'product_qty': this.costumeForm.product_qty,
-                            'product_price': productPrice,
-                            'total_price': total,
-                            'product_costume': true,
-                            'product_costume_details': this.costumeItem,
-                            'costume_total': costumeTotal,
-                            'img_url': this.costumeForm.img_url
+                            'product_id': findIndex.id,
+                            'product_name': findIndex.product_name ?? '[404]',
+                            'product_qty': 1,
+                            'product_price': findIndex.price,
+                            'total_price': findIndex.price * 1,
+                            'product_costume': false,
+                            'product_costume_details': [],
+                            'costume_total': 0,
+                            'img_url': findIndex.img
                         }
                         const findItems = this.items.find(arraydata => arraydata.product_id === data.product_id);
                         if (findItems) {
                             notifier.alert(`Item product sudah ada`)
-                            return
                         } else {
                             this.items.push(data);
                             notifier.success(`Item ${data.product_name} added.`)
                         }
-                        this.funcSubtotal();
-                        this.costumeItem = [];
-                        this.closeCostumeModal();
-                        this.costumeForm = {
-                            product_id: "",
-                            product_name: "",
-                            product_qty: 1,
-                            product_price: 0,
-                            total_price: 0,
-                            product_costume: true,
-                            product_costume_details: this.costumeItem,
-                            img_url: "",
-                            price_rupiah_view: 0,
-                        };
-                    },
-
-                    bInput: '',
-                    bAction: false,
-                    addItemByBarcode() {
-                        this.bAction = true;
-                        const findIndex = this.dataTable.find(findata => findata.code == this.bInput);
-                        if (findIndex) {
-                            const data = {
-                                'product_id': findIndex.id,
-                                'product_name': findIndex.product_name ?? '[404]',
-                                'product_qty': 1,
-                                'product_price': findIndex.price,
-                                'total_price': findIndex.price * 1,
-                                'product_costume': false,
-                                'product_costume_details': [],
-                                'costume_total': 0,
-                                'img_url': findIndex.img
-                            }
-                            const findItems = this.items.find(arraydata => arraydata.product_id === data.product_id);
-                            if (findItems) {
-                                notifier.alert(`Item product sudah ada`)
-                            } else {
-                                this.items.push(data);
-                                notifier.success(`Item ${data.product_name} added.`)
-                            }
-                        } else {
-                            const url = '/transaksi/barcode-scan';
-                            axios.post(url, {
-                                    barcode: this.bInput
-                                })
-                                .then(response => {
-                                    const data = response.data.data;
-                                    const findItems = this.items.find(arraydata => arraydata.product_id === data.id);
-                                    if (findItems) {
-                                        notifier.warning(`Item product sudah ada`)
-                                    } else {
-                                        const product = {
-                                            'product_id': data.id,
-                                            'product_name': data.product_name,
-                                            'product_qty': 1,
-                                            'product_price': data.price,
-                                            'total_price': data.price * 1,
-                                            'product_costume': false,
-                                            'product_costume_details': [],
-                                            'costume_total': 0,
-                                            'img_url': data.img
-                                        }
-                                        this.items.push(product);
-                                        notifier.success(`Item ${data.product_name} added.`)
+                    } else {
+                        const url = '/transaksi/barcode-scan';
+                        axios.post(url, {
+                                barcode: this.bInput
+                            })
+                            .then(response => {
+                                const data = response.data.data;
+                                const findItems = this.items.find(arraydata => arraydata.product_id === data.id);
+                                if (findItems) {
+                                    notifier.warning(`Item product sudah ada`)
+                                } else {
+                                    const product = {
+                                        'product_id': data.id,
+                                        'product_name': data.product_name,
+                                        'product_qty': 1,
+                                        'product_price': data.price,
+                                        'total_price': data.price * 1,
+                                        'product_costume': false,
+                                        'product_costume_details': [],
+                                        'costume_total': 0,
+                                        'img_url': data.img
                                     }
-                                })
-                                .catch(error => {
-                                    if (error.status === 404) {
-                                        notifier.warning(error.response.data.message);
-                                        return;
-                                    }
-                                    notifier.alert(error.message);
-                                });
-                        }
-                        this.funcSubtotal();
-                        this.bInput = '';
-                        const textInput = document.getElementById('bInput');
-                        textInput.focus();
-                        this.bAction = false;
-                    },
-                    bInputAct() {
-                        if (this.bInput.length === 8) {
-                            this.addItemByBarcode();
-                        }
-                    },
-
-                    init() {
-                        this.getProduct()
+                                    this.items.push(product);
+                                    notifier.success(`Item ${data.product_name} added.`)
+                                }
+                            })
+                            .catch(error => {
+                                if (error.status === 404) {
+                                    notifier.warning(error.response.data.message);
+                                    return;
+                                }
+                                notifier.alert(error.message);
+                            });
                     }
+                    this.funcSubtotal();
+                    this.bInput = '';
+                    const textInput = document.getElementById('bInput');
+                    textInput.focus();
+                    this.bAction = false;
+                },
+                bInputAct() {
+                    if (this.bInput.length === 8) {
+                        this.addItemByBarcode();
+                    }
+                },
+
+                init() {
+                    this.getProduct()
                 }
             }
-        </script>
+        }
+    </script>
     @endpush
 </x-base-layout>

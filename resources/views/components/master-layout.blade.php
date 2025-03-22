@@ -18,7 +18,7 @@
     <!-- @vite(['resources/css/app.css', 'resources/js/app.js']) -->
 
     <link rel="stylesheet" href="{{ asset('build/assets/app-Chdlbbgx.css') }}">
-    <script src="{{ asset('build/assets/app-BjL84nCd.js') }}" defer></script>
+    <script src="{{ asset('build/assets/app-J86zIt7r.js') }}" defer></script>
 
     <style>
         body::-webkit-scrollbar {

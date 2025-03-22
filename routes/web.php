@@ -186,6 +186,9 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         Route::get('/transaksi-penjualan', 'laporanPenjualanLayout')->name('laporanPenjualanLayout');
         Route::get('/penjualan/export-pdf', 'PdfExportPenjualan');
         Route::get('/json-data', 'laporanPenjualanJson');
+        Route::get('/penjualan-detail', 'ReportDetailPenjualan')->name('laporanPenjualanDetail');
+        Route::get('/penjualan-detail-json', 'laporanPenjualanDetailJson');
+        Route::get('/export/penjualan-detail', 'exportlaporanPenjualanDetail');
     });
     
     Route::get('/barcode', function() {
