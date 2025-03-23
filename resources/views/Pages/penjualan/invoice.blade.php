@@ -83,6 +83,10 @@
                 width: 100%;
                 /* Agar elemen receipt memenuhi seluruh lebar */
             }
+
+            .tombolPrint {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -102,26 +106,26 @@
     <hr>
     <div class="mb-3" style="color: black; font-size: 10pt">
         @foreach ($data->details as $item)
-            <div class="py-1">
-                <span class="">{{ $item->item_name }}</span>
-                <i>
-                    {{ $item->status_costume ? ' - Costume Amount' : '' }} 
-                    @if ($item->costume_status)
-                    <span class=""> - Costume</span>
-                    @endif
-                </i>
-                <div class="d-flex justify-content-between">
-                    <span>
-                        {{ formatRupiah($item->cost_item + $item->costume_total) }}
-                    </span>
-                    <span>
-                        x{{ $item->amount_item }}
-                    </span>
-                    <span>
-                        {{ formatRupiah($item->total_cost) }}
-                    </span>
-                </div>
+        <div class="py-1">
+            <span class="">{{ $item->item_name }}</span>
+            <i>
+                {{ $item->status_costume ? ' - Costume Amount' : '' }}
+                @if ($item->costume_status)
+                <span class=""> - Costume</span>
+                @endif
+            </i>
+            <div class="d-flex justify-content-between">
+                <span>
+                    {{ formatRupiah($item->cost_item + $item->costume_total) }}
+                </span>
+                <span>
+                    x{{ $item->amount_item }}
+                </span>
+                <span>
+                    {{ formatRupiah($item->total_cost) }}
+                </span>
             </div>
+        </div>
         @endforeach
     </div>
 
@@ -173,6 +177,12 @@
             <br>
             ----
         </div>
+    </div>
+    <div class="text-center mt-3 tombolPrint">
+        <button class="btn btn-primary" onclick="window.print()">
+            CETAK ULANG INVOICE
+        </button>
+    </div>
 </body>
 
 </html>

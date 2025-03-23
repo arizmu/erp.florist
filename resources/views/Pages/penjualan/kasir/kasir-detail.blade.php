@@ -18,7 +18,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mt-2 py-2" x-data="pembayaran()">
         <div class="md:col-span-1 lg:col-span-3 order-last md:order-first">
-            <div class="bg-white p-6 rounded-lg shadow-lg">
+            <div class="bg-white p-6 rounded-lg shadow">
                 <h2 class="text-2xl font-semibold font-space flex items-center gap-4 text-gray-500">
                     <span class="icon-[carbon--product] size-7 text-blue-500"></span>
                     Detail Product
@@ -26,35 +26,66 @@
 
                 <div class="mt-6 flex flex-col gap-4">
                     @foreach ($transaksi->details as $item)
-                        <div
-                            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 px-6 items-center font-space border rounded-xl hover:bg-gray-100">
-                            @if ($item->img)
-                                  <img class="max-h-40 w-auto"
-                                 src="https://png.pngtree.com/png-clipart/20230312/ourmid/pngtree-transparent-watercolor-flowers-png-image_6646331.png"
-                                alt="">
-                            @else
-                                <span class="icon-[fxemoji--whiteflower] size-20"></span>
-                            @endif
-                            <div class="flex flex-col gap-2">
-                                <div for="product_name" class="flex flex-col gap-0">
-                                    <label for="" class="text-xs text-gray-400 ">Product name</label>
-                                    <h4 class="text-md font-semibold text-gray-500">{{ $item->item_name }} || {{ $item->code_product ?? "[null]" }}</h4>
-                                </div>
-                                <div class="flex flex-col gap-1">
-                                    <span for="for-harga" class="text-orange-400 text-sm font-semibold">Rp.
-                                        {{ formatRupiah($item->cost_item) }} * {{ $item->amount_item }}</span>
-
-                                </div>
+                    <div
+                        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 px-6 items-center font-space border rounded-xl hover:bg-gray-100">
+                        @if ($item->img)
+                        <img class="max-h-40 w-auto"
+                            src="https://png.pngtree.com/png-clipart/20230312/ourmid/pngtree-transparent-watercolor-flowers-png-image_6646331.png"
+                            alt="">
+                        @else
+                        <span class="icon-[fxemoji--whiteflower] size-20"></span>
+                        @endif
+                        <div class="flex flex-col gap-2">
+                            <div for="product_name" class="flex flex-col gap-0">
+                                <label for="" class="text-xs text-gray-400 ">Product name</label>
+                                <h4 class="text-md font-semibold text-gray-500">{{ $item->item_name }} || {{ $item->code_product ?? "[null]" }}</h4>
                             </div>
-                            <div class="flex flex-col gap-2 md:text-right">
-                                <div class="flex flex-col gap-0" for="total">
-                                    <label for="" class="text-xs text-gray-400">Total</label>
-                                    <span class="text-md font-bold text-gray-500">Rp.
-                                        {{ formatRupiah($item->total_cost) }}</span>
-                                </div>
+                            <div class="flex flex-col gap-1">
+                                <span for="for-harga" class="text-orange-400 text-sm font-semibold">Rp.
+                                    {{ formatRupiah($item->cost_item) }} * {{ $item->amount_item }}</span>
+
                             </div>
                         </div>
+                        <div class="flex flex-col gap-2 md:text-right">
+                            <div class="flex flex-col gap-0" for="total">
+                                <label for="" class="text-xs text-gray-400">Total</label>
+                                <span class="text-md font-bold text-gray-500">Rp.
+                                    {{ formatRupiah($item->total_cost) }}</span>
+                            </div>
+                        </div>
+                    </div>
                     @endforeach
+                </div>
+            </div>
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h2 class="text-2xl font-semibold font-space flex items-center gap-4 text-gray-500">
+                        <span class="icon-[carbon--product] size-7 text-blue-500"></span>
+                        Costumer
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="flex flex-col gap-2">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="relative">
+                                <input type="text" placeholder="Nama Costumer" class="input input-filled peer"
+                                    value="{{ $transaksi->costumer->name ?? "" }}" id="nama_costumer" />
+                                <label class="input-filled-label" for="nama_costumer">Costumer Name</label>
+                                <span class="input-filled-focused"></span>
+                            </div>
+                            <div class="relative">
+                                <input type="text" placeholder="08***" class="input input-filled peer"
+                                    value="{{ $transaksi->costumer->no_telp ?? "" }}" />
+                                <label class="input-filled-label" for="nama_costumer">Telpon</label>
+                                <span class="input-filled-focused"></span>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <textarea class="textarea textarea-filled peer" placeholder="Alamat...">{{ $transaksi->costumer->alamat ?? "" }}</textarea>
+                            <label class="textarea-filled-label" for="alamat_costumer">Alamat Costumers</label>
+                            <span class="textarea-filled-focused"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -75,31 +106,6 @@
                             <span class="font-semibold">{{ $transaksi->code }}</span>
                         </div>
 
-                        <div>
-                            <label for="" class="">Custumer</label>
-                            <div class="p-5 border rounded-lg mt-3 flex flex-col gap-2">
-                                <div class="relative">
-                                    <input type="text" placeholder="Nama Costumer" class="input input-filled peer"
-                                        value="{{ $transaksi->costumer->name ?? "" }}" id="nama_costumer" />
-                                    <label class="input-filled-label" for="nama_costumer">Costumer Name</label>
-                                    <span class="input-filled-focused"></span>
-                                </div>
-
-                                <div class="relative">
-                                    <textarea class="textarea textarea-filled peer" placeholder="Alamat...">{{ $transaksi->costumer->alamat ?? "" }}</textarea>
-                                    <label class="textarea-filled-label" for="alamat_costumer">Alamat Costumers</label>
-                                    <span class="textarea-filled-focused"></span>
-                                </div>
-
-                                <div class="relative">
-                                    <input type="text" placeholder="08***" class="input input-filled peer"
-                                        value="{{ $transaksi->costumer->no_telp ?? "" }}" />
-                                    <label class="input-filled-label" for="nama_costumer">Telpon</label>
-                                    <span class="input-filled-focused"></span>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="flex flex-col gap-4 mt-4">
                             <div class="flex justify-between px-1">
                                 <label for="" class="">Payment</label>
@@ -111,26 +117,40 @@
                                     {{ formatRupiah($transaksi->total_payment) }}
                                 </span>
                             </div>
-                            {{-- <div class="p-5 border rounded-lg">
+                            <div class="p-5 border rounded-lg">
                                 <div class="w-full overflow-x-auto">
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                                <th>Date</th>
+                                                <th>#</th>
+                                                <th>Faktur</th>
+                                                <th>Datetimes</th>
                                                 <th>Payment</th>
                                                 <th>Method</th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @foreach ($transaksi->payment as $item)
                                             <tr>
-                                                <td>2021-10-10</td>
-                                                <td>Rp. 500.000</td>
+                                                <td>
+                                                    <a href="/transaksi/cetak-invoice/{{ $transaksi->id }}/{{$item->id}}"
+                                                        class="btn btn-icon btn-soft btn-circle btn-primary"
+                                                        onclick="window.open(this.href, '_blank', 'width=800,height=600'); return false;">
+                                                        <span class="icon-[hugeicons--invoice-04]"></span>
+                                                    </a>
+
+                                                </td>
+                                                <td>{{$item->factur_number}}</td>
+                                                <td>{{ $item->created_at }}</td>
+                                                <td>Rp. {{ formatRupiah($item->total_paid) }}</td>
                                                 <td>Qris</td>
                                             </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
-                            </div> --}}
+                            </div>
                         </div>
 
                     </div>
@@ -146,18 +166,18 @@
     </div>
 
     @push('js')
-        <script>
-            window.addEventListener('load', function() {
-                flatpickr('#flatpickr-range', {
-                    mode: 'range'
-                })
+    <script>
+        window.addEventListener('load', function() {
+            flatpickr('#flatpickr-range', {
+                mode: 'range'
             })
+        })
 
-            function pembayaran() {
-                return {
-                    "status": "success",
-                }
+        function pembayaran() {
+            return {
+                "status": "success",
             }
-        </script>
+        }
+    </script>
     @endpush
 </x-base-layout>

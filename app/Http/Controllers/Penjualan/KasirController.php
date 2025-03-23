@@ -12,12 +12,10 @@ use App\Models\Transaction\DetailsTransaction;
 use App\Models\Transaction\PaymentTransaction;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
-use GuzzleHttp\Psr7\Request as Psr7Request;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Psy\Readline\Transient;
 
 class KasirController extends Controller
 {
@@ -213,7 +211,7 @@ class KasirController extends Controller
 
     public function transaksiDetail($key)
     {
-        $transaksi = Transaction::where('id', $key)->with('details', 'costumer')->first();
+        $transaksi = Transaction::where('id', $key)->with('details', 'costumer', 'payment')->first();
         return view('Pages.penjualan.kasir.kasir-detail', compact('key', 'transaksi'));
     }
 
@@ -618,7 +616,7 @@ class KasirController extends Controller
                 ];
             } else {
                 $data = [
-                   'status' => false,
+                    'status' => false,
                     'discount' => 0,
                     'info' => 'Potongan discount dapat diproses!!!',
                 ];

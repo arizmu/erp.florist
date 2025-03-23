@@ -177,7 +177,7 @@
                                             </span>
                                         </td>
                                         <td x-text="item.transaction_date"></td>
-                                        <td>
+                                        <td class="flex gap-2 items-center">
                                             <a class="btn btn-soft btn-circle btn-primary"
                                                 x-show="item.status_transaction == 'd' || item.status_transaction == 'p'"
                                                 @click="toPayment(item.id)">
@@ -185,8 +185,9 @@
                                             </a>
 
                                             <a @click="toDetails(item.id)"
-                                                class="btn btn-soft btn-circle btn-info">
-                                                <span class="icon-[lets-icons--view-alt-light]"></span>
+                                                class="btn btn-primary">
+                                                <span class="icon-[ic--round-preview] size-4"></span>
+                                                Preview
                                             </a>
                                             <button class="btn btn-soft btn-circle btn-error"
                                                 x-show="item.status_transaction == 'd'"
