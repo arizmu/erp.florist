@@ -113,6 +113,7 @@
                 <th>Subtotal</th>
                 <th>Paid</th>
                 <th>Unpaid</th>
+                <th>metode</th>
                 <th>Costumer</th>
             </tr>
         </thead>
@@ -120,19 +121,37 @@
             $number = 1;
         @endphp
         @foreach ($data['data'] as $item)
-            <tr style="{{ $item->total_unpaid ? 'background: #feb2b2;' : '' }}">
+            <tr style="{{ $item['unpaid'] ? 'background: #feb2b2;' : '' }}">
                 <td>{{ $number++ }}</td>
-                <td>{{ $item->code }}</td>
-                <td>{{ $item->transaction_date }}</td>
-                <td>{{ $item->details->count() }}</td>
-                <td>{{ formatRupiah($item->total_payment) }}</td>
-                <td>{{ formatRupiah($item->total_paid) }}</td>
-                <td>{{ formatRupiah($item->total_unpaid) }}</td>
-                @if ($item->costumer)
-                    <td>{{ $item->costumer->name }}</td>
-                @else
-                    <td>No customer found</td>
-                @endif
+                <td>{{ $item['code'] }}</td>
+                <td>{{ $item['tanggal'] }}</td>
+                <td>{{ $item['qty'] }}</td>
+                <td>{{ $item['subtotal'] }}</td>
+                <td>{{ $item['paid'] }}</td>
+                <td>{{ $item['unpaid'] }}</td>
+                <td style="display: flex; flex-wrap: wrap;">
+                    @foreach ($item['metode'] as $metode)
+                        @if ($metode['payment_method'] == 't')
+                            <span style="background-color: #e74c3c; color: white; padding: 3pt; border-radius: 5pt; font-size: 7pt;">
+                                {{ $metode['payment_method'] == 't' ? 'Tunai' : '' }} | {{ formatRupiah($metode['total_paid']) }}
+                            </span>
+                        @endif
+                        
+                        @if ($metode['payment_method'] == 'b')
+                            <span style="background-color: #27ae60; color: white; padding: 3pt; border-radius: 5pt; font-size: 7pt;">
+                                {{ $metode['payment_method'] == 'b' ? 'Transfer Bank' : '' }} | {{ formatRupiah($metode['total_paid']) }}
+                            </span>
+                        @endif
+
+                        @if ($metode['payment_method'] == 'q')
+                            <span style="background-color: #f39c12; color: white; padding: 3pt; border-radius: 5pt; font-size: 7pt;">
+                                {{ $metode['payment_method'] == 'q' ? 'Qris' : '' }} | {{ formatRupiah($metode['total_paid']) }}
+                            </span>
+                        @endif
+
+                    @endforeach
+                </td>
+                <td>{{ $item['namaCustomer'] }}</td>
             </tr>
         @endforeach
     </table>

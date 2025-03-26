@@ -13,7 +13,7 @@ class LaporanController extends Controller
 
     public function PdfExportPenjualan(Request $request)
     {
-        $data = Transaction::query()->isDelete(false)->with('details', 'costumer')->latest()
+        $data = Transaction::query()->isDelete(false)->with('details', 'costumer', 'payment')->latest()
             ->when($request->estimasi, function ($query) use ($request) {
                 $tanggal = explode("to", $request->estimasi);
                 $tanggalStart = Carbon::parse($tanggal[0]);
@@ -24,14 +24,25 @@ class LaporanController extends Controller
         $totalPenjualan = 0;
         $totalPenerimaan = 0;
         $totalPiutang = 0;
+        $dataList = [];
         foreach ($data->get() as  $value) {
             $totalPenjualan += intval($value->total_payment);
             $totalPenerimaan += intval($value->total_paid);
             $totalPiutang += intval($value->total_unpaid);
+            $dataList[] = [
+                'code' => $value->code,
+                'tanggal' => $value->transaction_date,
+                'qty' => $value->details->count(),
+                'subtotal' => formatRupiah($value->total_payment),
+                'paid' => formatRupiah($value->total_paid),
+                'unpaid' => formatRupiah($value->total_unpaid),
+                'metode' => $value->payment,
+                'namaCustomer' => $value->costumer ? $value->costumer->name : '-'
+            ];
         }
 
         $dataOutput = [
-            'data' => $data->get(),
+            'data' => $dataList,
             'totalPenjualan' => $totalPenjualan,
             'totalPenerimaan' => $totalPenerimaan,
             'totalPiutang' => $totalPiutang
@@ -79,9 +90,9 @@ class LaporanController extends Controller
     public function laporanPenjualanDetailJson(Request $request)
     {
         $baseQuery = DetailsTransaction::with('transaction.costumer')->latest()
-        ->whereHas('transaction', function ($query) use ($request) {
-            $query->where('deleted_status', 0);
-        });
+            ->whereHas('transaction', function ($query) use ($request) {
+                $query->where('deleted_status', 0);
+            });
         $baseQuery->when($request->estimasi, function ($query) use ($request) {
             $query->whereHas('transaction', function ($query) use ($request) {
                 $tanggal = explode("to", $request->estimasi);
@@ -102,11 +113,12 @@ class LaporanController extends Controller
         ], 200);
     }
 
-    public function exportlaporanPenjualanDetail(Request $request) {
+    public function exportlaporanPenjualanDetail(Request $request)
+    {
         $baseQuery = DetailsTransaction::with('transaction.costumer')->latest()
-        ->whereHas('transaction', function ($query) use ($request) {
-            $query->where('deleted_status', 0);
-        });
+            ->whereHas('transaction', function ($query) use ($request) {
+                $query->where('deleted_status', 0);
+            });
         $baseQuery->when($request->estimasi, function ($query) use ($request) {
             $query->whereHas('transaction', function ($query) use ($request) {
                 $tanggal = explode("to", $request->estimasi);
