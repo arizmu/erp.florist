@@ -217,9 +217,13 @@ class KasirController extends Controller
 
     public function invoice($transaksi_id, $invoice_id)
     {
-        $queryTransaksi = Transaction::with(['details', 'costumer', 'payment' => function ($query) use ($invoice_id) {
-            $query->where('id', $invoice_id);
-        }])->find($transaksi_id);
+        $queryTransaksi = Transaction::with([
+            'details',
+            'costumer',
+            'payment' => function ($query) use ($invoice_id) {
+                $query->where('id', $invoice_id);
+            }
+        ])->find($transaksi_id);
 
         $app = AppSetting::first();
         $headers = [
@@ -346,117 +350,6 @@ class KasirController extends Controller
         }
     }
 
-    // public function prosesBayarPost(Request $request, $key)
-    // {
-    //     return $request->all();
-    //     // add-validation
-    //     $validasi = Validator::make($request->all(), [
-    //         'metode_bayar' => 'required',
-    //         'jumlah_bayar' => 'required|numeric',
-    //         'kembali' => 'required|numeric',
-    //         'costumer.nama' => 'required|string',
-    //         'costumer.telpon' => 'required|numeric'
-    //     ]);
-    //     if ($validasi->fails()) {
-    //         return getResponseJson('error', 400, 'bad Reqeust', $request->all(), $validasi->errors());
-    //     }
-    //     //
-
-    //     DB::beginTransaction();
-    //     try {
-    //         $transaksi = Transaction::find($key);
-    //         $totalPayment = $transaksi->total_payment;
-    //         $totalPaid = $transaksi->total_paid;
-    //         $totalUnpaid = $transaksi->total_unpaid;
-    //         $metodePayment = $request['metode_bayar'];
-    //         $cashMoney = $request['jumlah_bayar'];
-    //         $cashBack = $request['kembali'];
-
-    //         $checkCostumer = $transaksi->costumer_id;
-    //         // if ($checkCostumer == null) {
-    //         //     $getCs = $request['costumer'];
-    //         //     $costumer = [
-    //         //         'name' => $getCs['nama'],
-    //         //         'no_telp' => $getCs['telpon'],
-    //         //         'alamat' => $getCs['alamat'] ?? "-",
-    //         //         // 'jenis_kelamain' => 'L',
-    //         //         'email' => '',
-    //         //         'status' => false
-    //         //     ];
-    //         //     $querycostumer = Costumer::create($costumer);
-    //         //     $costumerId = $querycostumer->id;
-    //         // } else {
-    //         //     $costumerId = $transaksi->costumer_id;
-    //         // }
-
-    //         $hitungTotalTerbayar = $totalPaid + $cashMoney;
-    //         $hitungTotalPiutang = $totalPayment - $hitungTotalTerbayar;
-
-    //         $checkPayment = $transaksi->payment;
-    //         $this->costumerMember($request->costumer, $request->pembayaran, $checkPayment, $checkCostumer);
-    //         if ($checkPayment) {
-    //             $paymentQuery = PaymentTransaction::create([
-    //                 'factur_number' => $this->generateFactur(),
-    //                 'transaction_id' => $transaksi->id,
-    //                 'payment_method' => $metodePayment,
-    //                 'total_payment' => $totalPayment,
-    //                 'total_paid' => $cashMoney,
-    //                 'total_unpaid' => $hitungTotalPiutang > 0 ? $hitungTotalPiutang : 0,
-    //                 'total_cashback' => $cashBack,
-    //             ]);
-
-    //             $cekTotalUnpaid = $hitungTotalPiutang > 0 ? $hitungTotalPiutang : 0;
-    //             $transaksi->update([
-    //                 'costumer_id' => $transaksi->costumer_id ?? $costumerId,
-    //                 'total_paid' => $hitungTotalTerbayar >= $totalPayment ? $totalPayment : $hitungTotalTerbayar,
-    //                 'total_unpaid' => $cekTotalUnpaid,
-    //                 // 'status_transaction' => $cashMoney >= $totalPayment ? 's' : 'p',
-    //                 'status_transaction' => $hitungTotalPiutang > 0 ? 'p' : 's'
-    //             ]);
-    //         } else {
-    //             $paymentQuery =  PaymentTransaction::create([
-    //                 'factur_number' => $this->generateFactur(),
-    //                 'transaction_id' => $transaksi->id,
-    //                 'payment_method' => $metodePayment,
-    //                 'total_payment' => $totalPayment,
-    //                 'total_paid' => $cashMoney,
-    //                 'total_cashback' => $cashBack,
-    //                 'total_unpaid' => $cashBack,
-    //             ]);
-
-    //             $transaksi->update([
-    //                 'costumer_id' => $transaksi->costumer_id ?? $costumerId,
-    //                 'total_paid' => $cashMoney >= $totalPayment ? $totalPayment : $cashMoney,
-    //                 'total_unpaid' => $hitungTotalPiutang > 0 ? $hitungTotalPiutang : 0,
-    //                 'costumer_id' => $querycostumer->id,
-    //                 'status_transaction' => $cashMoney >= $totalPayment ? 's' : 'p',
-    //             ]);
-    //         }
-
-    //         DB::commit();
-    //         return response()->json([
-    //             'status' => 'success',
-    //             'code' => 200,
-    //             'message' => 'proses pembayaran berhasil',
-    //             'data' => [
-    //                 'transaksi_id' => $transaksi->id,
-    //                 'payment_id' => $paymentQuery->id,
-    //                 'factur_number' => $this->generateFactur(),
-    //             ]
-    //         ], 200);
-    //     } catch (\Throwable $th) {
-    //         DB::rollBack();
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'code' => 500,
-    //             'message' => 'proses pembayaran gagal',
-    //             'details' => $th->getMessage()
-    //         ], 500);
-    //     }
-    // }
-
-    // public function costumerMember($costumer, $payment, $checkPayment, $checkCostumer) {}
-
     public function prosesBayarPost(Request $request, $key)
     {
         $validasi = Validator::make($request->all(), [
@@ -498,6 +391,7 @@ class KasirController extends Controller
             $transaksi = Transaction::find($key);
             $transaksiPoint = $transaksi->point > 0 ? false : true; // check point use
             $costumerData = $this->costumerMembers($costumer, $transaksiPoint, $payment['total']);
+
             // return $costumerData;
             $subtotal = $transaksi->total_payment;
             $paid = $transaksi->total_paid;
@@ -516,27 +410,30 @@ class KasirController extends Controller
             $totalTerbayar = $discount + $pointMember + $bayar;
             $sisaBayar = $unpaid - $totalTerbayar;
 
+            $trTerbayar = $paid + $totalTerbayar;
+            $status = $subtotal <= $trTerbayar ? "s" : "p";
+            $discountVal = $discounts['status'] ? $discount : $transaksi->discount;
+            $pointCostumerUse = intval($pointMember ?? 0);
+
             $qeryPembayaran = PaymentTransaction::create([
                 'transaction_id' => $transaksi->id,
                 'total_payment' => $transaksi->total_payment,
                 'total_paid' => $totalTerbayar,
+                'discount' => $discountVal,
+                'point' => $pointCostumerUse,
                 'total_unpaid' => $sisaBayar > 0 ? $sisaBayar : 0,
                 'total_cashback' => 0,
+                'payment_amount' => $bayar,
                 'factur_number' => $this->generateFactur(),
                 'payment_method' => $payment['metode']
             ]);
-
-            //
-            $trTerbayar = $paid + $totalTerbayar;
-            $status = $subtotal <= $trTerbayar ? "s" : "p";
-            $discountVal = $discounts['status'] ? $discount : $transaksi->discount;
 
             $transaksi->update([
                 'costumer_id' => $costumerData,
                 'total_paid' => $trTerbayar >= $subtotal ? $subtotal : $trTerbayar,
                 'total_unpaid' => $sisaBayar > 0 ? $sisaBayar : 0,
                 'discount' => $discountVal,
-                'point' => intval($pointMember ?? 0),
+                'point' => $pointCostumerUse,
                 'status_transaction' =>  $status
             ]);
 

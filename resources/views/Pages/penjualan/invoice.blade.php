@@ -10,7 +10,9 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            /* font-family: Arial, sans-serif; */
+            /* font familey sanserif monospace */
+            font-family: 'monospaced', sans-serif;
             width: 58mm;
             margin: 0 auto;
         }
@@ -57,7 +59,7 @@
         }
 
         hr {
-            border: none;
+            border: 1px solid;
             border-top: 1px dashed #ddd;
             margin: 10px 0;
         }
@@ -95,11 +97,11 @@
     <div class="text-center">
         <div>
             <img class="py-2" src="{{$headers['logo']}}" alt="" style="width: 50pt;">
-            <h4>{{ $headers['toko'] }}</h4>
+            <h4 style="font-weight: bold;">{{ $headers['toko'] }}</h4>
             <p style="font-size: 10pt">
-                {{ $headers['alamat'] }}
+                Alamat : {{ $headers['alamat'] }}
                 <br>
-                {{ $headers['telpon'] }}
+                Telp : {{ $headers['telpon'] }}
             </p>
         </div>
     </div>
@@ -128,43 +130,69 @@
         </div>
         @endforeach
     </div>
-
-
     <hr>
-    <hr>
-
-
     <div class="py-2" style="font-size: 10pt">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between" style="font-weight: bold;">
             <span>
-                SUBTOTAL
+                Subtotal
             </span>
-            <span>Rp.
+            <span>
                 {{ number_format($data->total_payment) }}
             </span>
         </div>
         <div class="d-flex justify-content-between">
             <span>
+                Payment Amount
+            </span>
+            <span>
+                {{ number_format($data->payment->first()->payment_amount) }}
+            </span>
+        </div>
+        <div class="d-flex justify-content-between">
+            <span>
+                Method
+            </span>
+            <span>
+                @if ($data->payment->first()->payment_method === 't')
+                    Tunai
+                @endif
+                @if ($data->payment->first()->payment_method === 'b')
+                    Transfer
+                @endif
+                @if ($data->payment->first()->payment_method === 'q')
+                    Qris
+                @endif
+            </span>
+        </div>
+        <div class="d-flex justify-content-between">
+            <span>
+                Discount
+            </span>
+            <span>
+                {{ number_format($data->payment->first()->discount) }}
+            </span>
+        </div>
+        <div class="d-flex justify-content-between">
+            <span>
+                Point
+            </span>
+            <span>
+                {{ number_format($data->payment->first()->point) }}
+            </span>
+        </div>
+        <div class="d-flex justify-content-between" style="font-weight: bold;">
+            <span>
                 Paid
             </span>
-            <span>Rp.
+            <span>
                 {{ number_format($data->total_paid) }}
             </span>
         </div>
-        <hr>
         <div class="d-flex justify-content-between">
             <span>
-                Jumlah Bayar
+                Unpaid
             </span>
-            <span>Rp.
-                {{ number_format($data->payment->first()->total_paid) }}
-            </span>
-        </div>
-        <div class="d-flex justify-content-between">
-            <span>
-                Piutang
-            </span>
-            <span class="h5 text-waring">Rp.
+            <span class="">
                 {{ number_format($data->total_unpaid) }}
             </span>
         </div>
@@ -175,7 +203,7 @@
         <div style="text-align: center; margin-top: 15px">
             Terima Kasih!!!!
             <br>
-            ----
+            *** *** ***
         </div>
     </div>
     <div class="text-center mt-3 tombolPrint">
