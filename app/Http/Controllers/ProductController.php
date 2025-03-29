@@ -110,9 +110,10 @@ class ProductController extends Controller
         $pdf = Pdf::loadView('pdf.invoice', [
             'barcode' => $barcode,
             'code' => $barcodeSrc,
-            'harga' => $product->price
+            'harga' => $product->price,
+            'name' => $product->product_name,
         ]);
-        $pdf->setPaper([0, 0, 163, 163], 'portrait');
+        $pdf->setPaper([0, 0, 163, 200], 'portrait');
         return $pdf->stream('invoice.pdf'); 
     }
 }

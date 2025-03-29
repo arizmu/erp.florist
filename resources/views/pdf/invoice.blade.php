@@ -23,6 +23,7 @@
 <body>
     <span style="padding-bottom: 10px;">Rp. {{ formatRupiah($harga) }}</span>
     <img src="{{ $code }}" alt="" />
+    <span style="padding-bottom: 10px;">{{ $name }}</span>
 </body>
 
 </html>

@@ -22,6 +22,7 @@
         .container {
             text-align: center;
             padding: 20px;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
         }
 
         img {
@@ -38,7 +39,9 @@
         <img id="barcode" alt="Barcode Generator TEC-IT"
             src="https://barcode.tec-it.com/barcode.ashx?data={{ $code }}&code=Code128&translate-esc=on" />
         <br>
-        <button id="printButton" onclick="printBarcode()">Print</button>
+        <span>{{$name}}</span>
+        <br>
+            <button style="margin-top: 20px; width: 200px; color: white; font-weight: bold; font-size: 14pt; border: 0; border-radius: 10pt; padding: 20pt; background-color: blue;" id="printButton" onclick="printBarcode()">Print</button>
     </div>
 
     <script>

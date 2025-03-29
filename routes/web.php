@@ -168,14 +168,14 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         Route::get('/export-pdf', 'exportPDF');
     });
 
-    Route::controller(CostumerController::class)->group(function() {
+    Route::controller(CostumerController::class)->group(function () {
         Route::get('costumers', 'index')->name('costumer.index');
         Route::get('costumer/data-json', 'jsonData');
         Route::post('costumers/delete', 'hapus');
         Route::post('costumers/update', 'update');
     });
 
-    Route::controller(CraftingController::class)->prefix('jasa-crafter')->group(function() {
+    Route::controller(CraftingController::class)->prefix('jasa-crafter')->group(function () {
         Route::get('/', 'index')->name('jasa.crafter.index');
         Route::get('/data-json', 'dataJson');
     });
@@ -183,7 +183,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
     Route::group([
         'prefix' => 'laporan',
         'controller' => LaporanController::class
-    ], function() {
+    ], function () {
         Route::get('/transaksi-penjualan', 'laporanPenjualanLayout')->name('laporanPenjualanLayout');
         Route::get('/penjualan/export-pdf', 'PdfExportPenjualan');
         Route::get('/json-data', 'laporanPenjualanJson');
@@ -191,16 +191,16 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         Route::get('/penjualan-detail-json', 'laporanPenjualanDetailJson');
         Route::get('/export/penjualan-detail', 'exportlaporanPenjualanDetail');
     });
-    
-    Route::get('/barcode', function() {
+
+    Route::get('/barcode', function () {
         $query = Product::where('code', request()->barcode)->first();
         if (!$query) {
             abort(404);
         }
         return view('pdf.barcode', [
             'code' => $query->code,
-            'price' => $query->price
+            'price' => $query->price,
+            'name' => $query->product_name
         ]);
     });
-
 });
