@@ -99,18 +99,20 @@ class ProductController extends Controller
 
     public function generateBarcode($key)
     {
+        $product = Product::where('code', $key)->first();
         $generator = new BarcodeGeneratorHTML();
-        $barcode = $generator->getBarcode($key, $generator::TYPE_CODE_128);
+        $barcode = $generator->getBarcode($product->code, $generator::TYPE_CODE_128);
 
         $barcodeUrl = "https://barcode.tec-it.com/barcode.ashx?data=$key&code=Code128&translate-esc=on";
         $barcodeImage = base64_encode(file_get_contents($barcodeUrl));
         $barcodeSrc = 'data:image/png;base64,' . $barcodeImage;
-
+        
         $pdf = Pdf::loadView('pdf.invoice', [
             'barcode' => $barcode,
-            'code' => $barcodeSrc
+            'code' => $barcodeSrc,
+            'harga' => $product->price
         ]);
-        $pdf->setPaper([0, 0, 163, 130], 'portrait');
+        $pdf->setPaper([0, 0, 163, 163], 'portrait');
         return $pdf->stream('invoice.pdf'); 
     }
 }

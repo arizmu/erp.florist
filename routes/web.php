@@ -18,6 +18,7 @@ use App\Http\Controllers\Products\SatuanController;
 use App\Http\Controllers\Produksi\ProduksiController;
 use App\Http\Controllers\RJasaCraftingController;
 use App\Http\Controllers\UserController;
+use App\Models\Product\Product;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -192,7 +193,14 @@ Route::group(['middleware' => 'auth.manuals'], function () {
     });
     
     Route::get('/barcode', function() {
-        return view('pdf.barcode');
+        $query = Product::where('code', request()->barcode)->first();
+        if (!$query) {
+            abort(404);
+        }
+        return view('pdf.barcode', [
+            'code' => $query->code,
+            'price' => $query->price
+        ]);
     });
 
 });
