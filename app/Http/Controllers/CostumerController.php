@@ -19,7 +19,7 @@ class CostumerController extends Controller
             $iResult->where('name', 'like', '%' . $key . '%')
                 ->orWhere('alamat', 'like', '%' . $key . '%')
                 ->orWhere('no_telp', 'like', '%' . $key . '%');
-        })->paginate(15);
+        })->latest()->paginate(15);
         return getResponseJson('ok', 200, 'cosutemr fetch successfully', $query, false);
     }
 

@@ -53,7 +53,7 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
                     <div class="py-4">
                         <nav class="flex justify-end gap-x-1">
                             <button type="button" class="btn btn-secondary btn-outline min-w-28" @click="prevPageFunc"
@@ -131,120 +131,133 @@
         </div>
     </div>
     @push('js')
-        <script>
-            function helloCrafter() {
-                return {
-                    data: [],
-                    links: [],
-                    nextPage: '',
-                    prevPage: '',
+    <script>
+        function helloCrafter() {
+            return {
+                data: [],
+                links: [],
+                nextPage: '',
+                prevPage: '',
 
-                    search: {
-                        crafter: '',
-                        range: 15,
-                        estimasi: ''
-                    },
+                search: {
+                    crafter: '',
+                    range: 15,
+                    estimasi: ''
+                },
 
-                    getData(url = "") {
-                        if (!url) {
-                            const params = new URLSearchParams({
-                                crafter: this.search.crafter ?? "",
-                                range: this.search.range ?? "",
-                                estimasi:this.search.estimasi ?? ""
-                            });
-                            url = `/ref-jasa/jasa-crafter?${params.toString()}`;
-                        }
-
-                        axios.get(url)
-                            .then(res => {
-                                const response = res.data.data;
-                                this.data = response.data;
-                                this.links = this.processPaginationLinks(response.links);
-                                this.nextPage = response.next_page_url ? this.addParamsToUrl(response.next_page_url) : null;
-                                this.prevPage = response.prev_page_url ? this.addParamsToUrl(response.prev_page_url) : null;
-                            })
-                            .catch(erres => {
-                                console.log(erres);
-                            });
-                    },
-                    processPaginationLinks(links) {
-                        return links.map(link => {
-                            if (link.url) {
-                                return {
-                                    ...link,
-                                    url: this.addParamsToUrl(link.url)
-                                };
-                            }
-                            return link;
-                        });
-                    },
-                    addParamsToUrl(url) {
-                        if (!url) return null;
-                        const newUrl = new URL(url);
-                        const searchParams = new URLSearchParams(newUrl.search);
-                        searchParams.set('crafter', this.search.crafter);
-                        searchParams.set('range', this.search.range);
-                        searchParams.set('estimasi', this.search.estimasi);
-                        newUrl.search = searchParams.toString();
-                        return newUrl.toString();
-                    },
-                    nextPageFunc() {
-                        if (this.nextPage) {
-                            this.getData(this.nextPage);
-                        }
-                    },
-                    prevPageFunc() {
-                        if (this.prevPage) {
-                            this.getData(this.prevPage);
-                        }
-                    },
-                    searchFunc() {
-
-                        console.log('Search params before send:', this.search);
+                getData(url = "") {
+                    if (!url) {
                         const params = new URLSearchParams({
-                            crafter: this.search.crafter,
-                            range: this.search.range,
-                            estimasi: this.search.estimasi
+                            crafter: this.search.crafter ?? "",
+                            range: this.search.range ?? "",
+                            estimasi: this.search.estimasi ?? ""
                         });
                         url = `/ref-jasa/jasa-crafter?${params.toString()}`;
-                        console.log('Final URL:', url);
-                        this.getData(url);
-                    },
-
-                    crafters : '',
-                    getCrafter() {
-                        axios.get('/transaksi/get-crafter')
-                           .then(res => {
-                                const crafters = res.data;
-                                this.crafters = crafters.data;
-                           })
-                           .catch(err => {
-                                console.log(err);
-                            }); 
-                    },
-
-                    exportPDF() {
-                        if (this.search.estimasi === '') {
-                            alert('Harap pilih periode terlebih dahulu!');
-                            return;
-                        }
-                        window.open(`/ref-jasa/export-pdf?crafter=${this.search.crafter}&estimasi=${this.search.estimasi}`, '_blank', 'width=800, height=800');
-                    },
-
-                    init() {
-                        this.getCrafter()
-                        this.getData()
                     }
+                    Swal.fire({
+                        title: "Loading...",
+                        text: "Fetching product data.",
+                        icon: "info",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        willOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    axios.get(url)
+                        .then(res => {
+                            const response = res.data.data;
+                            this.data = response.data;
+                            this.links = this.processPaginationLinks(response.links);
+                            this.nextPage = response.next_page_url ? this.addParamsToUrl(response.next_page_url) : null;
+                            this.prevPage = response.prev_page_url ? this.addParamsToUrl(response.prev_page_url) : null;
+                        })
+                        .catch(erres => {
+                            console.log(erres);
+                        })
+                        .finally(() => {
+                            Swal.close();
+                        });
+                },
+                processPaginationLinks(links) {
+                    return links.map(link => {
+                        if (link.url) {
+                            return {
+                                ...link,
+                                url: this.addParamsToUrl(link.url)
+                            };
+                        }
+                        return link;
+                    });
+                },
+                addParamsToUrl(url) {
+                    if (!url) return null;
+                    const newUrl = new URL(url);
+                    const searchParams = new URLSearchParams(newUrl.search);
+                    searchParams.set('crafter', this.search.crafter);
+                    searchParams.set('range', this.search.range);
+                    searchParams.set('estimasi', this.search.estimasi);
+                    newUrl.search = searchParams.toString();
+                    return newUrl.toString();
+                },
+                nextPageFunc() {
+                    if (this.nextPage) {
+                        this.getData(this.nextPage);
+                    }
+                },
+                prevPageFunc() {
+                    if (this.prevPage) {
+                        this.getData(this.prevPage);
+                    }
+                },
+                searchFunc() {
+
+                    console.log('Search params before send:', this.search);
+                    const params = new URLSearchParams({
+                        crafter: this.search.crafter,
+                        range: this.search.range,
+                        estimasi: this.search.estimasi
+                    });
+                    url = `/ref-jasa/jasa-crafter?${params.toString()}`;
+                    console.log('Final URL:', url);
+                    this.getData(url);
+                },
+
+                crafters: '',
+                getCrafter() {
+                    axios.get('/transaksi/get-crafter')
+                        .then(res => {
+                            const crafters = res.data;
+                            this.crafters = crafters.data;
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
+                },
+
+                exportPDF() {
+                    if (this.search.estimasi === '') {
+                        alert('Harap pilih periode terlebih dahulu!');
+                        return;
+                    }
+                    window.open(`/ref-jasa/export-pdf?crafter=${this.search.crafter}&estimasi=${this.search.estimasi}`, '_blank', 'width=800, height=800');
+                },
+
+                init() {
+                    this.getCrafter()
+                    this.getData()
                 }
             }
-        </script>
-        <script>
-            window.addEventListener('load', function() {
-                // Range Date Picker
-                flatpickr('#flatpickr-range', {
-                    mode: 'range'
-                })
+        }
+    </script>
+    <script>
+        window.addEventListener('load', function() {
+            // Range Date Picker
+            flatpickr('#flatpickr-range', {
+                mode: 'range'
             })
-        </script>
+        })
+    </script>
     @endpush
 </x-base-layout>

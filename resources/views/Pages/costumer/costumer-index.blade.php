@@ -102,7 +102,7 @@
                                     <option value="L">Laki-laki</option>
                                     <option value="P">Perempuan</option>
                                 </select>
-                                
+
                             </div>
                             <div class="flex flex-col gap-2">
                                 <div class="flex flex-col gap-2">
@@ -139,12 +139,89 @@
         </div>
     </div>
     @push('js')
-        <script>
-            function referensiIndex() {
-                return {
-                    xsearch: '',
-                    xdataTable: [],
-                    xform: {
+    <script>
+        function referensiIndex() {
+            return {
+                xsearch: '',
+                xdataTable: [],
+                xform: {
+                    id: '',
+                    costumer: '',
+                    gender: '',
+                    address: '',
+                    telpon: '',
+                    email: '',
+                    point: ''
+                },
+                isSubmit: false,
+                isUpdated: false,
+                async store() {
+                    this.isSubmit = true;
+
+                },
+                getEdit(index) {
+                    this.isUpdated = true;
+                    this.xform.id = index.id
+                    this.xform.costumer = index.name
+                    this.xform.gender = index.jenis_kelamin
+                    this.xform.address = index.alamat
+                    this.xform.telpon = index.no_telp
+                    this.xform.email = index.email
+                    this.id = index.id
+                    console.log(this.xform);
+
+                },
+
+                async update() {
+                    this.isSubmit = true;
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "udpate this data !",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, update it!"
+                    }).then(async (result) => {
+                        if (result.isConfirmed) {
+                            try {
+                                const url = `/costumers/update`;
+                                const res = await axios.post(url, this.xform);
+                                if (res.status === 200) {
+                                    this.getData();
+                                    Swal.fire({
+                                        title: "Updated!",
+                                        text: "Your file has been updated.",
+                                        icon: "success"
+                                    });
+                                    this.isUpdated = false;
+                                    this.resetForm();
+                                } else {
+                                    Swal.fire({
+                                        title: "Error!",
+                                        text: "Something went wrong.",
+                                        icon: "error"
+                                    });
+                                }
+                                this.isSubmit = false;
+                            } catch (error) {
+                                console.error(error);
+                                this.isSubmit = false;
+                                Swal.fire({
+                                    title: "Error!",
+                                    text: "Something went wrong.",
+                                    icon: "error"
+                                });
+                            }
+                        }
+                    });
+                },
+
+                resetForm() {
+                    this.isUpdated = false;
+                    this.xsearch = '';
+                    this.xdataTable = [];
+                    this.xform = {
                         id: '',
                         costumer: '',
                         gender: '',
@@ -152,206 +229,144 @@
                         telpon: '',
                         email: '',
                         point: ''
-                    },
-                    isSubmit: false,
-                    isUpdated: false,
-                    async store() {
-                        this.isSubmit = true;
+                    };
+                },
 
-                    },
-                    getEdit(index) {
-                        this.isUpdated = true;
-                        this.xform.id = index.id
-                        this.xform.costumer = index.name
-                        this.xform.gender = index.jenis_kelamin
-                        this.xform.address = index.alamat
-                        this.xform.telpon = index.no_telp
-                        this.xform.email = index.email
-                        this.id = index.id
-                        console.log(this.xform);
-                        
-                    },
-
-                    async update() {
-                        this.isSubmit = true;
-                        Swal.fire({
-                            title: "Are you sure?",
-                            text: "udpate this data !",
-                            icon: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#3085d6",
-                            cancelButtonColor: "#d33",
-                            confirmButtonText: "Yes, update it!"
-                        }).then(async (result) => {
-                            if (result.isConfirmed) {
-                                try {
-                                    const url = `/costumers/update`;
-                                    const res = await axios.post(url, this.xform);
-                                    if (res.status === 200) {
-                                        this.getData();
-                                        Swal.fire({
-                                            title: "Updated!",
-                                            text: "Your file has been updated.",
-                                            icon: "success"
-                                        });
-                                        this.isUpdated = false;
-                                        this.resetForm();
-                                    } else {
-                                        Swal.fire({
-                                            title: "Error!",
-                                            text: "Something went wrong.",
-                                            icon: "error"
-                                        });
-                                    }
-                                    this.isSubmit = false;
-                                } catch (error) {
-                                    console.error(error);
-                                    this.isSubmit = false;
-                                    Swal.fire({
-                                        title: "Error!",
-                                        text: "Something went wrong.",
-                                        icon: "error"
-                                    });
-                                }
-                            }
-                        });
-                    },
-
-                    resetForm() {
-                        this.isUpdated = false;
-                        this.xsearch = '';
-                        this.xdataTable = [];
-                        this.xform = {
-                            id: '',
-                            costumer: '',
-                            gender: '',
-                            address: '',
-                            telpon: '',
-                            email: '',
-                            point: ''
-                        };
-                    },
-
-                    hapus(key) {
-                        Swal.fire({
-                            title: "Are you sure?",
-                            text: "You won't be able to revert this!",
-                            icon: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#3085d6",
-                            cancelButtonColor: "#d33",
-                            confirmButtonText: "Yes, delete it!"
-                        }).then(async (result) => {
-                            if (result.isConfirmed) {
-                                try {
-                                    console.log(key);
-                                    const url = `/costumers/delete`;
-                                    const res = await axios.post(url, key);
-                                    if (res.status === 200) {
-                                        this.getData();
-                                        Swal.fire({
-                                            title: "Deleted!",
-                                            text: "Your file has been deleted.",
-                                            icon: "success"
-                                        });
-                                    } else {
-                                        console.log(res.status);
-                                        Swal.fire({
-                                            title: "Deleted!",
-                                            text: "Failed to delete your file.",
-                                            icon: "error"
-                                        });
-                                    }
-                                } catch (error) {
-                                    console.log(error.message);
+                hapus(key) {
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, delete it!"
+                    }).then(async (result) => {
+                        if (result.isConfirmed) {
+                            try {
+                                console.log(key);
+                                const url = `/costumers/delete`;
+                                const res = await axios.post(url, key);
+                                if (res.status === 200) {
+                                    this.getData();
                                     Swal.fire({
                                         title: "Deleted!",
-                                        text: "Invalid deleted request.",
+                                        text: "Your file has been deleted.",
+                                        icon: "success"
+                                    });
+                                } else {
+                                    console.log(res.status);
+                                    Swal.fire({
+                                        title: "Deleted!",
+                                        text: "Failed to delete your file.",
                                         icon: "error"
                                     });
                                 }
+                            } catch (error) {
+                                console.log(error.message);
+                                Swal.fire({
+                                    title: "Deleted!",
+                                    text: "Invalid deleted request.",
+                                    icon: "error"
+                                });
                             }
-                        });
-                    },
-
-                    data: [],
-                    links: [],
-                    nextPage: '',
-                    prevPage: '',
-                    search: {
-                        key: ''
-                    },
-                    getData(url = "") {
-                        if (!url) {
-                            const params = new URLSearchParams({
-                                key: this.search.key ?? "",
-                            });
-                            url = `/costumer/data-json?${params.toString()}`;
                         }
-                        axios.get(url)
-                            .then(res => {
-                                const response = res.data.data;
-                                this.xdataTable = response.data;
-                                this.links = this.processPaginationLinks(response.links);
-                                this.nextPage = response.next_page_url ? this.addParamsToUrl(response.next_page_url) : null;
-                                this.prevPage = response.prev_page_url ? this.addParamsToUrl(response.prev_page_url) : null;
+                    });
+                },
 
-                            })
-                            .catch(erres => {
-                                console.log(erres);
-                            });
-                    },
-
-                    processPaginationLinks(links) {
-                        return links.map(link => {
-                            if (link.url) {
-                                return {
-                                    ...link,
-                                    url: this.addParamsToUrl(link.url)
-                                };
-                            }
-                            return link;
-                        });
-                    },
-
-                    addParamsToUrl(url) {
-                        if (!url) return null;
-                        const newUrl = new URL(url);
-                        const searchParams = new URLSearchParams(newUrl.search);
-                        searchParams.set('crafter', this.search.crafter);
-                        searchParams.set('range', this.search.range);
-                        searchParams.set('estimasi', this.search.estimasi);
-                        newUrl.search = searchParams.toString();
-                        return newUrl.toString();
-                    },
-
-                    nextPageFunc() {
-                        if (this.nextPage) {
-                            this.getData(this.nextPage);
-                        }
-                    },
-
-                    prevPageFunc() {
-                        if (this.prevPage) {
-                            this.getData(this.prevPage);
-                        }
-                    },
-
-                    searchFunc() {
-                        console.log('Search params before send:', this.search);
+                data: [],
+                links: [],
+                nextPage: '',
+                prevPage: '',
+                search: {
+                    key: ''
+                },
+                getData(url = "") {
+                    if (!url) {
                         const params = new URLSearchParams({
-                            key: this.search.key,
+                            key: this.search.key ?? "",
                         });
                         url = `/costumer/data-json?${params.toString()}`;
-                        console.log('Final URL:', url);
-                        this.getData(url);
-                    },
-
-                    init() {
-                        this.getData();
                     }
+
+                    Swal.fire({
+                        title: "Loading...",
+                        text: "Fetching product data.",
+                        icon: "info",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        willOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    axios.get(url)
+                        .then(res => {
+                            const response = res.data.data;
+                            this.xdataTable = response.data;
+                            this.links = this.processPaginationLinks(response.links);
+                            this.nextPage = response.next_page_url ? this.addParamsToUrl(response.next_page_url) : null;
+                            this.prevPage = response.prev_page_url ? this.addParamsToUrl(response.prev_page_url) : null;
+
+                        })
+                        .catch(erres => {
+                            console.log(erres);
+                        })
+                        .finally(() => {
+                            Swal.close();
+                        })
+                },
+
+                processPaginationLinks(links) {
+                    return links.map(link => {
+                        if (link.url) {
+                            return {
+                                ...link,
+                                url: this.addParamsToUrl(link.url)
+                            };
+                        }
+                        return link;
+                    });
+                },
+
+                addParamsToUrl(url) {
+                    if (!url) return null;
+                    const newUrl = new URL(url);
+                    const searchParams = new URLSearchParams(newUrl.search);
+                    searchParams.set('crafter', this.search.crafter);
+                    searchParams.set('range', this.search.range);
+                    searchParams.set('estimasi', this.search.estimasi);
+                    newUrl.search = searchParams.toString();
+                    return newUrl.toString();
+                },
+
+                nextPageFunc() {
+                    if (this.nextPage) {
+                        this.getData(this.nextPage);
+                    }
+                },
+
+                prevPageFunc() {
+                    if (this.prevPage) {
+                        this.getData(this.prevPage);
+                    }
+                },
+
+                searchFunc() {
+                    console.log('Search params before send:', this.search);
+                    const params = new URLSearchParams({
+                        key: this.search.key,
+                    });
+                    url = `/costumer/data-json?${params.toString()}`;
+                    console.log('Final URL:', url);
+                    this.getData(url);
+                },
+
+                init() {
+                    this.getData();
                 }
             }
-        </script>
+        }
+    </script>
     @endpush
 </x-base-layout>

@@ -15,14 +15,22 @@ class UserController extends Controller
         return view('Pages.users.user-index');
     }
 
-    public function userJson()
+    public function userJson(Request $request)
     {
-        $query = User::all()->where('delete_status', false);
+        $query = User::query()->where('delete_status', false)->latest();
+
+        $query->when($request->keywords, function ($q) use ($request) {
+            $q->where(function ($subQuery) use ($request) {
+                $subQuery->where('name', 'LIKE', '%' . $request->keywords . '%')
+                    ->orWhere('email', 'LIKE', '%' . $request->keywords . '%');
+            });
+        });
+
         return response()->json([
             'status' => 'success',
             'code' => 200,
-            'message' => 'Data berhasil diambil',
-            'data' => $query
+            'message' => 'Data fetch successfully',
+            'data' => $query->paginate($request->range ?? 15)
         ]);
     }
 

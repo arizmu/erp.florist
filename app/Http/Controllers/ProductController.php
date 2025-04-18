@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Picqer\Barcode\BarcodeGeneratorHTML;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -87,7 +88,7 @@ class ProductController extends Controller
             $query->update([
                 'deleted_status' => true,
                 'deleted_at' => Carbon::now(),
-                'deleted_by_user' => auth()->user()->name
+                'deleted_by_user' => Auth::user()->name
             ]);
             DB::commit();
             return getResponseJson('success', 200, 'Data berhasil dihapus!', true, false);
@@ -113,7 +114,7 @@ class ProductController extends Controller
             'harga' => $product->price,
             'name' => $product->product_name,
         ]);
-        $pdf->setPaper([0, 0, 163, 200], 'portrait');
+        $pdf->setPaper([0, 0, 163, 200 ], 'portrait');
         return $pdf->stream('invoice.pdf'); 
     }
 }
