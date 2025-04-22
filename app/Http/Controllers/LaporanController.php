@@ -31,6 +31,7 @@ class LaporanController extends Controller
             $totalPiutang += intval($value->total_unpaid);
             $dataList[] = [
                 'code' => $value->code,
+                'detail' => $value->details,
                 'tanggal' => $value->transaction_date,
                 'qty' => $value->details->count(),
                 'subtotal' => formatRupiah($value->total_payment),
@@ -51,11 +52,9 @@ class LaporanController extends Controller
         $pdf = Pdf::loadView('pdf.pdf-report-transaksi', [
             'data' => $dataOutput,
             'title' => 'Laporan Penjualan',
-            'estimasi' => $request->estimasi,
-            ''
+            'estimasi' => $request->estimasi
         ]);
         return $pdf->stream('report-transaksi' . $request->estimasi);
-        // return $dataOutput;
     }
 
     public function laporanPenjualanJson(Request $request)
