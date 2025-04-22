@@ -7,6 +7,8 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -17,12 +19,14 @@ class UserController extends Controller
 
     public function userJson(Request $request)
     {
-        $query = User::query()->where('delete_status', false)->latest();
+        $query = User::query()->with('pegawai')->where('delete_status', false)->latest();
 
         $query->when($request->keywords, function ($q) use ($request) {
             $q->where(function ($subQuery) use ($request) {
                 $subQuery->where('name', 'LIKE', '%' . $request->keywords . '%')
                     ->orWhere('email', 'LIKE', '%' . $request->keywords . '%');
+            })->orWhereHas('pegawai', function ($pegawaiQuery) use ($request) {
+                $pegawaiQuery->where('pegawai_name', 'LIKE', '%' . $request->keywords . '%');
             });
         });
 
@@ -36,12 +40,28 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        $isValdiate = Validator::make($request->all(), [
+            'username' => 'required',
+            'email' => 'required',
+            'password' => 'required',
+            'confirm_password' => 'required|same:password',
+            'pegawai_id' => 'required'
+        ]);
+
+        if ($isValdiate->fails()) {
+            return response()->json([
+                'status' => 'Bad Request!',
+                'message' => '',
+                'errors' => $isValdiate->errors()
+            ], 422);
+        }
         DB::beginTransaction();
         try {
             $arrayRequest = [
                 'name' => $request->username,
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
+                'pegawai_id' => $request->pegawai_id,
                 // 'role' => $request->role
             ];
             User::create($arrayRequest);
@@ -117,14 +137,31 @@ class UserController extends Controller
         }
     }
 
-    public function updated(Request $request)
+    public function updated(Request $request, $key)
     {
+        $isValdiate = Validator::make($request->all(), [
+            'username' => 'required',
+            'email' => 'required',
+            'pegawai_id' => 'required|exists:pegawais,id',
+            'password' => '',
+            'confirm_password' => 'same:password',
+        ]);
+
+        if ($isValdiate->fails()) {
+            return response()->json([
+                'status' => 'Bad Request!',
+                'message' => '',
+                'errors' => $isValdiate->errors()
+            ], 422);
+        }
         DB::beginTransaction();
         try {
-            $query = User::find($request->key);
+            $query = User::find($key);
             $query->update([
-                'name' => $request->name,
-                'email' => $request->email
+                'name' => $request->username,
+                'email' => $request->email,
+                'password' => $request->password ? Hash::make($request->password) : $query->password,
+                'pegawai_id' => $request->pegawai_id
             ]);
             DB::commit();
             return response()->json([

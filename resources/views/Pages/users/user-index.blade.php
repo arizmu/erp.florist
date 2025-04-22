@@ -1,6 +1,4 @@
 <x-base-layout>
-
-
     <div class="breadcrumbs mb-2">
         <ol>
             <li>
@@ -38,7 +36,8 @@
                                 <table class="table rounded">
                                     <thead>
                                         <tr>
-                                            <th>Name</th>
+                                            <th>Username</th>
+                                            <th>Pegawai</th>
                                             <th>Email</th>
                                             <th>Status</th>
                                             <th>Actions</th>
@@ -48,6 +47,9 @@
                                         <template x-for="user in data">
                                             <tr>
                                                 <td class="text-nowrap" x-text="user.name"></td>
+                                                <td>
+                                                    <span x-text="user.pegawai ? user.pegawai.pegawai_name : '-'"></span>
+                                                </td>
                                                 <td x-text="user.email"></td>
                                                 <td>
                                                     <span x-show="user.active"
@@ -66,7 +68,8 @@
                                                         <span
                                                             class="icon-[fluent--person-edit-24-regular] size-5"></span>
                                                     </button>
-                                                    <button x-on:click="deleteData(user.id)" type="button" class="btn btn-circle btn-soft btn-error btn-sm"
+                                                    <button x-on:click="deleteData(user.id)" type="button"
+                                                        class="btn btn-circle btn-soft btn-error btn-sm"
                                                         aria-label="Action button">
                                                         <span class="icon-[tabler--trash] size-5"></span>
                                                     </button>
@@ -101,7 +104,8 @@
                             <span class="input-group-text">
                                 <span class="icon-[tabler--search] text-base-content/80 size-6"></span>
                             </span>
-                            <input type="text" class="input input-lg grow" placeholder="Search" x-model="search.keyword" />
+                            <input type="text" class="input input-lg grow" placeholder="Search"
+                                x-model="search.keyword" />
                             <label class="sr-only" for="kbdInput">Search</label>
                             <span class="input-group-text gap-2">
                                 <kbd class="kbd kbd-sm">⌘</kbd>
@@ -119,7 +123,8 @@
                             <label class="select-floating-label" for="selectFloating">Data Range</label>
                         </div>
                         <div class="flex justify-between flex-wrap gap-2 mt-4">
-                            <button class="btn btn-primary btn-soft rounded-full" type="button" x-on:click="searchFunc">
+                            <button class="btn btn-primary btn-soft rounded-full" type="button"
+                                x-on:click="searchFunc">
                                 <span class="icon-[tabler--user-search]"></span>
                                 Filter
                             </button>
@@ -139,13 +144,13 @@
             Open modal
         </button>
 
-        <div id="modal-form"
-            class="overlay modal overlay-open:opacity-100 hidden [--overlay-backdrop:static]" role="dialog"
-            tabindex="-1" data-overlay-keyboard="false">
+        <div id="modal-form" class="overlay modal overlay-open:opacity-100 hidden [--overlay-backdrop:static]"
+            role="dialog" tabindex="-1" data-overlay-keyboard="false">
             <div class="modal-dialog overlay-open:opacity-100">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3 class="text-xl font-semibold text-gray-600" x-text="status ? 'Form Update' : 'Form Registrasi'">Registrasi User</h3>
+                        <h3 class="text-xl font-semibold text-gray-600"
+                            x-text="status ? 'Form Update' : 'Form Registrasi'">Registrasi User</h3>
                         <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3"
                             aria-label="Close" data-overlay="#modal-form" id="model-close-layout">
                             <span class="icon-[tabler--x] size-4"></span>
@@ -158,7 +163,9 @@
                                 <select class="select" id="" x-model="xform.pegawai_id">
                                     <option>Pilih...</option>
                                     <template x-for="pegawai in pegawais" :key="pegawai.id">
-                                        <option :value="pegawai.id" x-text="pegawai.pegawai_name"></option>
+                                        <option :value="pegawai.id" x-text="pegawai.pegawai_name"
+                                            :selected="pegawai.id == xform.pegawai_id">
+                                        </option>
                                     </template>
                                 </select>
                             </div>
@@ -175,8 +182,7 @@
                         <div class="p-2 px-3 border rounded-lg flex flex-col gap-2">
                             <div class="w-full">
                                 <label class="label label-text" for="username"> Username </label>
-                                <input x-model="xform.username" type="text"
-                                    class="input"/>
+                                <input x-model="xform.username" type="text" class="input" />
                             </div>
                             <div class="w-full">
                                 <label class="label label-text" for="emai"> Email </label>
@@ -189,9 +195,8 @@
                                     <input x-model="xform.password" id="toggle-password" type="password"
                                         class="input" placeholder="Enter password" value="" />
                                     <span class="input-group-text">
-                                        <button type="button"
-                                            data-toggle-password='{ "target": "#toggle-password" }' class="block"
-                                            aria-label="password toggle">
+                                        <button type="button" data-toggle-password='{ "target": "#toggle-password" }'
+                                            class="block" aria-label="password toggle">
                                             <span
                                                 class="icon-[tabler--eye] text-base-content/80 password-active:block hidden size-5 flex-shrink-0"></span>
                                             <span
@@ -207,8 +212,8 @@
                                         class="input" placeholder="Enter password" value="" />
                                     <span class="input-group-text">
                                         <button type="button"
-                                            data-toggle-password='{ "target": "#password_confirm" }'
-                                            class="block" aria-label="password toggle">
+                                            data-toggle-password='{ "target": "#password_confirm" }' class="block"
+                                            aria-label="password toggle">
                                             <span
                                                 class="icon-[tabler--eye] text-base-content/80 password-active:block hidden size-5 flex-shrink-0"></span>
                                             <span
@@ -224,7 +229,8 @@
                             x-on:click="closeModal">
                             <span class="icon-[material-symbols--reset-focus] size-5"></span>
                             Close</button>
-                        <button type="submit" class="btn btn-primary btn-soft rounded-full">
+                        <button type="button" x-on:click="status ? update() : store()"
+                            class="btn btn-primary btn-soft rounded-full">
                             <span class="icon-[ri--user-follow-line] size-5"></span>
                             Submit data
                         </button>
@@ -235,257 +241,357 @@
     </div>
 
     @push('js')
-    <script>
-        function userIndex() {
-            return {
-                pegawais: [],
-                xform: {
-                    id: "",
-                    pegawai_id: '',
-                    role_id: '',
-                    username: '',
-                    email: '',
-                    password: '',
-                    confirm_password: ''
-                },
-                status: false,
-                create() {
-                    console.log('create');
-                    this.resetXform();
-                    this.openModal();
-                },
-                async store() {
-                    try {
-                        const response = await axios.post('/management/user-store', this.xform);
-                        const data = response.data.data;
-                        console.log(data);
-                        this.resetXform();
-                        this.getData();
-                    } catch (error) {
-                        console.log(error);
-                    }
-                },
-                openEdit(index) {
-                    this.status = true;
-                    this.openModal();
-                    const user = index;
-                    this.xform.id = user.id;
-                    this.xform.pegawai_id = user.pegawai_id;
-                    this.xform.role_id = user.role_id;
-                    this.xform.username = user.name;
-                    this.xform.email = user.email;
-                    this.xform.password = user.password;
-                    this.xform.confirm_password = user.password;
-                    console.log(this.xform);
-                    console.log(user);
-                },
-                resetXform() {
-                    this.xform = {
+        <script>
+            function userIndex() {
+                return {
+                    pegawais: [],
+                    xform: {
+                        id: "",
                         pegawai_id: '',
                         role_id: '',
                         username: '',
                         email: '',
                         password: '',
                         confirm_password: ''
-                    }
-                },
-                async deleteData(index) {
-                    // sweetalert for confirmation before delete data
-                    const result = await Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
-                    });
-                    if (!result.isConfirmed) {
+                    },
+                    status: false,
+                    create() {
+                        this.resetXform();
+                        this.openModal();
+                    },
+                    store() {
+                        const url = `/management/user-store`;
                         Swal.fire({
-                            icon: 'info',
-                            title: 'Cancelled',
-                            text: 'Your data is safe!'
-                        })
-                        return;
-                    } else {
-                        // error callback
-                        try {
-                            // const url = `/management/user-delete/${index}`;
-                            // const res = await axios.post(url);
-                            // this.getData();
-                            Swal.fire({
-                                title: "Deleted!",
-                                text: "Your file has been deleted.",
-                                icon: "success"
-                            });
-                        } catch (error) {
-                            console.log(error);
-                        }
-                    }
+                            title: 'Are you sure?',
+                            text: "You won't be able to revert this!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, create it!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                Swal.fire({
+                                    title: 'Loading...',
+                                    html: 'Harap tunggu...',
+                                    icon: 'info',
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                })
+                                axios.post(url, this.xform)
+                                    .then((response) => {
+                                        this.loadJson();
+                                        this.closeModal();
+                                        Swal.fire({
+                                            title: "Created!",
+                                            text: "Your file has been created.",
+                                            icon: "success"
+                                        })
+                                    })
+                                    .catch((error) => {
+                                        console.log(error);
+                                        if (error.response.status === 422) {
+                                            const errors = error.response.data.errors;
+                                            const errorKeys = []
+                                            for (const key in errors) {
+                                                errorKeys.push(errors[key][0])
+                                            }
+                                            Swal.fire({
+                                                title: "Error!",
+                                                text: errorKeys.join(', '),
+                                                icon: "error"
+                                            })
+                                            return;
+                                        }
 
-                    // const response = await axios.get(`/management/user-delete/${index}`);
-                    // console.log(response);
-                },
-                openModal() {
-                    Swal.fire({
-                        title: 'Loading...',
-                        text: 'Please wait while your file is being uploaded.',
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        showConfirmButton: false,
-                        didOpen: () => {
-                            Swal.showLoading();
+                                        Swal.fire({
+                                            title: "Error!",
+                                            text: "Your file has not been created.",
+                                            icon: "error"
+                                        })
+                                    });
+                            }
+                        })
+                    },
+                    update() {
+                        const url = `/management/user-update/${this.xform.id}`;
+                        Swal.fire({
+                            title: 'Update confirm?',
+                            text: "You won't be able to revert this!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, update it!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                Swal.fire({
+                                    title: 'Loading...',
+                                    html: 'Harap tunggu...',
+                                    icon: 'info',
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                })
+                                axios.post(url, this.xform)
+                                    .then((response) => {
+                                        this.loadJson();
+                                        this.closeModal();
+                                        Swal.fire({
+                                            title: "Updated!",
+                                            text: "Your file has been updated.",
+                                            icon: "success"
+                                        })
+                                    })
+                                    .catch((error) => {
+                                        console.log(error);
+                                        if (error.response.status === 422) {
+                                            const errors = error.response.data.errors;
+                                            const errorKeys = []
+                                            for (const key in errors) {
+                                                errorKeys.push(errors[key][0])
+                                            }
+                                            Swal.fire({
+                                                title: "Error!",
+                                                text: errorKeys.join(', '),
+                                                icon: "error"
+                                            })
+                                            return;
+                                        }
+                                        Swal.fire({
+                                            title: "Error!",
+                                            text: "Your file has not been updated.",
+                                            icon: "error"
+                                        })
+                                    });
+                            }
+                        })
+
+                    },
+                    openEdit(index) {
+                        this.status = true;
+                        this.openModal();
+                        const user = index;
+                        this.xform.id = user.id;
+                        this.xform.pegawai_id = user.pegawai_id;
+                        this.xform.role_id = user.role_id;
+                        this.xform.username = user.name;
+                        this.xform.email = user.email;
+                        this.xform.password = user.password;
+                        this.xform.confirm_password = user.password;
+                        console.log(this.xform);
+                        console.log(user);
+                    },
+                    resetXform() {
+                        this.xform = {
+                            pegawai_id: '',
+                            role_id: '',
+                            username: '',
+                            email: '',
+                            password: '',
+                            confirm_password: ''
                         }
-                    })
-                    axios.get('/management/user-get-pegawai')
-                        .then((res) => {
-                            const data = res.data.data;
-                            this.pegawais = data;
-                        })
-                        .catch((err) => {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'Something went wrong!'
-                            })
-                            
-                        })
-                        .finally(() => {
-                            Swal.close();
-                            const openModal = document.getElementById('btn-open-modal');
-                            openModal.click();
+                    },
+                    async deleteData(index) {
+                        // sweetalert for confirmation before delete data
+                        const result = await Swal.fire({
+                            title: 'Are you sure?',
+                            text: "You won't be able to revert this!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, delete it!'
                         });
-                },
-                closeModal() {
-                    const closeModal = document.getElementById('model-close-layout');
-                    closeModal.click();
-                    this.resetXform();
-                    this.status = false;
-                    console.log('clear...');
-                },
+                        if (!result.isConfirmed) {
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Cancelled',
+                                text: 'Your data is safe!'
+                            })
+                            return;
+                        } else {
+                            // error callback
+                            try {
+                                // const url = `/management/user-delete/${index}`;
+                                // const res = await axios.post(url);
+                                // this.getData();
+                                Swal.fire({
+                                    title: "Deleted!",
+                                    text: "Your file has been deleted.",
+                                    icon: "success"
+                                });
+                            } catch (error) {
+                                console.log(error);
+                            }
+                        }
+                    },
+                    openModal() {
+                        Swal.fire({
+                            title: 'Loading...',
+                            text: 'Please wait while your file is being uploaded.',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            showConfirmButton: false,
+                            icon: 'info',
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        })
+                        axios.get('/management/user-get-pegawai')
+                            .then((res) => {
+                                const data = res.data.data;
+                                this.pegawais = data;
+                            })
+                            .catch((err) => {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'Something went wrong!'
+                                })
+
+                            })
+                            .finally(() => {
+                                Swal.close();
+                                const openModal = document.getElementById('btn-open-modal');
+                                openModal.click();
+                            });
+                    },
+                    closeModal() {
+                        const closeModal = document.getElementById('model-close-layout');
+                        closeModal.click();
+                        this.resetXform();
+                        this.status = false;
+                        console.log('clear...');
+                    },
 
 
-                data: [],
-                links: [],
-                nextPage: '',
-                prevPage: '',
-                search: {
-                    keyword: '',
-                    range: 15,
-                },
-                loadJson(url = "") {
-                    if (!url) {
+                    data: [],
+                    links: [],
+                    nextPage: '',
+                    prevPage: '',
+                    search: {
+                        keyword: '',
+                        range: 15,
+                    },
+                    loadJson(url = "") {
+                        if (!url) {
+                            const params = new URLSearchParams({
+                                keywords: this.search.keyword ?? "",
+                                range: this.search.range ?? ""
+                            });
+                            url = `/management/user-json?${params.toString()}`;
+                        }
+                        Swal.fire({
+                            title: "Loading...",
+                            text: "Fetching product data.",
+                            icon: "info",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            showConfirmButton: false,
+                            willOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                        axios.get(url)
+                            .then((res) => {
+                                const response = res.data.data;
+                                this.data = response.data;
+                                this.links = this.processPaginationLinks(response.links);
+                                this.nextPage = response.next_page_url ? this.addParamsToUrl(response
+                                    .next_page_url) : null;
+                                this.prevPage = response.prev_page_url ? this.addParamsToUrl(response
+                                    .prev_page_url) : null;
+                            })
+                            .catch((err) => {
+                                Swal.fire({
+                                    title: "Error!",
+                                    text: "Failed to fetch product data.",
+                                    icon: "error"
+                                })
+                            })
+                            .finally(() => {
+                                Swal.close();
+                            });
+                    },
+
+                    processPaginationLinks(links) {
+                        return links.map(link => {
+                            if (link.url) {
+                                return {
+                                    ...link,
+                                    url: this.addParamsToUrl(link.url)
+                                };
+                            }
+                            return link;
+                        });
+                    },
+
+                    addParamsToUrl(url) {
+                        if (!url) return null;
+                        const newUrl = new URL(url);
+                        const searchParams = new URLSearchParams(newUrl.search);
+                        searchParams.set('keywords', this.search.keyword);
+                        searchParams.set('range', this.search.range);
+
+                        newUrl.search = searchParams.toString();
+                        return newUrl.toString();
+                    },
+
+                    nextPageFunc() {
+                        if (this.nextPage) {
+                            this.loadJson(this.nextPage);
+                        }
+                    },
+
+                    prevPageFunc() {
+                        if (this.prevPage) {
+                            this.loadJson(this.prevPage);
+                        }
+                    },
+
+                    searchFunc() {
                         const params = new URLSearchParams({
-                            keywords: this.search.keyword ?? "",
-                            range: this.search.range ?? ""
+                            keywords: this.search.keyword,
+                            range: this.search.range
                         });
                         url = `/management/user-json?${params.toString()}`;
-                    }
-                    Swal.fire({
-                        title: "Loading...",
-                        text: "Fetching product data.",
-                        icon: "info",
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        showConfirmButton: false,
-                        willOpen: () => {
-                            Swal.showLoading();
-                        }
-                    });
-                    axios.get(url)
-                        .then((res) => {
-                            const response = res.data.data;
-                            this.data = response.data;
-                            this.links = this.processPaginationLinks(response.links);
-                            this.nextPage = response.next_page_url ? this.addParamsToUrl(response.next_page_url) : null;
-                            this.prevPage = response.prev_page_url ? this.addParamsToUrl(response.prev_page_url) : null;
+                        this.loadJson(url);
+                    },
+
+                    getPegawai() {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Loading...',
+                            text: 'Please wait while your file is being uploaded.',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            showConfirmButton: false,
+                            didOpen: () => {
+                                Swal.showLoading(); // Tampilkan spinner loading
+                            }
                         })
-                        .catch((err) => {
-                            Swal.fire({
-                                title: "Error!",
-                                text: "Failed to fetch product data.",
-                                icon: "error"
+                        axios.get('/management/user-get-pegawai')
+                            .then((res) => {
+                                const data = res.data.data;
+                                this.pegawais = data;
                             })
-                        })
-                        .finally(() => {
-                            Swal.close();
-                        });
-                },
+                            .catch((err) => {
+                                console.log(err);
+                            })
+                            .finally(() => {
+                                Swal.close(); // Tutup spinner loading
+                            });
 
-                processPaginationLinks(links) {
-                    return links.map(link => {
-                        if (link.url) {
-                            return {
-                                ...link,
-                                url: this.addParamsToUrl(link.url)
-                            };
-                        }
-                        return link;
-                    });
-                },
-
-                addParamsToUrl(url) {
-                    if (!url) return null;
-                    const newUrl = new URL(url);
-                    const searchParams = new URLSearchParams(newUrl.search);
-                    searchParams.set('keywords', this.search.keyword);
-                    searchParams.set('range', this.search.range);
-
-                    newUrl.search = searchParams.toString();
-                    return newUrl.toString();
-                },
-
-                nextPageFunc() {
-                    if (this.nextPage) {
-                        this.loadJson(this.nextPage);
+                    },
+                    init() {
+                        this.loadJson();
                     }
-                },
-
-                prevPageFunc() {
-                    if (this.prevPage) {
-                        this.loadJson(this.prevPage);
-                    }
-                },
-
-                searchFunc() {
-                    const params = new URLSearchParams({
-                        keywords: this.search.keyword,
-                        range: this.search.range
-                    });
-                    url = `/management/user-json?${params.toString()}`;
-                    this.loadJson(url);
-                },
-
-                getPegawai() {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Loading...',
-                        text: 'Please wait while your file is being uploaded.',
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        showConfirmButton: false,
-                        didOpen: () => {
-                            Swal.showLoading(); // Tampilkan spinner loading
-                        }
-                    })
-                    axios.get('/management/user-get-pegawai')
-                        .then((res) => {
-                            const data = res.data.data;
-                            this.pegawais = data;
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        })
-                        .finally(() => {
-                            Swal.close(); // Tutup spinner loading
-                        });
-
-                },
-                init() {
-                    this.loadJson();
                 }
             }
-        }
-    </script>
+        </script>
     @endpush
 </x-base-layout>

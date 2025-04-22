@@ -34,6 +34,7 @@ Route::get('app-json', [AppSettingController::class, 'publicJson']);
 Route::group(['middleware' => 'auth.manuals'], function () {
     Route::get('/logout', [AuthController::class, 'LogoutAction'])->name('logout');
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dasbhoard');
+    Route::get('/me', [AuthController::class, 'me'])->name('me');
 
     Route::prefix('master-barang')->group(function () {
         Route::controller(CategoryController::class)->group(function () {
@@ -134,7 +135,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::get('/user-json', 'userJson');
             Route::post('/user-store', 'store');
             Route::get('/user-delete/{id}', 'destroy');
-            Route::post('/user-update', 'update');
+            Route::post('/user-update/{id}', 'updated');
             Route::get('/user-password/{id}', 'passwordUpdate');
             Route::get('/user-get-pegawai', 'getPegawai');
         });

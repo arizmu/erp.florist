@@ -36,7 +36,7 @@
                             <div class="flex flex-col gap-4">
                                 <template x-for="val in barangData">
                                     <div
-                                        class="bg-slate-50 p-4 px-6 flex justify-between rounded-xl border border-gray-100 hover:bg-blue-50 shadow items-center">
+                                        class="bg-slate-50 p-4 px-6 flex justify-between rounded-xl border border-gray-100 hover:bg-blue-50 shadow-sm items-center">
                                         <div class="flex flex-col gap-2">
                                             <span class="text-md font-semibold mb-2" x-text="val.nama_barang">Nama
                                                 Product</span>
@@ -62,10 +62,10 @@
                                                 <div class="input-group max-w-32" data-input-number>
                                                     <span class="input-group-text gap-3">
                                                         <button type="button"
-                                                            class="btn btn-primary btn-soft size-[22px] rounded min-h-0 p-0"
+                                                            class="btn btn-primary btn-soft size-[22px] rounded-sm min-h-0 p-0"
                                                             aria-label="Decrement button" data-input-number-decrement @click="decrement(val.id)">
                                                             <span
-                                                                class="icon-[tabler--minus] size-3.5 flex-shrink-0"></span>
+                                                                class="icon-[tabler--minus] size-3.5 shrink-0"></span>
                                                         </button>
                                                     </span>
                                                     <input x-model="jumlahItem[val.id]" class="input text-center"
@@ -73,10 +73,10 @@
                                                         data-input-number-input />
                                                     <span class="input-group-text gap-3">
                                                         <button type="button"
-                                                            class="btn btn-primary btn-soft size-[22px] rounded min-h-0 p-0"
+                                                            class="btn btn-primary btn-soft size-[22px] rounded-sm min-h-0 p-0"
                                                             aria-label="Increment button" data-input-number-increment @click="increment(val.id)">
                                                             <span
-                                                                class="icon-[tabler--plus] size-3.5 flex-shrink-0"></span>
+                                                                class="icon-[tabler--plus] size-3.5 shrink-0"></span>
                                                         </button>
                                                     </span>
                                                 </div>
@@ -109,7 +109,7 @@
                     </div>
                     <div class="card-body max-h-screen grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="md:col-span-2">
-                            <div class="w-full overflow-x-auto border rounded-md shadow">
+                            <div class="w-full overflow-x-auto border rounded-md shadow-sm">
                                 <table class="table">
                                     <thead>
                                         <tr>

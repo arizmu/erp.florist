@@ -18,7 +18,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mt-2 py-2" x-data="pembayaran()">
         <div class="md:col-span-1 lg:col-span-3 order-last md:order-first">
-            <div class="bg-white p-6 rounded-lg shadow">
+            <div class="bg-white p-6 rounded-lg shadow-sm">
                 <h2 class="text-2xl font-semibold font-space flex items-center gap-4 text-gray-500">
                     <span class="icon-[carbon--product] size-7 text-blue-500"></span>
                     Detail Product

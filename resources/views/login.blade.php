@@ -46,7 +46,7 @@
                         <div>
                             <div class="relative flex items-center">
                                 <input name="username" type="text"
-                                    class="w-full text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none"
+                                    class="w-full text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-hidden"
                                     placeholder="Username" />
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb"
                                     class="w-[18px] h-[18px] absolute right-2" viewBox="0 0 682.667 682.667">
@@ -70,7 +70,7 @@
                         <div class="mt-8">
                             <div class="relative flex items-center">
                                 <input name="password" type="password"
-                                    class="w-full text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none"
+                                    class="w-full text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-hidden"
                                     placeholder="Enter password" />
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb"
                                     class="w-[18px] h-[18px] absolute right-2 cursor-pointer" viewBox="0 0 128 128">
@@ -84,7 +84,7 @@
                         <div class="flex flex-wrap items-center justify-between gap-4 mt-6">
                             <div class="flex items-center">
                                 <input id="remember-me" name="remember-me" type="checkbox"
-                                    class="h-4 w-4 shrink-0 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                                    class="h-4 w-4 shrink-0 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-sm" />
                                 <label for="remember-me" class="text-gray-800 ml-3 block text-sm">
                                     Remember me
                                 </label>
@@ -99,7 +99,7 @@
 
                         <div class="mt-12">
                             <button type="submit"
-                                class="w-full btn btn-outline btn-gradient btn-primary shadow font-muse"
+                                class="w-full btn btn-outline btn-gradient btn-primary shadow-sm font-muse"
                                 style="--fw:500">
                                 Sign in
                             </button>

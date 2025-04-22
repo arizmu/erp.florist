@@ -47,23 +47,23 @@
                 </div>
             </div>
             <div
-                class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2 p-2 py-6 max-h-screen overflow-y-scroll [&::-webkit-scrollbar]:w-2  [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300  dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
+                class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-2 p-2 py-6 max-h-screen overflow-y-scroll [&::-webkit-scrollbar]:w-2  [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300  dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
                 <template x-for="item in dataTable">
-                    <div class="card shadow-md rounded-3xl bg-slate-50">
+                    <div class="card shadow-md rounded bg-slate-50">
                         <figure class="max-h-52">
                             <template x-if="item.img">
-                                <img :src="item.img" class="object-cover h-40 md:h-52" alt="headphone" />
+                                <img :src="item.img" class="object-cover h-40 md:h-40" alt="headphone" />
                             </template>
                             <span x-show="!item.img"
                                 class="icon-[fxemoji--whiteflower] size-36 h-40 md:h-52 object-cover"></span>
                         </figure>
-                        <div class="card-body">
-                            <h5 class="card-title text-lg font-space" style="margin-top: -10pt"
+                        <div class="card-body px-2">
+                            <span class="font-poppins font-semibold" style="margin-top: -10pt"
                                 :title="item.product_name">
                                 <span x-text="item.product_name ?? '[404]'" class="capitalize">Nama
                                     Product</span>
-                            </h5>
-                            <div class="p-2 border rounded-lg -mb-2 mt-2 shadow">
+                            </span>
+                            <div class="mt-2">
                                 <div class="flex justify-between flex-wrap  gap-2 mb-2">
                                     <div
                                         class="flex gap-2 align-middle items-center badge badge-warning badge-soft badge-md">
@@ -84,7 +84,7 @@
                                 </div>
 
                                 <div
-                                    class="flex gap-2 align-middle items-center badge badge-soft badge-secondray badge-sm">
+                                    class="flex gap-2 align-middle items-center badge badge-soft badge-primary badge-sm">
                                     <span class="icon-[streamline--qr-code-solid] size-3"></span>
                                     <span class="font-semibold text-xs" x-text="item.code">
                                         Code Product
@@ -92,12 +92,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer">
-                            <div class="flex justify-between flex-wrap gap-2">
-                                <button class="btn btn-soft btn-sm rounded-full shadow btn-primary min-w-28"
-                                    x-on:click="addItem(item)">Add Item</button>
-                                <button class="btn btn-soft btn-sm rounded-full shadow btn-error min-w-28"
-                                    x-on:click="openCostumeModal(item)">Costume</button>
+                        <div class="card-footer px-2 flex justify-center font-poppins" style="margin-bottom: -10pt">
+                            <div class="join shadow-sm" style="">
+                                <button class="btn btn-soft btn-sm join-item btn-error min-w-16 w-auto"
+                                    x-on:click="openCostumeModal(item)">
+                                    Custom Item
+                                </button>
+                                <button class="btn btn-soft btn-sm join-item btn-primary min-w-16 w-auto"
+                                    x-on:click="addItem(item) ">
+                                    Add
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -176,18 +180,18 @@
                                     <div class="input-group max-w-32 mt-2" data-input-number>
                                         <span class="input-group-text gap-3">
                                             <button x-on:click="reduceQty(item.product_id)" type="button"
-                                                class="btn btn-primary btn-soft size-[22px] rounded min-h-0 p-0"
+                                                class="btn btn-primary btn-soft size-[22px] rounded-sm min-h-0 p-0"
                                                 aria-label="Decrement button" data-input-number-decrement>
-                                                <span class="icon-[tabler--minus] size-3.5 flex-shrink-0"></span>
+                                                <span class="icon-[tabler--minus] size-3.5 shrink-0"></span>
                                             </button>
                                         </span>
                                         <input :value="item.product_qty" class="input text-center"
                                             id="number-input-mini" type="text" data-input-number-input readonly />
                                         <span class="input-group-text gap-3">
                                             <button x-on:click="addQty(item.product_id)" type="button"
-                                                class="btn btn-primary btn-soft size-[22px] rounded min-h-0 p-0"
+                                                class="btn btn-primary btn-soft size-[22px] rounded-sm min-h-0 p-0"
                                                 aria-label="Increment button" data-input-number-increment>
-                                                <span class="icon-[tabler--plus] size-3.5 flex-shrink-0"></span>
+                                                <span class="icon-[tabler--plus] size-3.5 shrink-0"></span>
                                             </button>
                                         </span>
                                     </div>
@@ -270,14 +274,14 @@
                                             class="btn btn-text active-tab:bg-primary active-tab:text-white hover:text-primary active hover:bg-primary/20"
                                             id="tabs-pill-icon-item-1" data-tab="#tabs-pill-icon-1"
                                             aria-controls="tabs-pill-icon-1" role="tab" aria-selected="false">
-                                            <span class="icon-[carbon--product] size-5 flex-shrink-0"></span>
+                                            <span class="icon-[carbon--product] size-5 shrink-0"></span>
                                             <span class="hidden sm:inline">Material</span>
                                         </button>
                                         <button type="button"
                                             class="btn btn-text active-tab:bg-primary active-tab:text-white hover:text-primary hover:bg-primary/20"
                                             id="tabs-pill-icon-item-2" data-tab="#tabs-pill-icon-2"
                                             aria-controls="tabs-pill-icon-2" role="tab" aria-selected="false">
-                                            <span class="icon-[ph--paper-plane-tilt-bold] size-5 flex-shrink-0"></span>
+                                            <span class="icon-[ph--paper-plane-tilt-bold] size-5 shrink-0"></span>
                                             <span class="hidden sm:inline">Lainnya</span>
                                         </button>
                                     </nav>
@@ -293,7 +297,7 @@
                                                             type="text" class="input"
                                                             placeholder="select barang...">
                                                     </div>
-                                                    <ul class="-mt-2 rounded">
+                                                    <ul class="-mt-2 rounded-sm">
                                                         <template x-for="item in filterdata">
                                                             <li class="p-2 border hover:bg-slate-50 px-4">
                                                                 <span x-text="item.nama_barang"
@@ -358,7 +362,7 @@
                                 <div class="py-4">
                                     <div class="border-base-content/25 w-full rounded-lg border">
                                         <div class="overflow-x-auto">
-                                            <table class="table table-sm rounded">
+                                            <table class="table table-sm rounded-sm">
                                                 <thead>
                                                     <tr>
                                                         <th>Bahan baku</th>

@@ -46,11 +46,11 @@
                 <li class="group flex flex-1 flex-col items-center" data-stepper-nav-item='{ "index": 1 }'>
                     <span class="min-h-7.5 group inline-flex flex-col items-center gap-2 align-middle text-sm">
                         <span
-                            class="stepper-active:bg-primary stepper-active:shadow stepper-active:text-primary-content stepper-success:bg-primary stepper-success:shadow stepper-success:text-primary-content stepper-error:bg-error stepper-error:text-error-content stepper-completed:bg-success stepper-completed:group-focus:bg-success bg-base-200/50 text-base-content group-focus:bg-base-content/20 size-7.5 flex flex-shrink-0 items-center justify-center rounded-full font-medium">
+                            class="stepper-active:bg-primary stepper-active:shadow stepper-active:text-primary-content stepper-success:bg-primary stepper-success:shadow stepper-success:text-primary-content stepper-error:bg-error stepper-error:text-error-content stepper-completed:bg-success stepper-completed:group-focus:bg-success bg-base-200/50 text-base-content group-focus:bg-base-content/20 size-7.5 flex shrink-0 items-center justify-center rounded-full font-medium">
                             <span
                                 class="stepper-success:hidden stepper-error:hidden stepper-completed:hidden text-sm">1</span>
-                            <span class="icon-[tabler--check] stepper-success:block hidden size-4 flex-shrink-0"></span>
-                            <span class="icon-[tabler--x] stepper-error:block hidden size-4 flex-shrink-0"></span>
+                            <span class="icon-[tabler--check] stepper-success:block hidden size-4 shrink-0"></span>
+                            <span class="icon-[tabler--x] stepper-error:block hidden size-4 shrink-0"></span>
                         </span>
                         <span class="text-base-content text-nowrap font-medium">
                             Material Produksi
@@ -63,11 +63,11 @@
                 <li class="group flex flex-1 flex-col items-center" data-stepper-nav-item='{ "index": 2 }'>
                     <span class="min-h-7.5 group inline-flex flex-col items-center gap-2 align-middle text-sm">
                         <span
-                            class="stepper-active:bg-primary stepper-active:shadow stepper-active:text-primary-content stepper-success:bg-primary stepper-success:shadow stepper-success:text-primary-content stepper-error:bg-error stepper-error:text-error-content stepper-completed:bg-success stepper-completed:group-focus:bg-success bg-base-200/50 text-base-content group-focus:bg-base-content/20 size-7.5 flex flex-shrink-0 items-center justify-center rounded-full font-medium">
+                            class="stepper-active:bg-primary stepper-active:shadow stepper-active:text-primary-content stepper-success:bg-primary stepper-success:shadow stepper-success:text-primary-content stepper-error:bg-error stepper-error:text-error-content stepper-completed:bg-success stepper-completed:group-focus:bg-success bg-base-200/50 text-base-content group-focus:bg-base-content/20 size-7.5 flex shrink-0 items-center justify-center rounded-full font-medium">
                             <span
                                 class="stepper-success:hidden stepper-error:hidden stepper-completed:hidden text-sm">2</span>
-                            <span class="icon-[tabler--check] stepper-success:block hidden size-4 flex-shrink-0"></span>
-                            <span class="icon-[tabler--x] stepper-error:block hidden size-4 flex-shrink-0"></span>
+                            <span class="icon-[tabler--check] stepper-success:block hidden size-4 shrink-0"></span>
+                            <span class="icon-[tabler--x] stepper-error:block hidden size-4 shrink-0"></span>
                         </span>
                         <span class="text-base-content text-nowrap font-medium">
                             Profile Costumer
@@ -80,11 +80,11 @@
                 <li class="group flex flex-1 flex-col items-center" data-stepper-nav-item='{ "index": 3 }'>
                     <span class="min-h-7.5 group inline-flex flex-col items-center gap-2 align-middle text-sm">
                         <span
-                            class="stepper-active:bg-primary stepper-active:shadow stepper-active:text-primary-content stepper-success:bg-primary stepper-success:shadow stepper-success:text-primary-content stepper-error:bg-error stepper-error:text-error-content stepper-completed:bg-success stepper-completed:group-focus:bg-success bg-base-200/50 text-base-content group-focus:bg-base-content/20 size-7.5 flex flex-shrink-0 items-center justify-center rounded-full font-medium">
+                            class="stepper-active:bg-primary stepper-active:shadow stepper-active:text-primary-content stepper-success:bg-primary stepper-success:shadow stepper-success:text-primary-content stepper-error:bg-error stepper-error:text-error-content stepper-completed:bg-success stepper-completed:group-focus:bg-success bg-base-200/50 text-base-content group-focus:bg-base-content/20 size-7.5 flex shrink-0 items-center justify-center rounded-full font-medium">
                             <span
                                 class="stepper-success:hidden stepper-error:hidden stepper-completed:hidden text-sm">3</span>
-                            <span class="icon-[tabler--check] stepper-success:block hidden size-4 flex-shrink-0"></span>
-                            <span class="icon-[tabler--x] stepper-error:block hidden size-4 flex-shrink-0"></span>
+                            <span class="icon-[tabler--check] stepper-success:block hidden size-4 shrink-0"></span>
+                            <span class="icon-[tabler--x] stepper-error:block hidden size-4 shrink-0"></span>
                         </span>
                         <span class="text-base-content text-nowrap font-medium">Crafter</span>
                     </span>
@@ -137,10 +137,10 @@
                                                 <div class="input-group min-w-32 max-w-32" data-input-number>
                                                     <span class="input-group-text gap-3">
                                                         <button type="button" @click="decrement(item.id)"
-                                                            class="btn btn-primary btn-soft size-[22px] rounded min-h-0 p-0"
+                                                            class="btn btn-primary btn-soft size-[22px] rounded-sm min-h-0 p-0"
                                                             aria-label="Decrement button" data-input-number-decrement>
                                                             <span
-                                                                class="icon-[tabler--minus] size-3.5 flex-shrink-0"></span>
+                                                                class="icon-[tabler--minus] size-3.5 shrink-0"></span>
                                                         </button>
                                                     </span>
                                                     <input x-model="xitem_qty[item.id]" class="input text-center"
@@ -148,10 +148,10 @@
                                                         data-input-number-input />
                                                     <span class="input-group-text gap-3">
                                                         <button type="button" @click="increment(item.id)"
-                                                            class="btn btn-primary btn-soft size-[22px] rounded min-h-0 p-0"
+                                                            class="btn btn-primary btn-soft size-[22px] rounded-sm min-h-0 p-0"
                                                             aria-label="Increment button" data-input-number-increment>
                                                             <span
-                                                                class="icon-[tabler--plus] size-3.5 flex-shrink-0"></span>
+                                                                class="icon-[tabler--plus] size-3.5 shrink-0"></span>
                                                         </button>
                                                     </span>
                                                 </div>
@@ -174,7 +174,7 @@
                                 </h5>
                                 <div class="border-base-content/25 w-full rounded-lg border">
                                     <div class="overflow-x-auto">
-                                        <table class="table rounded">
+                                        <table class="table rounded-sm">
                                             <thead>
                                                 <tr>
                                                     <th>Item Name</th>
@@ -309,7 +309,7 @@
                         <div class="col-span-1 md:col-span-4 p-4 py-0">
                             <div class="border-base-content/25 w-full rounded-lg border">
                                 <div class="overflow-x-auto">
-                                    <table class="table rounded">
+                                    <table class="table rounded-sm">
                                         <thead>
                                             <tr>
                                                 <th>Product</th>
@@ -349,7 +349,7 @@
                         </div>
                         <div class="col-span-1 md:col-span-2 p-4 py-0 flex flex-col gap-2">
                             <div
-                                class="w-full rounded-lg p-4 px-6 bg-red-400 shadow flex justify-between items-center">
+                                class="w-full rounded-lg p-4 px-6 bg-red-400 shadow-sm flex justify-between items-center">
                                 <div class="text-white flex flex-col gap-2">
                                     <label for="">Subtotal Pembayaran</label>
                                     <div class="font-bold text-2xl">

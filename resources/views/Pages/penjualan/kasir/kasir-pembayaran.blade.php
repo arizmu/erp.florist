@@ -25,7 +25,7 @@
                 </h2>
                 <div class="border-base-content/25 w-full rounded-lg border mt-4">
                     <div class="overflow-x-auto">
-                        <table class="table rounded">
+                        <table class="table rounded-sm">
                             <!-- head -->
                             <thead class="bg-slate-200">
                                 <tr>

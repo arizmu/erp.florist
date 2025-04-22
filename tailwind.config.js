@@ -13,7 +13,6 @@ export default {
         './node_modules/flyonui/dist/js/*.js',
         './node_modules/flyonui/dist/js/accordion.js',
         '.../path/to/flatpickr/**/*.js',
-        './resources/**/*.{html,js,ts}',
     ],
     theme: {
         extend: {
@@ -23,8 +22,8 @@ export default {
         },
     },
     plugins: [
-        // require("flyonui"),
-        // require("flyonui/plugin"),
+        require("flyonui"),
+        require("flyonui/plugin"),
         addIconSelectors(["mdi-light", "vscode-icons"]),
         addDynamicIconSelectors()
     ],
@@ -32,4 +31,3 @@ export default {
         vendors: true // Enable vendor-specific CSS generation
     }
 };
-

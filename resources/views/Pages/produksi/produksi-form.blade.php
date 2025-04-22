@@ -92,11 +92,11 @@
                                                         <div class="input-group max-w-32" data-input-number>
                                                             <span class="input-group-text gap-3">
                                                                 <button type="button"
-                                                                    class="btn btn-primary btn-soft size-[22px] rounded min-h-0 p-0"
+                                                                    class="btn btn-primary btn-soft size-[22px] rounded-sm min-h-0 p-0"
                                                                     aria-label="Decrement button"
                                                                     @click="decrement(val.id)">
                                                                     <span
-                                                                        class="icon-[tabler--minus] size-3.5 flex-shrink-0"></span>
+                                                                        class="icon-[tabler--minus] size-3.5 shrink-0"></span>
                                                                 </button>
                                                             </span>
 
@@ -105,11 +105,11 @@
 
                                                             <span class="input-group-text gap-3">
                                                                 <button type="button"
-                                                                    class="btn btn-primary btn-soft size-[22px] rounded min-h-0 p-0"
+                                                                    class="btn btn-primary btn-soft size-[22px] rounded-sm min-h-0 p-0"
                                                                     aria-label="Increment button"
                                                                     @click="increment(val.id)">
                                                                     <span
-                                                                        class="icon-[tabler--plus] size-3.5 flex-shrink-0"></span>
+                                                                        class="icon-[tabler--plus] size-3.5 shrink-0"></span>
                                                                 </button>
                                                             </span>
                                                         </div>

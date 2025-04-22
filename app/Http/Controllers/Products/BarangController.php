@@ -97,18 +97,18 @@ class BarangController extends Controller
         }
     }
 
-    public function barangJson()
+    public function barangJson(Request $request)
     {
         $query = Barang::with('category', 'satuan')
-            ->when(request()->search, function ($e) {
-                $e->where('nama_barang', 'like', '%' . request()->search . '%');
+            ->when($request->keywords, function ($e) use ($request) {
+                $e->where('nama_barang', 'like', '%' . $request->keywords . '%');
             })
             ->latest()->paginate(15);
         return response()->json([
             'code' => 200,
             'status' => 'Ok',
             'message' => 'Data fetch successfully',
-            'data' => $query
+            'data' => $query,
         ]);
     }
 

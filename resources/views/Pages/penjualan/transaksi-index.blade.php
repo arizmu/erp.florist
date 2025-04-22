@@ -29,7 +29,7 @@
                     </h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg gap-4">
                         <div
-                            class="col-span-1 md:col-span-2 bg-blue-300 rounded-2xl p-5 shadow flex justify-between gap-8 align-middle items-center">
+                            class="col-span-1 md:col-span-2 bg-blue-300 rounded-2xl p-5 shadow-sm flex justify-between gap-8 align-middle items-center">
                             <div class="flex flex-col gap-0">
                                 <span class="text-gray-50 font-semibold">Total Revenue</span>
                                 <span class="font-bold text-4xl text-white">
@@ -52,7 +52,7 @@
                             </div>
                         </div>
                         <div
-                            class="bg-red-300  rounded-2xl p-5 shadow flex flex-wrap gap-8 align-middle items-center justify-between lg:justify-between"">
+                            class="bg-red-300  rounded-2xl p-5 shadow-sm flex flex-wrap gap-8 align-middle items-center justify-between lg:justify-between"">
                             <div class=" flex flex-col gap-0">
                             <span class="text-gray-50 font-semibold">Total Unpaid</span>
                             <span class="font-bold text-4xl text-white">Rp.
@@ -72,7 +72,7 @@
                         </div>
                     </div>
                     <div
-                        class="bg-green-300 rounded-2xl p-5 shadow flex flex-wrap gap-8 align-middle items-center justify-between lg:justify-between">
+                        class="bg-green-300 rounded-2xl p-5 shadow-sm flex flex-wrap gap-8 align-middle items-center justify-between lg:justify-between">
                         <div class="flex flex-col gap-0">
                             <span class="text-gray-50 font-semibold">Total Paid</span>
                             <span class="font-bold text-4xl text-white">Rp.

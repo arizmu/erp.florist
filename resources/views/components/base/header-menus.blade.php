@@ -1,5 +1,5 @@
 <div class="modal-body">
-    <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:p-4 max-h-96" style="margin-bottom: 15pt">
+    <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:p-4 max-h-96 font-poppins" style="margin-bottom: 15pt">
         <div class="flex gap-4 flex-col">
             <h4 class="font-semibold  text-gray-500" style="--fw:500">
                 Manajement Penjualan

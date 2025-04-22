@@ -1,5 +1,5 @@
-<nav class="navbar rounded shadow sticky top-0 left-0 right-0 z-50 lg:px-24 md:px-12 flex justify-between">
-    <div class="navbar-start" x-data="publicIndex">
+<nav class="navbar rounded-sm shadow-sm sticky top-0 left-0 right-0 z-50 lg:px-24 md:px-12 flex justify-between" x-data="headerIndexView">
+    <div class="navbar-start">
         <a class="flex gap-2" href="{{ route('dasbhoard') }}">
             <template x-if="icon">
                 <img :src="icon" alt="" class="size-16">
@@ -14,18 +14,18 @@
 
             </svg>
 
-            <div class="font-bold text-xl mt-1 font-fugaz text-red-400 flex flex-col border-l-2 border-gray-400 pl-2"
+            <div class="font-bold text-xl mt-1 font-poppins text-red-400 flex flex-col border-l-2 border-gray-400 pl-2"
                 style="--fw:700">
                 <span class="text-2xl" x-text="title ?? '-'">
                     Naira Gift
                 </span>
-                <span class="text-blue-600 text-base" x-text="sub_title">
+                <span class="text-blue-600 text-poippins" x-text="sub_title">
                     Enterprise Resource Planning
                 </span>
             </div>
         </a>
     </div>
-    <div class="navbar-center max-sm:hidden font-muse" style="--fw:400">
+    <div class="navbar-center max-sm:hidden font-poppins" style="--fw:400">
         <ul class="menu menu-horizontal gap-4 p-0 text-base rtl:ml-20">
             <li>
                 <a href="{{ route('dasbhoard') }}" class="flex gap-1 flex-col text-green-600">
@@ -108,8 +108,8 @@
                         </div>
                     </div>
                     <div>
-                        <h6 class="text-base-content/90 text-base font-semibold">John Doe</h6>
-                        <small class="text-base-content/50">Admin</small>
+                        <h6 class="text-base-content/90 text-base font-semibold" x-text="name">John Doe</h6>
+                        <small class="text-base-content/50" x-text="username">Admin</small>
                     </div>
                 </li>
                 <li>
@@ -168,7 +168,7 @@
 
 @push('js')
     <script>
-        function publicIndex() {
+        function headerIndexView() {
             return {
                 title: '',
                 sub_title: '',
@@ -186,8 +186,22 @@
                             console.error(error);
                         });
                 },
+                name: '',
+                username: '',
+                me() {
+                    axios.get('/me')
+                        .then(response => {
+                            const data = response.data.data;
+                            this.name = data['name'];
+                            this.username = data.username;
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                },
                 init() {
                     this.indexes();
+                    this.me();
                 }
             }
         }

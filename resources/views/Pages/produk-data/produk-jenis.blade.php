@@ -20,7 +20,7 @@
 
 
     <div class="" x-data="jenisProduct">
-        <div class="bg-gradient-to-r from-blue-700 to-blue-300 w-full h-60 rounded-lg">
+        <div class="bg-linear-to-r from-blue-700 to-blue-300 w-full h-60 rounded-lg">
             <img src="https://readymadeui.com/cardImg.webp" alt="Banner Image"
                 class="rounded-lg w-full rondu h-full object-cover" />
         </div>

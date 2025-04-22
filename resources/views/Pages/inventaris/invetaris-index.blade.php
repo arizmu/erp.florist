@@ -28,7 +28,7 @@
                     </h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div
-                            class="bg-emerald-400 rounded p-5  px-10 shadow flex justify-between gap-8 align-middle items-center">
+                            class="bg-emerald-400 rounded-sm p-5  px-10 shadow-sm flex justify-between gap-8 align-middle items-center">
                             <div class="">
                                 <div class="border-2 rounded-full bg-white p-2 border-green-300">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -49,7 +49,7 @@
                             </div>
                         </div>
                         <div
-                            class="bg-orange-300 rounded p-5  px-10 shadow flex justify-between gap-8 align-middle items-center">
+                            class="bg-orange-300 rounded-sm p-5  px-10 shadow-sm flex justify-between gap-8 align-middle items-center">
                             <div class="">
                                 <div class="border-2 rounded-full bg-white p-2 border-red-300">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

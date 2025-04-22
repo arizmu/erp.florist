@@ -29,7 +29,7 @@
 
                     <div class="border-base-content/25 w-full rounded-lg border mt-6">
                         <div class="overflow-x-auto">
-                            <table class="table rounded">
+                            <table class="table rounded-sm">
                                 <thead>
                                     <tr class="bg-green-200 dark:bg-black dark:text-white">
                                         <th>Nama Referensi</th>

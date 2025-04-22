@@ -16,13 +16,13 @@
         </ol>
     </div>
 
-    <div class="bg-gradient-to-r from-pink-500 to-purple-500 p-8 font-sans rounded-xl mt-4">
+    <div class="bg-linear-to-r from-pink-500 to-purple-500 p-8 font-sans rounded-xl mt-4">
         <div class="container mx-auto">
             <h2 class="text-4xl font-bold text-white mb-8 font-muse">Dashboard</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <div
-                        class="flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full p-3 w-16 h-16">
+                        class="flex items-center justify-center bg-linear-to-r from-blue-500 to-indigo-500 rounded-full p-3 w-16 h-16">
                         <svg class="h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
@@ -38,7 +38,7 @@
                 </div>
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <div
-                        class="flex items-center justify-center bg-gradient-to-r from-green-500 to-teal-500 rounded-full p-3 w-16 h-16">
+                        class="flex items-center justify-center bg-linear-to-r from-green-500 to-teal-500 rounded-full p-3 w-16 h-16">
                         <svg class="h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
@@ -54,7 +54,7 @@
                 </div>
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <div
-                        class="flex items-center justify-center bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full p-3 w-16 h-16">
+                        class="flex items-center justify-center bg-linear-to-r from-yellow-500 to-orange-500 rounded-full p-3 w-16 h-16">
                         <svg class="h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">

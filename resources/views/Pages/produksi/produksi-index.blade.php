@@ -28,7 +28,7 @@
                 </h2>
                 {{-- <div class="grid grid-cols-1 md:grid-cols-2 lg gap-4">
                     <div
-                        class="col-span-1 md:col-span-2 bg-orange-300 rounded-2xl p-5 shadow flex justify-start gap-8 align-middle items-center">
+                        class="col-span-1 md:col-span-2 bg-orange-300 rounded-2xl p-5 shadow-sm flex justify-start gap-8 align-middle items-center">
                         <div class="">
                             <div class="border-2 rounded-full bg-white p-4 border-red-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -49,7 +49,7 @@
                         </div>
                     </div>
                     <div
-                        class="bg-red-300  rounded-2xl p-5 shadow flex flex-wrap gap-8 align-middle items-center justify-start md:justify-between lg:justify-between"">
+                        class="bg-red-300  rounded-2xl p-5 shadow-sm flex flex-wrap gap-8 align-middle items-center justify-start md:justify-between lg:justify-between"">
                         <div class="">
                             <div class="border-2 rounded-full bg-white p-4 border-yellow-500 text-yellow-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -67,7 +67,7 @@
                         </div>
                     </div>
                     <div
-                        class="bg-green-300 rounded-2xl p-5 shadow flex flex-wrap gap-8 align-middle items-center justify-start md:justify-between lg:justify-between">
+                        class="bg-green-300 rounded-2xl p-5 shadow-sm flex flex-wrap gap-8 align-middle items-center justify-start md:justify-between lg:justify-between">
                         <div class="">
                             <div class="border-2 rounded-full bg-white p-4 border-yellow-500 text-yellow-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -215,7 +215,7 @@
 
                                 <div class="border-base-content/25 w-full rounded-lg border">
                                     <div class="overflow-x-auto">
-                                        <table class="table rounded">
+                                        <table class="table rounded-sm">
                                             <thead>
                                                 <tr>
                                                     <th>Name</th>
@@ -257,7 +257,7 @@
                 <div class="card-body">
                     <div class="p-4 pt-3 flex flex-col gap-5">
                         <div class="relative w-auto">
-                            <input type="text" placeholder="" class="input input-floating peer" id=""
+                            <input type="text" placeholder="" class="input input-floating peer" id="seach_keyword"
                                 x-model="search.keyword" />
 
                             <label class="input-floating-label" for="">
@@ -271,33 +271,33 @@
 
                         <div class="relative w-auto">
                             <select x-model="search.status" class="select select-floating"
-                                aria-label="Select floating label" id="selectFloating">
+                                aria-label="Select floating label" id="search_status">
                                 <option value="">Pilih...</option>
                                 <option value="n">Produksi</option>
                                 <option value="y">Selesai</option>
                             </select>
-                            <label class="select-floating-label" for="selectFloating">
+                            <label class="select-floating-label" for="search_status">
                                 Crafter
                             </label>
                         </div>
                         <div class="relative w-auto">
                             <select x-model="search.crafter" class="select select-floating"
-                                aria-label="Select floating label" id="selectFloating">
+                                aria-label="Select floating label" id="search_crafter">
                                 <option>Pilih...</option>
                             </select>
-                            <label class="select-floating-label" for="selectFloating">
+                            <label class="select-floating-label" for="search_crafter">
                                 Crafter
                             </label>
                         </div>
                         <div class="relative w-auto">
                             <select x-model="search.range" class="select select-floating"
-                                aria-label="Select floating label" id="selectFloating">
+                                aria-label="Select floating label" id="search_range ">
                                 <option value="15">15</option>
                                 <option value="25">25</option>
                                 <option value="50">50</option>
                                 <option value="100">100</option>
                             </select>
-                            <label class="select-floating-label" for="selectFloating">
+                            <label class="select-floating-label" for="search_range">
                                 Data Range
                             </label>
                         </div>
@@ -353,6 +353,19 @@
                             });
                             url = `/produksi/get-data-produksi?${params.toString()}`;
                         }
+                        
+                        // swall loading
+                        Swal.fire({
+                            title: "Loading...",
+                            text: "Fetching product data.",
+                            icon: "info",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            showConfirmButton: false,
+                            willOpen: () => {
+                                Swal.showLoading();
+                            }
+                        })
 
                         axios.get(url)
                             .then(res => {
@@ -366,6 +379,9 @@
                             })
                             .catch(erres => {
                                 console.log(erres);
+                            })
+                            .finally(() => {
+                                Swal.close();
                             });
                     },
                     // Fungsi untuk menambahkan parameter pencarian ke semua link pagination

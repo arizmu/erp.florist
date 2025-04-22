@@ -15,10 +15,12 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=Lilita+One&family=MuseoModerno:ital,wght@0,100..900;1,100..900&family=Space+Grotesk:wght@300..700&display=swap"
         rel="stylesheet">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- <link rel="stylesheet" href="{{ asset('build/assets/app-BAJB2G0t.css') }}"> -->
-    <!-- <script src="{{ asset('build/assets/app-J86zIt7r.js') }}" defer></script> -->
+    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+    
+
+   <link rel="stylesheet" href="{{ asset('build/assets/app-B4brnblI.css') }}">
+    <script src="{{ asset('build/assets/app-DkhiDlwm.js') }}" defer></script>
 
     <style>
         body::-webkit-scrollbar {
@@ -54,6 +56,9 @@
             font-weight: var(--fw, 400);
             /* font-weight: 500; */
             font-style: normal;
+        }
+        .font-poppins {
+            font-family: 'Poppins', sans-serif;
         }
     </style>
     @stack('css')

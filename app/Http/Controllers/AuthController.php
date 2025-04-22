@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\FormLoginRequst;
+use App\Models\Pegawai;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
@@ -36,5 +37,23 @@ class AuthController extends Controller
     {
         Auth::logout();
         return redirect('/');
+    }
+
+    public function me() {
+        $user = Auth::user();
+        $pegawai = Pegawai::select('pegawai_name', 'telpon')->find($user->pegawai_id);
+        $data = [
+            'name' => $pegawai->pegawai_name,
+            'telpon' => $pegawai->telpon,
+            'alamat' => '',
+            'username' => $user->name,
+            'email' => $user->email
+        ];
+        return response()->json([
+            'status' => 'success',
+            'code' => 200,
+            'message' => 'Data berhasil diambil',
+            'data' => $data
+        ]);
     }
 }
