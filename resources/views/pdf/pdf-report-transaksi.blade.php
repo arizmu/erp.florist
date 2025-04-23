@@ -112,6 +112,8 @@
                     <th>Bucket Items</th>
                     <th>Qty</th>
                     <th>Subtotal</th>
+                    <th>Discout</th>
+                    <th>Point</th>
                     <th>Paid</th>
                     <th>Unpaid</th>
                     <th>metode</th>
@@ -133,6 +135,8 @@
                     </td>
                     <td style="vertical-align: top;">{{ $item['qty'] }}</td>
                     <td style="vertical-align: top;">{{ $item['subtotal'] }}</td>
+                    <td style="vertical-align: top;">{{ $item['discount'] }}</td>
+                    <td style="vertical-align: top;">{{ $item['point'] }}</td>
                     <td style="vertical-align: top;">{{ $item['paid'] }}</td>
                     <td style="vertical-align: top;">{{ $item['unpaid'] }}</td>
                     <td style="vertical-align: top; display: flex; flex-wrap: wrap;">

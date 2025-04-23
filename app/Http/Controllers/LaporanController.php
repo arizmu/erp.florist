@@ -35,7 +35,9 @@ class LaporanController extends Controller
                 'tanggal' => $value->transaction_date,
                 'qty' => $value->details->count(),
                 'subtotal' => formatRupiah($value->total_payment),
-                'paid' => formatRupiah($value->total_paid),
+                'discount' => formatRupiah($value->discount),
+                'point' => formatRupiah($value->point),
+                'paid' => formatRupiah($value->total_paid - ($value->discount + $value->point)),
                 'unpaid' => formatRupiah($value->total_unpaid),
                 'metode' => $value->payment,
                 'namaCustomer' => $value->costumer ? $value->costumer->name : '-'
