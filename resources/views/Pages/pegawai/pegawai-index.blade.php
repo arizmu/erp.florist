@@ -340,7 +340,7 @@
                                     'Content-Type': 'multipart/form-data'
                                 }
                             });
-                            console.log(res);
+                            this.resetForm();
                             this.isLoad = false;
                             this.loadData();
                         } catch (error) {
@@ -389,6 +389,7 @@
                             this.isLoad = false;
                             notifier.success(res.message);
                             const btnClose = document.getElementById('modal-edit-close');
+                            this.resetForm();
                             btnClose.click();
                         }).catch((error) => {
                             console.log(error);
@@ -455,6 +456,20 @@
                             console.log(data)
                         } catch (error) {
                             console.error(error)
+                        }
+                    },
+                    resetForm() {
+                        this.form = {
+                            id: '',
+                            nama: '',
+                            jenis_kelamin: '',
+                            no_identitas: '',
+                            alamat: '',
+                            telpon: '',
+                            email: '',
+                            file: '',
+                            tempat_lahir: '',
+                            tanggal_lahir: ''
                         }
                     },
                     init() {

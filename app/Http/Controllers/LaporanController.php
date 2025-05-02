@@ -22,6 +22,8 @@ class LaporanController extends Controller
             });
 
         $totalPenjualan = 0;
+        $totalDiscount = 0;
+        $totalPoint = 0;
         $totalPenerimaan = 0;
         $totalPiutang = 0;
         $dataList = [];

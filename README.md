@@ -5,4 +5,15 @@ teknology yang digunakan :
 -   Alpine Js
 -   Mysql
 -   Web server - Laragon
--   Spatie Laravel PDF - 
+-   Spatie Laravel PDF
+
+
+#   Default Seeder
+##  Seeder class
+-   PermissionSeeder
+-   RolePermissionSeeder
+-   UserSeeder
+    ### Default Username
+        @ username  : hello
+        @ mail      : hello@superadmin.com
+        @ pass      : hellosecret

@@ -1,5 +1,6 @@
 <div class="modal-body">
-    <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:p-4 max-h-96 font-poppins" style="margin-bottom: 15pt">
+    <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:p-4 max-h-96 font-poppins"
+        style="margin-bottom: 15pt">
         <div class="flex gap-4 flex-col">
             <h4 class="font-semibold  text-gray-500" style="--fw:500">
                 Manajement Penjualan
@@ -141,7 +142,8 @@
 
                     <span class="">Laporan Penjualan</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="{{ route('laporanPenjualanDetail') }}">
+                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                    href="{{ route('laporanPenjualanDetail') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -204,7 +206,7 @@
                     <span class="icon-[stash--shield-user] size-6"></span>
                     <span class="">Pengguna</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
+                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="{{ route('role.permission.index') }}">
                     <span class="icon-[hugeicons--shield-energy] size-6"></span>
                     <span class="">Role & Permission
                     </span>

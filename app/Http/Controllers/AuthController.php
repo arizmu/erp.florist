@@ -42,6 +42,8 @@ class AuthController extends Controller
     public function me() {
         $user = Auth::user();
         $pegawai = Pegawai::select('pegawai_name', 'telpon')->find($user->pegawai_id);
+        
+        
         $data = [
             'name' => $pegawai->pegawai_name,
             'telpon' => $pegawai->telpon,

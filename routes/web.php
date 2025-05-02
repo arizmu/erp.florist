@@ -17,6 +17,7 @@ use App\Http\Controllers\Products\CategoryController;
 use App\Http\Controllers\Products\SatuanController;
 use App\Http\Controllers\Produksi\ProduksiController;
 use App\Http\Controllers\RJasaCraftingController;
+use App\Http\Controllers\RolesPermissionController;
 use App\Http\Controllers\UserController;
 use App\Models\Product\Product;
 use Illuminate\Support\Facades\Route;
@@ -191,6 +192,18 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         Route::get('/penjualan-detail', 'ReportDetailPenjualan')->name('laporanPenjualanDetail');
         Route::get('/penjualan-detail-json', 'laporanPenjualanDetailJson');
         Route::get('/export/penjualan-detail', 'exportlaporanPenjualanDetail');
+    });
+
+    Route::group([
+        'prefix' => 'role-permission',
+        'controller' => RolesPermissionController::class
+    ], function() {
+        Route::get('/', 'index')->name('role.permission.index');
+        Route::post('/store', 'store');
+        Route::get('/json', 'json');
+        Route::post('/update', 'update');
+        Route::post('/delete', 'destroy');
+        Route::get('/permissions', 'permissionJson');
     });
 
     Route::get('/barcode', function () {
