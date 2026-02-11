@@ -8,7 +8,7 @@ teknology yang digunakan :
 -   Spatie Laravel PDF
 
 
-#   Default Seeder
+#   Default Seeder, running sesuai dengan urutan berikut
 ##  Seeder class
 -   PermissionSeeder
 -   RolePermissionSeeder
@@ -17,3 +17,5 @@ teknology yang digunakan :
         @ username  : hello
         @ mail      : hello@superadmin.com
         @ pass      : hellosecret
+- OtherSeeder
+##

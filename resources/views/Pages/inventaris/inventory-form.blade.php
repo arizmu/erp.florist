@@ -1,182 +1,299 @@
 <x-base-layout>
-    <div class="breadcrumbs">
-        <ol>
-            <li>
-                <a href="#"> <span class="icon-[tabler--folder] size-5"></span>Home</a>
-            </li>
-            <li class="breadcrumbs-separator rtl:rotate-180"><span class="icon-[tabler--chevron-right]"></span></li>
-            <li>
-                <a href="#" aria-label="More Pages"><span class="icon-[tabler--dots]"></span></a>
-            </li>
-            <li class="breadcrumbs-separator rtl:rotate-180"><span class="icon-[tabler--chevron-right]"></span></li>
-            <li aria-current="page">
-                <span class="icon-[tabler--file] me-1 size-5"></span>
-                Inventaris Masuk
-            </li>
-        </ol>
-    </div>
+    <div x-data="loadFormInventaris">
+        <!-- Page Header -->
+        <div class="mb-6">
+            <!-- Breadcrumbs -->
+            <div class="breadcrumbs mb-4 text-sm">
+                <ol>
+                    <li>
+                        <a href="#" class="flex items-center gap-2 hover:text-primary transition-colors">
+                            <span class="icon-[tabler--home] size-5"></span>
+                            Home
+                        </a>
+                    </li>
+                    <li class="breadcrumbs-separator rtl:rotate-180">
+                        <span class="icon-[tabler--chevron-right]"></span>
+                    </li>
+                    <li>
+                        <a href="#" aria-label="Inventaris" class="hover:text-primary transition-colors">
+                            <span class="icon-[tabler--package]"></span>
+                            Inventaris
+                        </a>
+                    </li>
+                    <li class="breadcrumbs-separator rtl:rotate-180">
+                        <span class="icon-[tabler--chevron-right]"></span>
+                    </li>
+                    <li aria-current="page" class="font-medium text-primary">
+                        <span class="icon-[tabler--file-invoice] me-1 size-5"></span>
+                        Inventaris Masuk
+                    </li>
+                </ol>
+            </div>
 
-    <div class="mt-2" x-data="loadFormInventaris">
-        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-5 gap-4">
-            <div class="col-span-1 lg:col-span-2">
-                <div class="card shadow-lg">
-                    <div class="card-header">
-                        <h5 class="card-title px-2">Barang Inventaris</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-6 px-2">
-                            <div class="join w-full">
-                                <input x-model="barangSearch" class="input join-item border border-gray-200"
-                                    placeholder="Search" />
-                                <button x-on:click="getBarang()"
-                                    class="btn btn-outline btn-primary btn-soft join-item px-10">Search</button>
-                            </div>
+            <!-- Page Title -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h1 class="text-xl md:text-1xl font-bold text-gray-700 flex items-center gap-3">
+                        <span
+                            class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl p-2.5 shadow-lg shadow-blue-500/30">
+                            <span class="icon-[tabler--file-invoice] size-5 text-white"></span>
+                        </span>
+                        Inventory Inbound
+                    </h1>
+                    <p class="text-gray-500 mt-2 ml-1">Record incoming inventory items and stock</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+            <!-- Left Column - Product Selection -->
+            <div class="xl:col-span-5">
+                <div class="card shadow-xl border-0 h-full">
+                    <!-- Card Header -->
+                    <div class="card-header bg-gradient-to-r from-blue-500 to-indigo-600 px-6 py-4">
+                        <div class="flex items-center gap-3 text-white">
+                            <span class="icon-[tabler--package] size-6"></span>
+                            <h3 class="text-xl font-bold">Product Inventory</h3>
                         </div>
-                        <div class="overflow-y-auto pb-2 border-b px-2" style="height: 400px; max-height: 600px">
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="card-body p-6">
+                        <!-- Search Bar -->
+                        <div class="mb-6">
+                            <div class="relative w-full">
+                                <span
+                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                                    <span class="icon-[tabler--search] size-5"></span>
+                                </span>
+                                <input x-model="barangSearch" @keyup.enter="getBarang()" type="search"
+                                    class="input input-bordered pl-12 w-full py-3 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200"
+                                    placeholder="Search products..." />
+                            </div>
+                            <button x-on:click="getBarang()"
+                                class="btn btn-primary w-full mt-3 gap-2 font-semibold shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300">
+                                <span class="icon-[ci--note-search] size-5"></span>
+                                Search Products
+                            </button>
+                        </div>
+
+                        <!-- Product List -->
+                        <div class="overflow-y-auto pr-2" style="max-height: 500px;">
                             <div class="flex flex-col gap-4">
                                 <template x-for="val in barangData">
                                     <div
-                                        class="bg-slate-50 p-4 px-6 flex justify-between rounded-xl border border-gray-100 hover:bg-blue-50 shadow-sm items-center">
-                                        <div class="flex flex-col gap-2">
-                                            <span class="text-md font-semibold mb-2" x-text="val.nama_barang">Nama
-                                                Product</span>
-                                            <div class="flex gap-4">
-                                                <span class="icon-[hugeicons--discount-01] size-5"></span>
-                                                <span class="text-sm font-semibold">
-                                                    <span x-text="val.stock">stock</span>
-                                                    <span x-text="val.satuan.nama_satuan"
-                                                        class="capitalize">satuan</span>
-                                                </span>
-                                            </div>
-                                            <div class="flex gap-4">
-                                                <span class="icon-[solar--tag-price-linear] size-5"></span>
-                                                <span class="text-sm font-semibold">
-                                                    <span>Rp.</span>
-                                                    <span x-text="formatRupiah(val.price)">Price</span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="flex flex-wrap gap-2 items-end">
+                                        class="bg-gradient-to-br from-slate-50 to-gray-100 p-5 rounded-2xl border border-gray-200/50 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 group">
+                                        <div class="flex justify-between items-start gap-4">
+                                            <!-- Product Info -->
+                                            <div class="flex-1 min-w-0">
+                                                <h4 class="font-semibold text-sm text-gray-700 mb-3 truncate "
+                                                    x-text="val.nama_barang"></h4>
 
-                                            <div>
-                                                <div class="input-group max-w-32" data-input-number>
-                                                    <span class="input-group-text gap-3">
-                                                        <button type="button"
-                                                            class="btn btn-primary btn-soft size-[22px] rounded-sm min-h-0 p-0"
-                                                            aria-label="Decrement button" data-input-number-decrement @click="decrement(val.id)">
-                                                            <span
-                                                                class="icon-[tabler--minus] size-3.5 shrink-0"></span>
-                                                        </button>
+                                                <div class="flex flex-wrap gap-3">
+                                                    <!-- Stock Badge -->
+                                                    <span class="badge badge-soft badge-info gap-2 px-3 badge-sm">
+                                                        <span class="icon-[hugeicons--discount-01] size-3"></span>
+                                                        <span class="font-semibold text-xs"
+                                                            x-text="val.stock + ' ' + (val.satuan?.nama_satuan || '')"></span>
                                                     </span>
-                                                    <input x-model="jumlahItem[val.id]" class="input text-center"
-                                                        id="number-input-mini" type="text" value="0"
-                                                        data-input-number-input />
-                                                    <span class="input-group-text gap-3">
-                                                        <button type="button"
-                                                            class="btn btn-primary btn-soft size-[22px] rounded-sm min-h-0 p-0"
-                                                            aria-label="Increment button" data-input-number-increment @click="increment(val.id)">
-                                                            <span
-                                                                class="icon-[tabler--plus] size-3.5 shrink-0"></span>
-                                                        </button>
+
+                                                    <!-- Price Badge -->
+                                                    <span class="badge badge-soft badge-success badge-sm  gap-2 px-3">
+                                                        <span class="icon-[hugeicons--money-bag-02] size-3"></span>
+                                                        <span class="font-semibold text-xs">Rp. <span
+                                                                x-text="formatRupiah(val.price)"></span></span>
                                                     </span>
                                                 </div>
                                             </div>
 
-                                            <button x-on:click="addItem(val)" class="btn btn-circle btn-soft btn-error"
-                                                aria-label="Circle Outline Icon Button">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                    class="size-6">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25" />
-                                                </svg>
-                                            </button>
+                                            <!-- Quantity & Add Button -->
+                                            <div class="flex items-center gap-3 items-end">
+                                                <!-- Quantity Controls -->
+                                                <div
+                                                    class="flex items-center gap-2 bg-white rounded-xl p-1 border border-gray-200 shadow-sm">
+                                                    <button type="button"
+                                                        class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-primary/5 text-gray-600 hover:text-primary transition-all duration-200"
+                                                        aria-label="Decrement button" @click="decrement(val.id)">
+                                                        <span class="icon-[tabler--minus] size-4"></span>
+                                                    </button>
+                                                    <input x-model="jumlahItem[val.id]"
+                                                        class="w-16 text-center bg-transparent border-0 text-lg font-bold text-gray-800 focus:outline-none"
+                                                        type="text" value="0" @keyup.enter="addItem(val)" />
+                                                    <button type="button"
+                                                        class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-primary/5 text-gray-600 hover:text-primary transition-all duration-200"
+                                                        aria-label="Increment button" @click="increment(val.id)">
+                                                        <span class="icon-[tabler--plus] size-4"></span>
+                                                    </button>
+                                                </div>
+
+                                                <!-- Add Button -->
+                                                <button x-on:click="addItem(val)"
+                                                    class="btn btn-circle btn-sm btn-primary shadow-lg shadow-primary/30 hover:scale-110 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300"
+                                                    aria-label="Add to inventory">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                                        class="size-5">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M12 4.5v15m7.5-7.5h-15" />
+                                                    </svg>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </template>
+
+                                <!-- Empty State -->
+                                <div x-show="barangData.length === 0"
+                                    class="flex flex-col items-center justify-center py-12 text-gray-400">
+                                    <div class="bg-gray-100 rounded-full p-4 mb-4">
+                                        <span class="icon-[tabler--box] size-12"></span>
+                                    </div>
+                                    <p class="font-medium">No products found</p>
+                                    <p class="text-sm">Try searching for a different term</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-footer text-center">
-                        <p class="text-base-content/50">Learn more about our features.</p>
                     </div>
                 </div>
             </div>
-            <div class="cols-span-1 lg:col-span-3">
-                <div class="card shadow-lg">
-                    <div class="card-header">
-                        <h5 class="card-title">Penerimaan Barang Inventaris</h5>
-                    </div>
-                    <div class="card-body max-h-screen grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="md:col-span-2">
-                            <div class="w-full overflow-x-auto border rounded-md shadow-sm">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Barang</th>
-                                            <th>Qty Masuk</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <template x-for="val in items">
-                                            <tr class="hover:bg-blue-50">
-                                                <td class="text-nowrap" x-text="val.nama_barang">
-                                                    barang
-                                                </td>
-                                                <td>
-                                                    <span class="badge badge-info font-semibold" x-text="val.stock">
-                                                        0
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <button x-on:click="deleteItem(val.id)"
-                                                        class="btn btn-circle btn-text btn-sm"
-                                                        aria-label="Action button">
-                                                        <span class="icon-[tabler--trash] size-5"></span>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </template>
-                                    </tbody>
-                                </table>
-                            </div>
+
+            <!-- Right Column - Inventory Form -->
+            <div class="xl:col-span-7">
+                <div class="card shadow-xl border-0 h-full">
+                    <!-- Card Header -->
+                    <div class="card-header bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-4">
+                        <div class="flex items-center gap-3 text-white">
+                            <span class="icon-[tabler--file-invoice] size-6"></span>
+                            <h3 class="text-xl font-bold">Inventory Receipt</h3>
                         </div>
-                        <div class="md:col-span-1">
-                            <div class="flex flex-col gap-4">
-                                <div class="relative">
-                                    <input x-model="supplier" type="text" placeholder="..."
-                                        class="input input-floating peer" id="" />
-                                    <label class="input-floating-label" for="">
-                                        Supplier / Sumber
-                                    </label>
-                                </div>
-                                <div class="relative">
-                                    <input x-model="tanggal_penerimaan" type="text"
-                                        class="input input-floating peer" placeholder="YYYY-MM-DD"
-                                        id="flatpickr-floating" />
-                                    <label class="input-floating-label" for="">Tanggal
-                                        Penerimaan</label>
-                                </div>
-                                <div class="relative">
-                                    <input x-model="nomor_faktur" type="text" placeholder="000.000.00"
-                                        class="input input-floating peer" id="" />
-                                    <label class="input-floating-label" for="">
-                                        No. Faktur
-                                    </label>
-                                </div>
+                    </div>
 
-                                <div class="relative">
-                                    <textarea x-model="comment" class="textarea textarea-floating peer" placeholder="...." id=""></textarea>
-                                    <label class="textarea-floating-label" for="">Comment</label>
-                                </div>
+                    <!-- Card Body -->
+                    <div class="card-body p-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- Items Table -->
+                            <div class="lg:col-span-2">
+                                <div class="border-2 border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+                                    <div
+                                        class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3 border-b border-gray-200">
+                                        <h4 class="font-semibold text-gray-700 flex items-center gap-2">
+                                            <span class="icon-[tabler--list-details] size-4"></span>
+                                            Selected Items
+                                        </h4>
+                                    </div>
+                                    <div class="overflow-x-auto">
+                                        <table class="table">
+                                            <thead class="bg-gray-50">
+                                                <tr>
+                                                    <th class="font-semibold text-gray-600">Product</th>
+                                                    <th class="font-semibold text-gray-600">Quantity</th>
+                                                    <th class="font-semibold text-gray-600 text-right">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template x-for="val in items">
+                                                    <tr class="hover:bg-primary/5 transition-colors">
+                                                        <td>
+                                                            <span class="text-gray-800 text-sm"
+                                                                x-text="val.nama_barang"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span
+                                                                class="badge badge-soft badge-info font-semibold px-3 py-1.5"
+                                                                x-text="val.stock"></span>
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <button x-on:click="deleteItem(val.id)"
+                                                                class="btn btn-circle btn-sm btn-soft btn-error hover:scale-110 transition-transform"
+                                                                aria-label="Remove item">
+                                                                <span class="icon-[tabler--trash] size-4"></span>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
 
-                                <div>
-                                    <button type="button" class="btn btn-soft btn-primary rounded-full w-full"
-                                        :disabled="isSubmitting" x-on:click="recordInvetory()"
-                                        x-text="isSubmitting ? 'Loading...':'Record Invontory'">
-                                        Record Invontory
-                                    </button>
+                                    <!-- Empty State -->
+                                    <div x-show="items.length === 0"
+                                        class="flex flex-col items-center justify-center py-12 text-gray-400">
+                                        <span class="icon-[tabler--shopping-cart-off] size-16 mb-3"></span>
+                                        <p class="font-medium">No items selected</p>
+                                        <p class="text-sm">Add products from the list above</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Form Fields -->
+                            <div class="lg:col-span-1">
+                                <div class="flex flex-col gap-5">
+                                    <h4
+                                        class="font-semibold text-gray-700 flex items-center gap-2 pb-2 border-b border-gray-200">
+                                        <span class="icon-[tabler--settings] size-4"></span>
+                                        Receipt Details
+                                    </h4>
+
+                                    <!-- Supplier -->
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                            <span
+                                                class="icon-[tabler--building-warehouse] size-4 text-blue-500"></span>
+                                            Supplier / Source
+                                        </label>
+                                        <input x-model="supplier" type="text" placeholder="Enter supplier name..."
+                                            class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 shadow-sm" />
+                                    </div>
+
+                                    <!-- Date -->
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                            <span class="icon-[tabler--calendar] size-4 text-emerald-500"></span>
+                                            Receipt Date
+                                        </label>
+                                        <div class="relative">
+                                            <input x-model="tanggal_penerimaan" type="text"
+                                                placeholder="Select date..." id="flatpickr-date"
+                                                class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 shadow-sm" />
+                                            <span
+                                                class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                                                <span class="icon-[tabler--calendar] size-5"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Invoice Number -->
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                            <span class="icon-[tabler--file-text] size-4 text-purple-500"></span>
+                                            Invoice No.
+                                        </label>
+                                        <input x-model="nomor_faktur" type="text" placeholder="000.000.00"
+                                            class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 shadow-sm" />
+                                    </div>
+
+                                    <!-- Comment -->
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                            <span class="icon-[tabler--message] size-4 text-orange-500"></span>
+                                            Comment
+                                        </label>
+                                        <textarea x-model="comment" placeholder="Add notes or comments..." rows="3"
+                                            class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 shadow-sm resize-none"></textarea>
+                                    </div>
+
+                                    <!-- Submit Button -->
+                                    <div class="pt-2">
+                                        <button type="button"
+                                            class="btn btn-primary w-full gap-3 text-base font-semibold shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300"
+                                            :disabled="isSubmitting"
+                                            :class="{ 'opacity-50 cursor-not-allowed': isSubmitting }"
+                                            x-on:click="recordInvetory()">
+                                            <span class="icon-[tabler--check] size-5"></span>
+                                            <span x-text="isSubmitting ? 'Processing...' : 'Record Inventory'"></span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -185,13 +302,15 @@
             </div>
         </div>
     </div>
+
     @push('js')
         <script>
-            window.addEventListener('load', function() {
-                flatpickr('#flatpickr-floating', {
+            window.addEventListener('DOMContentLoaded', function() {
+                // Basic
+                flatpickr('#flatpickr-date', {
                     monthSelectorType: 'static'
                 })
-            });
+            })
 
             function loadFormInventaris() {
                 return {
@@ -200,6 +319,7 @@
                     tanggal_penerimaan: '',
                     nomor_faktur: '',
                     comment: '',
+
                     async recordInvetory() {
                         if (this.items.length === 0) {
                             notifier.warning('Empty data items.', {

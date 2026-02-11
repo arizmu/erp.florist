@@ -1,144 +1,283 @@
 <x-base-layout>
-    <div class="breadcrumbs mb-2">
-        <ol>
-            <li>
-                <a href="#"> <span class="icon-[tabler--folder] size-5"></span>Home</a>
-            </li>
-            <li class="breadcrumbs-separator rtl:rotate-180"><span class="icon-[tabler--chevron-right]"></span></li>
-            <li>
-                <a href="#" aria-label="More Pages"><span class="icon-[tabler--dots]"></span></a>
-            </li>
-            <li class="breadcrumbs-separator rtl:rotate-180"><span class="icon-[tabler--chevron-right]"></span></li>
-            <li aria-current="page">
-                <span class="icon-[tabler--file] me-1 size-5"></span>
-                Barang
-            </li>
-        </ol>
-    </div>
+    <div x-data="userIndex" x-init="init()">
+        <!-- Page Header with Breadcrumbs -->
+        <div class="mb-6">
+            <!-- Breadcrumbs -->
+            <div class="breadcrumbs mb-4 text-sm">
+                <ol>
+                    <li>
+                        <a href="#" class="flex items-center gap-2 hover:text-primary transition-colors">
+                            <span class="icon-[tabler--home] size-5"></span>
+                            Home
+                        </a>
+                    </li>
+                    <li class="breadcrumbs-separator rtl:rotate-180">
+                        <span class="icon-[tabler--chevron-right]"></span>
+                    </li>
+                    <li>
+                        <a href="#" aria-label="Management" class="hover:text-primary transition-colors">
+                            <span class="icon-[tabler--settings]"></span>
+                            Management
+                        </a>
+                    </li>
+                    <li class="breadcrumbs-separator rtl:rotate-180">
+                        <span class="icon-[tabler--chevron-right]"></span>
+                    </li>
+                    <li aria-current="page" class="font-medium text-primary">
+                        <span class="icon-[tabler--users] me-1 size-5"></span>
+                        Users
+                    </li>
+                </ol>
+            </div>
 
-
-    <div x-data="userIndex">
-        <div class="bg-gradient-to-r from-blue-700 to-blue-300 w-full h-60 rounded-lg">
-            <img src="https://readymadeui.com/cardImg.webp" alt="Banner Image"
-                class="rounded-lg w-full rondu h-full object-cover" />
+            <!-- Page Title & Description with Add Button -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+                        <span class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl p-2.5 shadow-lg shadow-blue-500/30">
+                            <span class="icon-[tabler--users] size-7 text-white"></span>
+                        </span>
+                        User Management
+                    </h1>
+                    <p class="text-gray-500 mt-2 ml-1">Manage and monitor all system users and their permissions</p>
+                </div>
+                <button x-on:click="create"
+                    class="btn btn-primary gap-2 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300">
+                    <span class="icon-[carbon--user-follow] size-5"></span>
+                    Add New User
+                </button>
+            </div>
         </div>
 
-        <div class="-mt-28 mb-6 px-4">
-            <div class="mx-auto max-w-7xl shadow-lg p-8 relative bg-white rounded-md">
-                <div class="grid grid-cols-1 md:grid-cols-7 gap-8">
-                    <div class="md:col-span-5">
-                        <h5 class="text-xl text-gray-600 font-semibold mb-5 flex justify-start gap-4 items-center">
-                            <span class="icon-[tabler--users] size-6 text-blue-600"></span>
-                            User Pengguna
-                        </h5>
-                        <div class="border-base-content/25 w-full rounded-lg border">
-                            <div class="overflow-x-auto">
-                                <table class="table rounded">
-                                    <thead>
-                                        <tr>
-                                            <th>Username</th>
-                                            <th>Pegawai</th>
-                                            <th>Email</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <template x-for="user in data">
-                                            <tr>
-                                                <td class="text-nowrap" x-text="user.name"></td>
-                                                <td>
-                                                    <span x-text="user.pegawai ? user.pegawai.pegawai_name : '-'"></span>
-                                                </td>
-                                                <td x-text="user.email"></td>
-                                                <td>
-                                                    <span x-show="user.active"
-                                                        class="badge badge-soft badge-success text-xs">
-                                                        Enabled
-                                                    </span>
-                                                    <span x-show="!user.active"
-                                                        class="badge badge-soft badge-warning text-xs">
-                                                        Disabled
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <button x-on:click="openEdit(user)"
-                                                        class="btn btn-info btn-soft btn-circle btn-sm"
-                                                        aria-label="Action button">
-                                                        <span
-                                                            class="icon-[fluent--person-edit-24-regular] size-5"></span>
-                                                    </button>
-                                                    <button x-on:click="deleteData(user.id)" type="button"
-                                                        class="btn btn-circle btn-soft btn-error btn-sm"
-                                                        aria-label="Action button">
-                                                        <span class="icon-[tabler--trash] size-5"></span>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </template>
-                                    </tbody>
-                                </table>
-                            </div>
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="card bg-gradient-to-br from-blue-500 to-blue-600 border-0 shadow-xl shadow-blue-500/30">
+                <div class="card-body p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-blue-100 text-sm font-medium mb-1">Total Users</p>
+                            <p class="text-3xl font-bold text-white" x-text="data.length"></p>
                         </div>
-                        <div class="py-4 px-0">
-                            <nav class="flex justify-start gap-x-1">
-                                <button type="button" class="btn btn-secondary btn-outline min-w-28"
-                                    @click="prevPageFunc" :disabled="!prevPage">
-                                    <span class="icon-[heroicons-outline--arrow-circle-left] size-5"></span>
-                                    Previous
-                                </button>
-                                <button type="button" class="btn btn-secondary btn-outline min-w-28"
-                                    :disabled="!nextPage" @click="nextPageFunc">
-                                    Next
-                                    <span class="icon-[heroicons-outline--arrow-circle-right] size-5"></span>
-                                </button>
-                            </nav>
+                        <div class="bg-white/20 rounded-2xl p-3 backdrop-blur-sm">
+                            <span class="icon-[tabler--users] size-8 text-white"></span>
                         </div>
                     </div>
-                    <div class="md:col-span-2 order-first md:order-2">
-                        <h5 class="font-semibold text-xl text-gray-600 flex justify-start gap-4 items-center">
-                            <span class="icon-[tabler--filter-search] size-6 text-blue-600"></span>
-                            Filter
-                        </h5>
-                        <div class="input-group mt-5">
-                            <span class="input-group-text">
-                                <span class="icon-[tabler--search] text-base-content/80 size-6"></span>
-                            </span>
-                            <input type="text" class="input input-lg grow" placeholder="Search"
-                                x-model="search.keyword" />
-                            <label class="sr-only" for="kbdInput">Search</label>
-                            <span class="input-group-text gap-2">
-                                <kbd class="kbd kbd-sm">⌘</kbd>
-                                <kbd class="kbd kbd-sm">K</kbd>
-                            </span>
+                </div>
+            </div>
+
+            <div class="card bg-gradient-to-br from-emerald-500 to-emerald-600 border-0 shadow-xl shadow-emerald-500/30">
+                <div class="card-body p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-emerald-100 text-sm font-medium mb-1">Active Users</p>
+                            <p class="text-3xl font-bold text-white" 
+                                x-text="data.filter(u => u.active).length"></p>
                         </div>
-                        <div class="relative w-full mt-4">
-                            <select class="select select-floating " aria-label="Select floating label"
-                                x-model="search.range">
-                                <option value="15">15</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                            </select>
-                            <label class="select-floating-label" for="selectFloating">Data Range</label>
+                        <div class="bg-white/20 rounded-2xl p-3 backdrop-blur-sm">
+                            <span class="icon-[tabler--user-check] size-8 text-white"></span>
                         </div>
-                        <div class="flex justify-between flex-wrap gap-2 mt-4">
-                            <button class="btn btn-primary btn-soft rounded-full" type="button"
-                                x-on:click="searchFunc">
-                                <span class="icon-[tabler--user-search]"></span>
-                                Filter
-                            </button>
-                            <button class="btn btn-info btn-soft rounded-full" type="button" x-on:click="create">
-                                <span class="icon-[carbon--user-follow]"></span>
-                                New User
-                            </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-gradient-to-br from-amber-500 to-orange-500 border-0 shadow-xl shadow-amber-500/30">
+                <div class="card-body p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-amber-100 text-sm font-medium mb-1">Inactive Users</p>
+                            <p class="text-3xl font-bold text-white" 
+                                x-text="data.filter(u => !u.active).length"></p>
+                        </div>
+                        <div class="bg-white/20 rounded-2xl p-3 backdrop-blur-sm">
+                            <span class="icon-[tabler--user-off] size-8 text-white"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-gradient-to-br from-purple-500 to-indigo-600 border-0 shadow-xl shadow-purple-500/30">
+                <div class="card-body p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-purple-100 text-sm font-medium mb-1">Roles</p>
+                            <p class="text-3xl font-bold text-white" x-text="roles.length"></p>
+                        </div>
+                        <div class="bg-white/20 rounded-2xl p-3 backdrop-blur-sm">
+                            <span class="icon-[tabler--shield] size-8 text-white"></span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!--  modal open  -->
+        <!-- Main Content Card -->
+        <div class="card shadow-xl border-0">
+            <div class="card-header bg-white border-b border-gray-100 px-6 py-4">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    <!-- Search -->
+                    <div class="flex-1 max-w-md">
+                        <div class="relative flex items-center">
+                            <span class="absolute left-3 text-gray-400 pointer-events-none">
+                                <span class="icon-[tabler--search] size-5"></span>
+                            </span>
+                            <input type="text"
+                                class="input input-bordered pl-10 w-full focus:ring-2 focus:ring-blue-500/20 py-2.5"
+                                placeholder="Search users by name or email..."
+                                x-model="search.keyword"
+                                @keyup.enter="searchFunc" />
+                        </div>
+                    </div>
+
+                    <!-- Filters & Actions -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <!-- Data Range -->
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm text-gray-500">Show:</span>
+                            <select class="select select-bordered select-sm w-24" 
+                                x-model="search.range" 
+                                @change="searchFunc()">
+                                <option value="15">15</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+
+                        <!-- Filter Button -->
+                        <button class="btn btn-outline btn-primary gap-2" x-on:click="searchFunc">
+                            <span class="icon-[tabler--filter] size-5"></span>
+                            Apply Filter
+                        </button>
+
+                        <!-- Refresh Button -->
+                        <button class="btn btn-ghost btn-circle hover:bg-blue-50 hover:text-blue-600" 
+                            x-on:click="loadJson()"
+                            title="Refresh data">
+                            <span class="icon-[tabler--refresh] size-5"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                <!-- Table -->
+                <div class="overflow-x-auto">
+                    <table class="table table-hover">
+                        <thead class="bg-gray-50/50">
+                            <tr>
+                                <th class="font-semibold text-gray-600">User</th>
+                                <th class="font-semibold text-gray-600">Employee</th>
+                                <th class="font-semibold text-gray-600">Email</th>
+                                <th class="font-semibold text-gray-600">Role</th>
+                                <th class="font-semibold text-gray-600">Status</th>
+                                <th class="font-semibold text-gray-600 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="user in data" :key="user.id">
+                                <tr class="hover:bg-blue-50/30 transition-colors duration-200">
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <div class="avatar placeholder">
+                                                <div class="bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-semibold">
+                                                    <span x-text="user.name ? user.name.charAt(0).toUpperCase() : 'U'"></span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-gray-800" x-text="user.name"></p>
+                                                <p class="text-xs text-gray-500">ID: #<span x-text="user.id"></span></p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-gray-600" 
+                                            x-text="user.pegawai ? user.pegawai.pegawai_name : '-'"></span>
+                                    </td>
+                                    <td>
+                                        <div class="flex items-center gap-2">
+                                            <span class="icon-[tabler--mail] size-4 text-gray-400"></span>
+                                            <span class="text-gray-600" x-text="user.email"></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <template x-for="role in user.roles">
+                                            <span x-text="role.name" 
+                                                class="badge badge-soft badge-info text-xs font-medium uppercase tracking-wide"></span>
+                                        </template>
+                                    </td>
+                                    <td>
+                                        <span x-show="user.active"
+                                            class="badge badge-soft badge-success gap-1.5 text-xs font-medium">
+                                            <span class="icon-[tabler--circle-filled] size-2"></span>
+                                            Enabled
+                                        </span>
+                                        <span x-show="!user.active"
+                                            class="badge badge-soft badge-warning gap-1.5 text-xs font-medium">
+                                            <span class="icon-[tabler--circle-filled] size-2"></span>
+                                            Disabled
+                                        </span>
+                                    </td>
+                                    <td class="text-right">
+                                        <div class="flex justify-end gap-2">
+                                            <button x-on:click="openEdit(user)"
+                                                class="btn btn-soft btn-info btn-circle btn-sm hover:scale-110 transition-transform"
+                                                aria-label="Edit user">
+                                                <span class="icon-[fluent--person-edit-24-regular] size-5"></span>
+                                            </button>
+                                            <button x-on:click="deleteData(user.id)" 
+                                                class="btn btn-soft btn-error btn-circle btn-sm hover:scale-110 transition-transform"
+                                                aria-label="Delete user">
+                                                <span class="icon-[tabler--trash] size-5"></span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                            
+                            <!-- Empty State -->
+                            <tr x-show="data.length === 0">
+                                <td colspan="6" class="text-center py-12">
+                                    <div class="flex flex-col items-center gap-3">
+                                        <div class="bg-gray-100 rounded-full p-4">
+                                            <span class="icon-[tabler--user-search] size-12 text-gray-400"></span>
+                                        </div>
+                                        <p class="text-gray-500 font-medium">No users found</p>
+                                        <p class="text-gray-400 text-sm">Try adjusting your search or filter criteria</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-gray-100 bg-gray-50/30">
+                    <p class="text-sm text-gray-500">
+                        Showing <span class="font-medium text-gray-700" x-text="data.length"></span> users
+                    </p>
+                    <div class="flex gap-2">
+                        <button type="button" 
+                            class="btn btn-outline btn-sm gap-2"
+                            @click="prevPageFunc" 
+                            :disabled="!prevPage"
+                            :class="{'opacity-50 cursor-not-allowed': !prevPage}">
+                            <span class="icon-[heroicons-outline--arrow-circle-left] size-4"></span>
+                            Previous
+                        </button>
+                        <button type="button" 
+                            class="btn btn-outline btn-sm gap-2"
+                            :disabled="!nextPage" 
+                            @click="nextPageFunc"
+                            :class="{'opacity-50 cursor-not-allowed': !nextPage}">
+                            Next
+                            <span class="icon-[heroicons-outline--arrow-circle-right] size-4"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
         <button type="button" class="btn btn-primary hidden" aria-haspopup="dialog" aria-expanded="false"
             aria-controls="modal-form" data-overlay="#modal-form" id="btn-open-modal">
             Open modal
@@ -146,94 +285,156 @@
 
         <div id="modal-form" class="overlay modal overlay-open:opacity-100 hidden [--overlay-backdrop:static]"
             role="dialog" tabindex="-1" data-overlay-keyboard="false">
-            <div class="modal-dialog overlay-open:opacity-100">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="text-xl font-semibold text-gray-600"
-                            x-text="status ? 'Form Update' : 'Form Registrasi'">Registrasi User</h3>
-                        <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3"
-                            aria-label="Close" data-overlay="#modal-form" id="model-close-layout">
-                            <span class="icon-[tabler--x] size-4"></span>
-                        </button>
-                    </div>
-                    <div class="modal-body flex flex-col gap-4">
-                        <div class="p-2 border rounded-xl flex flex-col gap-2 px-3">
-                            <div class="w-full">
-                                <label class="label label-text" for="">Pilih Pegawai</label>
-                                <select class="select" id="" x-model="xform.pegawai_id">
-                                    <option>Pilih...</option>
-                                    <template x-for="pegawai in pegawais" :key="pegawai.id">
-                                        <option :value="pegawai.id" x-text="pegawai.pegawai_name"
-                                            :selected="pegawai.id == xform.pegawai_id">
-                                        </option>
-                                    </template>
-                                </select>
+            <div class="modal-dialog overlay-open:opacity-100 max-w-lg">
+                <div class="modal-content rounded-2xl shadow-2xl">
+                    <div class="modal-header px-6 py-4 border-b border-gray-100">
+                        <div class="w-full flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl p-2">
+                                    <span class="icon-[tabler--user-plus] size-6 text-white"></span>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-gray-800"
+                                        x-text="status ? 'Update User' : 'Add New User'"></h3>
+                                    <p class="text-sm text-gray-500" x-text="status ? 'Modify user information' : 'Create a new user account'"></p>
+                                </div>
                             </div>
-                            <div class="w-full">
-                                <label class="label label-text" for="">
-                                    Role User
-                                </label>
-                                <select class="select" id="" x-model="xform.role_id">
-                                    <option>Pilih role</option>
+                            <button type="button" class="btn btn-ghost btn-circle btn-sm hover:bg-red-50 hover:text-red-600"
+                                aria-label="Close" data-overlay="#modal-form" id="model-close-layout">
+                                <span class="icon-[tabler--x] size-5"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-body p-6 space-y-5">
+                        <!-- Employee & Role Section -->
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 space-y-4">
+                            <h4 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                <span class="icon-[tabler--user-cog] size-4"></span>
+                                User Assignment
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="label label-text font-medium" for="pegawai_id">
+                                        <span class="flex items-center gap-2">
+                                            <span class="icon-[tabler--badge] size-4"></span>
+                                            Employee
+                                        </span>
+                                    </label>
+                                    <select class="select select-bordered w-full" x-model="xform.pegawai_id">
+                                        <option value="">Select Employee...</option>
+                                        <template x-for="pegawai in pegawais" :key="pegawai.id">
+                                            <option :value="pegawai.id" x-text="pegawai.pegawai_name"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="label label-text font-medium" for="role_id">
+                                        <span class="flex items-center gap-2">
+                                            <span class="icon-[tabler--shield] size-4"></span>
+                                            Role
+                                        </span>
+                                    </label>
+                                    <select class="select select-bordered w-full" x-model="xform.role_id">
+                                        <option value="">Select Role...</option>
+                                        <template x-for="role in roles" :key="role.id">
+                                            <option :value="role.id" x-text="role.name"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
-                                </select>
-                            </div>
-                        </div>
-                        <div class="p-2 px-3 border rounded-lg flex flex-col gap-2">
-                            <div class="w-full">
-                                <label class="label label-text" for="username"> Username </label>
-                                <input x-model="xform.username" type="text" class="input" />
-                            </div>
-                            <div class="w-full">
-                                <label class="label label-text" for="emai"> Email </label>
-                                <input x-model="xform.email" type="text" placeholder="email" class="input"
-                                    id="email" />
-                            </div>
-                            <div class="w-full">
-                                <label class="label label-text" for="password"> Password </label>
-                                <div class="input-group">
-                                    <input x-model="xform.password" id="toggle-password" type="password"
-                                        class="input" placeholder="Enter password" value="" />
-                                    <span class="input-group-text">
-                                        <button type="button" data-toggle-password='{ "target": "#toggle-password" }'
-                                            class="block" aria-label="password toggle">
-                                            <span
-                                                class="icon-[tabler--eye] text-base-content/80 password-active:block hidden size-5 flex-shrink-0"></span>
-                                            <span
-                                                class="icon-[tabler--eye-off] text-base-content/80 password-active:hidden block size-5 flex-shrink-0"></span>
-                                        </button>
-                                    </span>
+                        <!-- Account Details Section -->
+                        <div class="space-y-4">
+                            <h4 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                <span class="icon-[tabler--user] size-4"></span>
+                                Account Details
+                            </h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="label label-text font-medium" for="username">
+                                        Username
+                                    </label>
+                                    <div class="relative flex items-center">
+                                        <span class="absolute left-3 text-gray-400 pointer-events-none">
+                                            <span class="icon-[tabler--at] size-5"></span>
+                                        </span>
+                                        <input x-model="xform.username" type="text"
+                                            class="input input-bordered pl-10 w-full py-2.5"
+                                            placeholder="Enter username" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="w-full">
-                                <label class="label label-text" for="password_confirm"> Password Confirm </label>
-                                <div class="input-group">
-                                    <input x-model="xform.confirm_password" id="password_confirm" type="password"
-                                        class="input" placeholder="Enter password" value="" />
-                                    <span class="input-group-text">
+                                <div>
+                                    <label class="label label-text font-medium" for="email">
+                                        Email Address
+                                    </label>
+                                    <div class="relative flex items-center">
+                                        <span class="absolute left-3 text-gray-400 pointer-events-none">
+                                            <span class="icon-[tabler--mail] size-5"></span>
+                                        </span>
+                                        <input x-model="xform.email" type="email"
+                                            class="input input-bordered pl-10 w-full py-2.5"
+                                            placeholder="Enter email address" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="label label-text font-medium" for="password">
+                                        Password
+                                    </label>
+                                    <div class="relative flex items-center">
+                                        <span class="absolute left-3 text-gray-400 pointer-events-none">
+                                            <span class="icon-[tabler--lock] size-5"></span>
+                                        </span>
+                                        <input x-model="xform.password" id="toggle-password" type="password"
+                                            class="input input-bordered pl-10 pr-12 w-full py-2.5"
+                                            placeholder="Enter password" />
                                         <button type="button"
-                                            data-toggle-password='{ "target": "#password_confirm" }' class="block"
-                                            aria-label="password toggle">
-                                            <span
-                                                class="icon-[tabler--eye] text-base-content/80 password-active:block hidden size-5 flex-shrink-0"></span>
-                                            <span
-                                                class="icon-[tabler--eye-off] text-base-content/80 password-active:hidden block size-5 flex-shrink-0"></span>
+                                            data-toggle-password='{ "target": "#toggle-password" }'
+                                            class="absolute right-3 text-gray-400 hover:text-gray-600"
+                                            aria-label="Toggle password visibility">
+                                            <span class="icon-[tabler--eye] password-active:block hidden size-5"></span>
+                                            <span class="icon-[tabler--eye-off] password-active:hidden block size-5"></span>
                                         </button>
-                                    </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="label label-text font-medium" for="password_confirm">
+                                        Confirm Password
+                                    </label>
+                                    <div class="relative flex items-center">
+                                        <span class="absolute left-3 text-gray-400 pointer-events-none">
+                                            <span class="icon-[tabler--lock] size-5"></span>
+                                        </span>
+                                        <input x-model="xform.confirm_password" id="password_confirm" type="password"
+                                            class="input input-bordered pl-10 pr-12 w-full py-2.5"
+                                            placeholder="Confirm password" />
+                                        <button type="button"
+                                            data-toggle-password='{ "target": "#password_confirm" }'
+                                            class="absolute right-3 text-gray-400 hover:text-gray-600"
+                                            aria-label="Toggle password visibility">
+                                            <span class="icon-[tabler--eye] password-active:block hidden size-5"></span>
+                                            <span class="icon-[tabler--eye-off] password-active:hidden block size-5"></span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-soft btn-secondary rounded-full"
-                            x-on:click="closeModal">
-                            <span class="icon-[material-symbols--reset-focus] size-5"></span>
-                            Close</button>
-                        <button type="button" x-on:click="status ? update() : store()"
-                            class="btn btn-primary btn-soft rounded-full">
-                            <span class="icon-[ri--user-follow-line] size-5"></span>
-                            Submit data
-                        </button>
+                    <div class="modal-footer px-6 py-4 border-t border-gray-100 bg-gray-50/50 rounded-b-2xl">
+                        <div class="flex justify-end gap-3">
+                            <button type="button" 
+                                class="btn btn-ghost gap-2 hover:bg-gray-100"
+                                x-on:click="closeModal">
+                                <span class="icon-[tabler--x] size-5"></span>
+                                Cancel
+                            </button>
+                            <button type="button" 
+                                x-on:click="status ? update() : store()"
+                                class="btn btn-primary gap-2 shadow-lg shadow-blue-500/30">
+                                <span class="icon-[tabler--check] size-5"></span>
+                                <span x-text="status ? 'Update User' : 'Create User'"></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -396,7 +597,6 @@
                         }
                     },
                     async deleteData(index) {
-                        // sweetalert for confirmation before delete data
                         const result = await Swal.fire({
                             title: 'Are you sure?',
                             text: "You won't be able to revert this!",
@@ -414,11 +614,7 @@
                             })
                             return;
                         } else {
-                            // error callback
                             try {
-                                // const url = `/management/user-delete/${index}`;
-                                // const res = await axios.post(url);
-                                // this.getData();
                                 Swal.fire({
                                     title: "Deleted!",
                                     text: "Your file has been deleted.",
@@ -500,6 +696,8 @@
                             .then((res) => {
                                 const response = res.data.data;
                                 this.data = response.data;
+                                console.log(this.data);
+                                
                                 this.links = this.processPaginationLinks(response.links);
                                 this.nextPage = response.next_page_url ? this.addParamsToUrl(response
                                     .next_page_url) : null;
@@ -571,7 +769,7 @@
                             allowEscapeKey: false,
                             showConfirmButton: false,
                             didOpen: () => {
-                                Swal.showLoading(); // Tampilkan spinner loading
+                                Swal.showLoading();
                             }
                         })
                         axios.get('/management/user-get-pegawai')
@@ -583,11 +781,24 @@
                                 console.log(err);
                             })
                             .finally(() => {
-                                Swal.close(); // Tutup spinner loading
+                                Swal.close();
                             });
 
                     },
+
+                    roles: [],
+                    getRoles() {
+                        axios.get('/management/user-get-roles')
+                            .then((res) => {
+                                const data = res.data.data;
+                                this.roles = data;
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            });
+                    },
                     init() {
+                        this.getRoles();
                         this.loadJson();
                     }
                 }

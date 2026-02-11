@@ -139,7 +139,7 @@ class PreoderController extends Controller
             // 'costumer.*' => ['required'],
             'costumer.name' => ['required'],
             'costumer.phone' => ['required', 'numeric'],
-            'costumer.point_use' => ['required', 'boolean'],
+            'costumer.point_use' =>'',
             'costumer.point' => '',
             'product' => ['required', 'array'],
             'estimasi' => ['required', 'string']
@@ -193,11 +193,23 @@ class PreoderController extends Controller
 
             $queryTransaksi = Transaction::create($transaksiData);
             $queryTransaksi->details()->createMany($detailTransaksi);
+            $arrayForPaymentTransaction = [
+                'transaction_id' => $queryTransaksi->id,
+                'total_payment' => $transaksiData['total_payment'],
+                'total_paid' => 0,
+                'total_unpaid' => $transaksiData['total_payment'],
+                'total_cashback' => 0,
+                'payment_amount' => 0,
+                'factur_number' =>  generateFactur(),
+                'payment_method' => 't'
+            ];
+            $payment = createPaymentData($arrayForPaymentTransaction);
 
             DB::commit();
             return getResponseJson('success', 200, 'insert successfully!', [
                 'transaction_id' => $queryTransaksi->id,
                 'total_price' => $totalPrice,
+                'payment_id' => $payment
             ], false);
         } catch (\Throwable $th) {
             DB::rollBack();

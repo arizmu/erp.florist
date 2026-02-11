@@ -9,9 +9,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Role;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class UserController extends Controller
+class UserController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            'role_or_permission:user-management',
+        ];
+    }
+
+
     public function index()
     {
         return view('Pages.users.user-index');
@@ -19,7 +29,7 @@ class UserController extends Controller
 
     public function userJson(Request $request)
     {
-        $query = User::query()->with('pegawai')->where('delete_status', false)->latest();
+        $query = User::query()->with(['pegawai', 'roles'])->where('delete_status', false)->latest();
 
         $query->when($request->keywords, function ($q) use ($request) {
             $q->where(function ($subQuery) use ($request) {
@@ -64,7 +74,9 @@ class UserController extends Controller
                 'pegawai_id' => $request->pegawai_id,
                 // 'role' => $request->role
             ];
-            User::create($arrayRequest);
+            $query = User::create($arrayRequest);
+            $role = Role::find($request->role_id);
+            $query->syncRoles($role);
             DB::commit();
             return response()->json([
                 'status' => 'success',
@@ -163,6 +175,11 @@ class UserController extends Controller
                 'password' => $request->password ? Hash::make($request->password) : $query->password,
                 'pegawai_id' => $request->pegawai_id
             ]);
+
+            // asign role
+            $role = Role::find($request->role_id);
+            $query->syncRoles($role);
+
             DB::commit();
             return response()->json([
                 'status' => 'success',
@@ -184,6 +201,17 @@ class UserController extends Controller
     public function getPegawai()
     {
         $query = Pegawai::query();
+        return response()->json([
+            'status' => 'success',
+            'code' => 200,
+            'message' => 'Data berhasil diambil',
+            'data' => $query->get()
+        ]);
+    }
+
+    public function getRoles()
+    {
+        $query = Role::query();
         return response()->json([
             'status' => 'success',
             'code' => 200,

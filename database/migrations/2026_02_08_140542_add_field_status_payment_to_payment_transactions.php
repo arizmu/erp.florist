@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasColumn('permissions', 'permission_title')) {
-            Schema::table('permissions', function (Blueprint $table) {
-                $table->string('permission_title')->nullable();
-            });
-        }
+        Schema::table('payment_transactions', function (Blueprint $table) {
+            $table->boolean('is_status')->default(false)->after('payment_method');
+        });
     }
 
     /**
@@ -23,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('permissions', function (Blueprint $table) {
-            $table->dropColumn('permission_title');
+        Schema::table('payment_transactions', function (Blueprint $table) {
+            $table->dropColumn('is_status');
         });
     }
 };

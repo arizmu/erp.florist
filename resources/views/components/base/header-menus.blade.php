@@ -1,226 +1,170 @@
 <div class="modal-body">
-    <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:p-4 max-h-96 font-poppins"
-        style="margin-bottom: 15pt">
-        <div class="flex gap-4 flex-col">
-            <h4 class="font-semibold  text-gray-500" style="--fw:500">
-                Manajement Penjualan
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 p-3 max-h-[60vh] overflow-y-auto font-poppins text-xs">
+        
+        {{-- Manajemen Penjualan --}}
+        <div class="menu-card bg-gradient-to-br from-emerald-50/50 to-teal-50/50 dark:from-emerald-900/10 dark:to-teal-900/10 rounded-xl p-3 border border-emerald-100/50 dark:border-emerald-800/30 hover:shadow-lg hover:shadow-emerald-100/20 dark:hover:shadow-emerald-900/20 transition-all duration-300 hover:-translate-y-0.5">
+            <h4 class="font-semibold text-emerald-700 dark:text-emerald-400 text-xs mb-2 flex items-center gap-2">
+                <span class="icon-[tabler--shopping-cart] size-4"></span>
+                Penjualan
             </h4>
-            <div class="flex flex-col gap-1 border-l px-2">
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+            <div class="flex flex-col gap-0.5">
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-emerald-100 dark:hover:bg-emerald-800/30 hover:text-emerald-700 dark:hover:text-emerald-300 transition-all duration-200 group"
                     href="{{ route('kasir.index') }}">
-                    <span class="icon-[tabler--device-desktop-check] size-6"></span>
-                    <span class="">Kasir</span>
+                    <span class="icon-[tabler--device-desktop-check] size-4 text-gray-400 dark:text-gray-500 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors"></span>
+                    <span class="truncate">Kasir</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-emerald-100 dark:hover:bg-emerald-800/30 hover:text-emerald-700 dark:hover:text-emerald-300 transition-all duration-200 group"
                     href="{{ route('preoder.form.layout') }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                    </svg>
-
-                    <span class="">Pre-order</span>
+                    <span class="icon-[tabler--clipboard-list] size-4 text-gray-400 dark:text-gray-500 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors"></span>
+                    <span class="truncate">Pre-order</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-emerald-100 dark:hover:bg-emerald-800/30 hover:text-emerald-700 dark:hover:text-emerald-300 transition-all duration-200 group"
                     href="{{ route('transaksi.index') }}">
-                    <span class="icon-[tabler--basket-check] size-6"></span>
-                    <span class="">Transaksi</span>
+                    <span class="icon-[tabler--basket-check] size-4 text-gray-400 dark:text-gray-500 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors"></span>
+                    <span class="truncate">Transaksi</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-emerald-100 dark:hover:bg-emerald-800/30 hover:text-emerald-700 dark:hover:text-emerald-300 transition-all duration-200 group"
                     href="{{ route('costumer.index') }}">
-                    <span class="icon-[fa6-solid--users-viewfinder] size-6"></span>
-                    <span class="">Costumers</span>
+                    <span class="icon-[fa6-solid--users-viewfinder] size-4 text-gray-400 dark:text-gray-500 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors"></span>
+                    <span class="truncate">Customers</span>
                 </a>
             </div>
         </div>
-        <div class="flex gap-4 flex-col">
-            <h4 class="font-semibold  text-gray-500" style="--fw:500">
-                Manajement Product
+
+        {{-- Manajemen Product --}}
+        <div class="menu-card bg-gradient-to-br from-blue-50/50 to-indigo-50/50 dark:from-blue-900/10 dark:to-indigo-900/10 rounded-xl p-3 border border-blue-100/50 dark:border-blue-800/30 hover:shadow-lg hover:shadow-blue-100/20 dark:hover:shadow-blue-900/20 transition-all duration-300 hover:-translate-y-0.5">
+            <h4 class="font-semibold text-blue-700 dark:text-blue-400 text-xs mb-2 flex items-center gap-2">
+                <span class="icon-[tabler--package] size-4"></span>
+                Product
             </h4>
-            <div class="flex flex-col gap-1 border-l px-2">
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+            <div class="flex flex-col gap-0.5">
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-800/30 hover:text-blue-700 dark:hover:text-blue-300 transition-all duration-200 group"
                     href="{{ route('product.index') }}">
-                    <span class="icon-[tabler--list-details] size-6"></span>
-                    <span class="">Product</span>
+                    <span class="icon-[tabler--list-details] size-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors"></span>
+                    <span class="truncate">Product</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-800/30 hover:text-blue-700 dark:hover:text-blue-300 transition-all duration-200 group"
                     href="{{ route('produksi.index') }}">
-                    <span class="icon-[tabler--category] size-6"></span>
-                    <span class="">Production</span>
+                    <span class="icon-[tabler--category] size-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors"></span>
+                    <span class="truncate">Production</span>
                 </a>
-                {{-- <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
-                    href="{{ route('jenis.product.index') }}">
-                <span class="icon-[tabler--paperclip] size-6"></span>
-                <span class="">Jenis Product</span>
-                </a> --}}
             </div>
         </div>
-        <div class="flex gap-4 flex-col">
-            <h4 class="font-semibold  text-gray-500" style="--fw:500">
-                Manajemen Inventaris
+
+        {{-- Manajemen Inventaris --}}
+        <div class="menu-card bg-gradient-to-br from-amber-50/50 to-orange-50/50 dark:from-amber-900/10 dark:to-orange-900/10 rounded-xl p-3 border border-amber-100/50 dark:border-amber-800/30 hover:shadow-lg hover:shadow-amber-100/20 dark:hover:shadow-amber-900/20 transition-all duration-300 hover:-translate-y-0.5">
+            <h4 class="font-semibold text-amber-700 dark:text-amber-400 text-xs mb-2 flex items-center gap-2">
+                <span class="icon-[tabler--warehouse] size-4"></span>
+                Inventaris
             </h4>
-            <div class="flex flex-col gap-1 border-l px-2">
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+            <div class="flex flex-col gap-0.5">
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-amber-100 dark:hover:bg-amber-800/30 hover:text-amber-700 dark:hover:text-amber-300 transition-all duration-200 group"
                     href="{{ route('inventory.index') }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M6.75 2.994v2.25m10.5-2.25v2.25m-14.252 13.5V7.491a2.25 2.25 0 0 1 2.25-2.25h13.5a2.25 2.25 0 0 1 2.25 2.25v11.251m-18 0a2.25 2.25 0 0 0 2.25 2.25h13.5a2.25 2.25 0 0 0 2.25-2.25m-18 0v-7.5a2.25 2.25 0 0 1 2.25-2.25h13.5a2.25 2.25 0 0 1 2.25 2.25v7.5m-6.75-6h2.25m-9 2.25h4.5m.002-2.25h.005v.006H12v-.006Zm-.001 4.5h.006v.006h-.006v-.005Zm-2.25.001h.005v.006H9.75v-.006Zm-2.25 0h.005v.005h-.006v-.005Zm6.75-2.247h.005v.005h-.005v-.005Zm0 2.247h.006v.006h-.006v-.006Zm2.25-2.248h.006V15H16.5v-.005Z" />
-                    </svg>
-                    <span class="">Invetory Data</span>
+                    <span class="icon-[tabler--database] size-4 text-gray-400 dark:text-gray-500 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors"></span>
+                    <span class="truncate">Inventory Data</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-amber-100 dark:hover:bg-amber-800/30 hover:text-amber-700 dark:hover:text-amber-300 transition-all duration-200 group"
                     href="{{ route('inventory.form') }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                    </svg>
-
-                    <span class="">Invetory Masuk</span>
+                    <span class="icon-[tabler--circle-plus] size-4 text-gray-400 dark:text-gray-500 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors"></span>
+                    <span class="truncate">Inventory Masuk</span>
                 </a>
-
-                {{-- <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
-                    href="{{ route('inventory.form') }}">
-                <span class="icon-[basil--history-outline] size-6" style="width: 24px; height: 24px;"></span>
-                <span class="">
-                    History
-
-                </span>
-                </a> --}}
             </div>
         </div>
-        <div class="flex gap-4 flex-col">
-            <h4 class="font-semibold  text-gray-500" style="--fw:500">
-                Manajemen Jasa
 
+        {{-- Manajemen Jasa --}}
+        <div class="menu-card bg-gradient-to-br from-purple-50/50 to-pink-50/50 dark:from-purple-900/10 dark:to-pink-900/10 rounded-xl p-3 border border-purple-100/50 dark:border-purple-800/30 hover:shadow-lg hover:shadow-purple-100/20 dark:hover:shadow-purple-900/20 transition-all duration-300 hover:-translate-y-0.5">
+            <h4 class="font-semibold text-purple-700 dark:text-purple-400 text-xs mb-2 flex items-center gap-2">
+                <span class="icon-[tabler--tools] size-4"></span>
+                Jasa
             </h4>
-            <div class="flex flex-col gap-1 border-l px-2">
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+            <div class="flex flex-col gap-0.5">
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-purple-100 dark:hover:bg-purple-800/30 hover:text-purple-700 dark:hover:text-purple-300 transition-all duration-200 group"
                     href="{{ route('jasa.crafter.index') }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3 1.5 1.5 3-3.75" />
-                    </svg>
-
-                    <span class="">Jasa Produksi</span>
+                    <span class="icon-[tabler--hammer] size-4 text-gray-400 dark:text-gray-500 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors"></span>
+                    <span class="truncate">Jasa Produksi</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-purple-100 dark:hover:bg-purple-800/30 hover:text-purple-700 dark:hover:text-purple-300 transition-all duration-200 group"
                     href="{{ route('ref-jasa.index') }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
-                    </svg>
-                    <span class="">Referensi Jasa Produksi</span>
+                    <span class="icon-[tabler--tag] size-4 text-gray-400 dark:text-gray-500 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors"></span>
+                    <span class="truncate">Ref. Jasa Produksi</span>
                 </a>
             </div>
         </div>
-        <div class="flex gap-4 flex-col">
-            <h4 class="font-semibold  text-gray-500" style="--fw:500">
-                Manajemen Pelaporan
-            </h4>
-            <div class="flex flex-col gap-1 border-l px-2">
-                {{-- <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 9h3.75m-4.5 2.625h4.5M12 18.75 9.75 16.5h.375a2.625 2.625 0 0 0 0-5.25H9.75m.75-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                    </svg>
 
-                    <span class="">Laporan Invetaris</span>
-                </a> --}}
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+        {{-- Manajemen Pelaporan --}}
+        <div class="menu-card bg-gradient-to-br from-rose-50/50 to-red-50/50 dark:from-rose-900/10 dark:to-red-900/10 rounded-xl p-3 border border-rose-100/50 dark:border-rose-800/30 hover:shadow-lg hover:shadow-rose-100/20 dark:hover:shadow-rose-900/20 transition-all duration-300 hover:-translate-y-0.5">
+            <h4 class="font-semibold text-rose-700 dark:text-rose-400 text-xs mb-2 flex items-center gap-2">
+                <span class="icon-[tabler--chart-bar] size-4"></span>
+                Pelaporan
+            </h4>
+            <div class="flex flex-col gap-0.5">
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-rose-100 dark:hover:bg-rose-800/30 hover:text-rose-700 dark:hover:text-rose-300 transition-all duration-200 group"
                     href="{{ route('laporanPenjualanLayout') }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 9h3.75m-4.5 2.625h4.5M12 18.75 9.75 16.5h.375a2.625 2.625 0 0 0 0-5.25H9.75m.75-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                    </svg>
-
-                    <span class="">Laporan Penjualan</span>
+                    <span class="icon-[tabler--file-chart] size-4 text-gray-400 dark:text-gray-500 group-hover:text-rose-500 dark:group-hover:text-rose-400 transition-colors"></span>
+                    <span class="truncate">Laporan Penjualan</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-rose-100 dark:hover:bg-rose-800/30 hover:text-rose-700 dark:hover:text-rose-300 transition-all duration-200 group"
                     href="{{ route('laporanPenjualanDetail') }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 9h3.75m-4.5 2.625h4.5M12 18.75 9.75 16.5h.375a2.625 2.625 0 0 0 0-5.25H9.75m.75-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                    </svg>
-
-                    <span class="">Laporan Penjulan Detail</span>
+                    <span class="icon-[tabler--file-analytics] size-4 text-gray-400 dark:text-gray-500 group-hover:text-rose-500 dark:group-hover:text-rose-400 transition-colors"></span>
+                    <span class="truncate">Laporan Detail</span>
                 </a>
             </div>
         </div>
-        <div class="flex gap-4 flex-col">
-            <h4 class="font-semibold  text-gray-500" style="--fw:500">
-                Manajemen Barang <span></span>
+
+        {{-- Manajemen Barang --}}
+        <div class="menu-card bg-gradient-to-br from-cyan-50/50 to-sky-50/50 dark:from-cyan-900/10 dark:to-sky-900/10 rounded-xl p-3 border border-cyan-100/50 dark:border-cyan-800/30 hover:shadow-lg hover:shadow-cyan-100/20 dark:hover:shadow-cyan-900/20 transition-all duration-300 hover:-translate-y-0.5">
+            <h4 class="font-semibold text-cyan-700 dark:text-cyan-400 text-xs mb-2 flex items-center gap-2">
+                <span class="icon-[tabler--box] size-4"></span>
+                Barang
             </h4>
-            <div class="flex flex-col gap-1 border-l px-2">
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+            <div class="flex flex-col gap-0.5">
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-cyan-100 dark:hover:bg-cyan-800/30 hover:text-cyan-700 dark:hover:text-cyan-300 transition-all duration-200 group"
                     href="{{ route('barang.index') }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3 1.5 1.5 3-3.75" />
-                    </svg>
-
-                    <span class="">Barang (Bahan baku)</span>
+                    <span class="icon-[tabler--package] size-4 text-gray-400 dark:text-gray-500 group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-colors"></span>
+                    <span class="truncate">Bahan Baku</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-cyan-100 dark:hover:bg-cyan-800/30 hover:text-cyan-700 dark:hover:text-cyan-300 transition-all duration-200 group"
                     href="{{ route('category.index') }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
-                    </svg>
-                    <span class="">Category</span>
+                    <span class="icon-[tabler--folder] size-4 text-gray-400 dark:text-gray-500 group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-colors"></span>
+                    <span class="truncate">Category</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-cyan-100 dark:hover:bg-cyan-800/30 hover:text-cyan-700 dark:hover:text-cyan-300 transition-all duration-200 group"
                     href="{{ route('satuan.index') }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
-                    </svg>
-                    <span class="">Satuan</span>
+                    <span class="icon-[tabler--ruler] size-4 text-gray-400 dark:text-gray-500 group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-colors"></span>
+                    <span class="truncate">Satuan</span>
                 </a>
             </div>
         </div>
-        <div class="flex gap-4 flex-col">
-            <h4 class="font-semibold  text-gray-500" style="--fw:500">
-                Manajemen Sistem
+
+        {{-- Manajemen Sistem --}}
+        <div class="menu-card bg-gradient-to-br from-slate-50/50 to-gray-50/50 dark:from-slate-900/10 dark:to-gray-900/10 rounded-xl p-3 border border-slate-100/50 dark:border-slate-800/30 hover:shadow-lg hover:shadow-slate-100/20 dark:hover:shadow-slate-900/20 transition-all duration-300 hover:-translate-y-0.5">
+            <h4 class="font-semibold text-slate-700 dark:text-slate-400 text-xs mb-2 flex items-center gap-2">
+                <span class="icon-[tabler--settings] size-4"></span>
+                Sistem
             </h4>
-            <div class="flex flex-col gap-1 border-l px-2">
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+            <div class="flex flex-col gap-0.5">
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800/30 hover:text-slate-700 dark:hover:text-slate-300 transition-all duration-200 group"
                     href="{{ route('pegawai.index') }}">
-                    <span class="size-6 icon-[ph--folder-user]"></span>
-                    <span class="">Pegawai</span>
+                    <span class="icon-[ph--folder-user] size-4 text-gray-400 dark:text-gray-500 group-hover:text-slate-500 dark:group-hover:text-slate-400 transition-colors"></span>
+                    <span class="truncate">Pegawai</span>
                 </a>
-                <a href="{{ route('user.index') }}"
-                    class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="">
-                    <span class="icon-[stash--shield-user] size-6"></span>
-                    <span class="">Pengguna</span>
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800/30 hover:text-slate-700 dark:hover:text-slate-300 transition-all duration-200 group"
+                    href="{{ route('user.index') }}">
+                    <span class="icon-[stash--shield-user] size-4 text-gray-400 dark:text-gray-500 group-hover:text-slate-500 dark:group-hover:text-slate-400 transition-colors"></span>
+                    <span class="truncate">Pengguna</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100" href="{{ route('role.permission.index') }}">
-                    <span class="icon-[hugeicons--shield-energy] size-6"></span>
-                    <span class="">Role & Permission
-                    </span>
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800/30 hover:text-slate-700 dark:hover:text-slate-300 transition-all duration-200 group"
+                    href="{{ route('role.permission.index') }}">
+                    <span class="icon-[hugeicons--shield-energy] size-4 text-gray-400 dark:text-gray-500 group-hover:text-slate-500 dark:group-hover:text-slate-400 transition-colors"></span>
+                    <span class="truncate">Role & Permission</span>
                 </a>
-                <a class="flex gap-3 p-2 hover:text-blue-600 hover:rounded-lg hover:bg-slate-100"
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800/30 hover:text-slate-700 dark:hover:text-slate-300 transition-all duration-200 group"
                     href="{{ route('app-setting.index') }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12m6.894 5.785-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
-                    </svg>
-                    <span class="">Pengaturan</span>
+                    <span class="icon-[tabler--settings-2] size-4 text-gray-400 dark:text-gray-500 group-hover:text-slate-500 dark:group-hover:text-slate-400 transition-colors"></span>
+                    <span class="truncate">Pengaturan</span>
                 </a>
             </div>
         </div>
+
     </div>
 </div>

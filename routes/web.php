@@ -31,11 +31,19 @@ Route::get('/login', function () {
 
 Route::post('/login', [AuthController::class, 'LoginAction'])->name('login.action');
 Route::get('app-json', [AppSettingController::class, 'publicJson']);
+Route::get('management/app-set-get', [AppSettingController::class, 'appFirst']);
 
 Route::group(['middleware' => 'auth.manuals'], function () {
     Route::get('/logout', [AuthController::class, 'LogoutAction'])->name('logout');
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dasbhoard');
     Route::get('/me', [AuthController::class, 'me'])->name('me');
+
+    // Dashboard API routes
+    Route::get('/api/dashboard/daily-transaksi', [HomeController::class, 'dailyTransaksi']);
+    Route::get('/api/dashboard/daily-revenue', [HomeController::class, 'dailyRevenue']);
+    Route::get('/api/dashboard/count-customers', [HomeController::class, 'forCountCostumers']);
+    Route::get('/api/dashboard/count-produksi', [HomeController::class, 'forCountProduksi']);
+    Route::get('/api/dashboard/statistics', [HomeController::class, 'forStatistics']);
 
     Route::prefix('master-barang')->group(function () {
         Route::controller(CategoryController::class)->group(function () {
@@ -77,7 +85,9 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         });
     });
 
-    Route::prefix('inventory')->group(function () {
+    Route::group([
+        'prefix' => 'inventory'
+    ], function () {
         Route::controller(InventoryController::class)->group(function () {
             Route::get('invetory-data', 'index')->name('inventory.index');
             Route::get('invetory-form', 'formInventory')->name('inventory.form');
@@ -88,7 +98,9 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         });
     });
 
-    Route::prefix('transaksi')->group(function () {
+    Route::group([
+        'prefix' => 'transaksi'
+    ], function () {
         Route::controller(KasirController::class)->group(function () {
             Route::get('/', 'index')->name('transaksi.index');
             Route::get('/kasir', 'kasir')->name('kasir.index');
@@ -116,7 +128,9 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         });
     });
 
-    Route::prefix('management')->group(function () {
+    Route::group([
+        'prefix' => 'management'
+    ], function () {
         Route::controller(PegawaiController::class)->group(function () {
             Route::get('pegawai', 'index')->name('pegawai.index');
             Route::post('pegawai-store', 'store');
@@ -126,7 +140,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         });
         Route::controller(AppSettingController::class)->group(function () {
             Route::get('/app-setting', 'index')->name('app-setting.index');
-            Route::get('/app-set-get', 'appFirst');
+            // Route::get('/app-set-get', 'appFirst');
             Route::post('/app-set-store', 'storeOrUpdate');
             Route::post('/logo-upload', 'udpateLogo');
             Route::post('/icon-upload', 'updateIcon');
@@ -139,6 +153,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::post('/user-update/{id}', 'updated');
             Route::get('/user-password/{id}', 'passwordUpdate');
             Route::get('/user-get-pegawai', 'getPegawai');
+            Route::get('/user-get-roles', 'getRoles');
         });
     });
 
@@ -159,7 +174,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
 
     Route::group([
         'controller' => RJasaCraftingController::class,
-        'prefix' => 'ref-jasa'
+        'prefix' => 'ref-jasa',
     ], function () {
         Route::get('/', 'index')->name('ref-jasa.index');
         Route::post('/store-data', 'store');
@@ -176,6 +191,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         Route::post('costumers/delete', 'hapus');
         Route::post('costumers/update', 'update');
     });
+
 
     Route::controller(CraftingController::class)->prefix('jasa-crafter')->group(function () {
         Route::get('/', 'index')->name('jasa.crafter.index');
@@ -197,12 +213,12 @@ Route::group(['middleware' => 'auth.manuals'], function () {
     Route::group([
         'prefix' => 'role-permission',
         'controller' => RolesPermissionController::class
-    ], function() {
+    ], function () {
         Route::get('/', 'index')->name('role.permission.index');
         Route::post('/store', 'store');
         Route::get('/json', 'json');
         Route::post('/update', 'update');
-        Route::post('/delete', 'destroy');
+        Route::get('/delete/{id}', 'destroy');
         Route::get('/permissions', 'permissionJson');
     });
 

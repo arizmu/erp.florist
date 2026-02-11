@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class CostumerController extends Controller
 {
+    public static function middleware()
+    {
+        return "";
+    }
+
     public function index()
     {
         return view('Pages.costumer.costumer-index');
@@ -23,13 +28,15 @@ class CostumerController extends Controller
         return getResponseJson('ok', 200, 'cosutemr fetch successfully', $query, false);
     }
 
-    public function hapus() {
+    public function hapus()
+    {
         $id = request()->id;
         Costumer::where('id', $id)->delete();
         return getResponseJson('ok', 200, 'Costumer deleted successfully', null, null);
     }
 
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
         $id = request()->id;
         $costumer = Costumer::find($id);
         $costumer->name = $request->costumer;
@@ -41,5 +48,4 @@ class CostumerController extends Controller
         $costumer->save();
         return getResponseJson('ok', 200, 'Costumer updated successfully', null, null);
     }
-
 }

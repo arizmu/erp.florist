@@ -6,9 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\Pegawai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class PegawaiController extends Controller
+class PegawaiController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            'role_or_permission:pegawai-management'
+        ];
+    }
+
     public function index()
     {
         return view('Pages.pegawai.pegawai-index');

@@ -1,107 +1,198 @@
 <x-base-layout>
-    <div class="breadcrumbs">
-        <ol>
-            <li>
-                <a href="#"> <span class="icon-[tabler--folder] size-5"></span>Home</a>
-            </li>
-            <li class="breadcrumbs-separator rtl:rotate-180"><span class="icon-[tabler--chevron-right]"></span></li>
-            <li>
-                <a href="#" aria-label="More Pages"><span class="icon-[tabler--dots]"></span></a>
-            </li>
-            <li class="breadcrumbs-separator rtl:rotate-180"><span class="icon-[tabler--chevron-right]"></span></li>
-            <li aria-current="page">
-                <span class="icon-[tabler--file] me-1 size-5"></span>
-                Kasir
-            </li>
-        </ol>
-    </div>
     <div x-data="settingIndex()" class="py-4">
-        <div class="card bg-slate-0 dark:bg-gray-800">
-            <div class="card-body">
-                <div class="p-4 px-5">
-                    <h5 class="card-title">Konfigurasi Aplikasi</h5>
-                    <form @submit.prevent="submit" class="" enctype="multipart/form-data">
-                        <div class="max-w-3xl">
-                            <div class="flex flex-col items-start gap-2">
-                                <div class="w-full">
-                                    <label class="label label-text font-semibold text-gray-400" for="">Title
+        <!-- Page Header -->
+        <div class="mb-6">
+            <!-- Breadcrumbs -->
+            <div class="breadcrumbs mb-4 text-sm">
+                <ol>
+                    <li>
+                        <a href="#" class="flex items-center gap-2 hover:text-primary transition-colors">
+                            <span class="icon-[tabler--home] size-5"></span>
+                            Home
+                        </a>
+                    </li>
+                    <li class="breadcrumbs-separator rtl:rotate-180">
+                        <span class="icon-[tabler--chevron-right]"></span>
+                    </li>
+                    <li>
+                        <a href="#" aria-label="More Pages" class="hover:text-primary transition-colors">
+                            <span class="icon-[tabler--dots]"></span>
+                        </a>
+                    </li>
+                    <li class="breadcrumbs-separator rtl:rotate-180">
+                        <span class="icon-[tabler--chevron-right]"></span>
+                    </li>
+                    <li aria-current="page" class="font-medium text-primary">
+                        <span class="icon-[tabler--file] me-1 size-5"></span>
+                        Pengaturan
+                    </li>
+                </ol>
+            </div>
+
+            <!-- Page Title -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h1 class="text-xl md:text-1xl font-bold text-gray-700 flex items-center gap-3">
+                        <span class="bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl p-2.5 shadow-lg shadow-violet-500/30">
+                            <span class="icon-[tabler--settings] size-5 text-white"></span>
+                        </span>
+                        Konfigurasi Aplikasi
+                    </h1>
+                    <p class="text-gray-500 mt-2 ml-1">Manage application settings and branding</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <!-- Left Column - Application Settings -->
+            <div class="xl:col-span-1">
+                <div class="card shadow-xl border-0">
+                    <!-- Card Header -->
+                    <div class="card-header bg-gradient-to-r from-violet-500 to-purple-600 px-6 py-4">
+                        <div class="flex items-center gap-3 text-white">
+                            <span class="icon-[tabler--settings-2] size-6"></span>
+                            <h3 class="text-xl font-bold">Pengaturan Aplikasi</h3>
+                        </div>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="card-body p-6">
+                        <form @submit.prevent="submit" class="space-y-5" enctype="multipart/form-data">
+                            <!-- Application Name -->
+                            <div class="flex flex-col gap-2">
+                                <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <span class="icon-[tabler--building-store] size-4 text-violet-500"></span>
+                                    Title Aplikasi
+                                </label>
+                                <input x-model="data.appName" type="text" placeholder="Enter application name..."
+                                    class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 shadow-sm" />
+                            </div>
+
+                            <!-- Sub Title -->
+                            <div class="flex flex-col gap-2">
+                                <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <span class="icon-[tabler--text-caption] size-4 text-purple-500"></span>
+                                    Sub Title
+                                </label>
+                                <input x-model="data.sub_title" type="text" placeholder="Enter subtitle..."
+                                    class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 shadow-sm" />
+                            </div>
+
+                            <!-- Comment -->
+                            <div class="flex flex-col gap-2">
+                                <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <span class="icon-[tabler--message] size-4 text-pink-500"></span>
+                                    Keterangan
+                                </label>
+                                <textarea x-model="data.comment" placeholder="Add description..."
+                                    rows="3"
+                                    class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 shadow-sm resize-none"></textarea>
+                            </div>
+
+                            <!-- Address -->
+                            <div class="flex flex-col gap-2">
+                                <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <span class="icon-[tabler--map-pin] size-4 text-blue-500"></span>
+                                    Alamat
+                                </label>
+                                <textarea x-model="data.address" placeholder="Enter address..."
+                                    rows="2"
+                                    class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 shadow-sm resize-none"></textarea>
+                            </div>
+
+                            <!-- Phone & Email -->
+                            <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
+                                <div class="flex flex-col gap-2">
+                                    <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                        <span class="icon-[tabler--phone] size-4 text-emerald-500"></span>
+                                        Telpon
                                     </label>
-                                    <input x-model="data.appName" type="text" class="input" id="" />
+                                    <input x-model="data.phone" type="text" placeholder="08..."
+                                        class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 shadow-sm" />
                                 </div>
-                                <div class="w-full">
-                                    <label class="label label-text font-semibold text-gray-400" for=""> Sub
-                                        Title </label>
-                                    <input x-model="data.sub_title" type="text" class="input" id="" />
+                                <div class="flex flex-col gap-2">
+                                    <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                        <span class="icon-[tabler--mail] size-4 text-orange-500"></span>
+                                        Email
+                                    </label>
+                                    <input x-model="data.email" type="text" placeholder="email@example.com"
+                                        class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 shadow-sm" />
                                 </div>
-                                <div class="w-full">
-                                    <label class="label label-text font-semibold text-gray-400"> Comment </label>
-                                    <textarea x-model="data.comment" class="textarea"></textarea>
-                                </div>
-                                <div class="w-full">
-                                    <label class="label label-text font-semibold text-gray-400"> Address </label>
-                                    <textarea class="textarea" x-model="data.address"></textarea>
-                                </div>
-                                <div class="grid gap-2 grid-cols-1 md:grid-cols-2 w-full">
-                                    <div class="w-full">
-                                        <label class="label label-text font-semibold text-gray-400"></label> Telpon
-                                        </label>
-                                        <input x-model="data.phone" type="text" class="input" />
-                                    </div>
-                                    <div class="w-full">
-                                        <label class="label label-text font-semibold text-gray-400"> Email </label>
-                                        <input x-model="data.email" type="text" class="input" />
-                                    </div>
-                                </div>
+                            </div>
 
-                                <div class="mt-2">
-                                    <button class="btn btn-info btn-soft rounded-full px-4" type="submit">
-                                        <span class="icon-[ant-design--save-outlined] size-5"></span>
-                                        <label for="">Simpan</label>
+                            <!-- Submit Button -->
+                            <div class="pt-2">
+                                <button class="btn btn-primary w-full gap-3 text-base font-semibold shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300" type="submit">
+                                    <span class="icon-[ant-design--save-outlined] size-5"></span>
+                                    Simpan Pengaturan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Logo & Icon Upload -->
+            <div class="xl:col-span-1">
+                <div class="card shadow-xl border-0">
+                    <!-- Card Header -->
+                    <div class="card-header bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-4">
+                        <div class="flex items-center gap-3 text-white">
+                            <span class="icon-[tabler--photo] size-6"></span>
+                            <h3 class="text-xl font-bold">Logo & Icon</h3>
+                        </div>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="card-body p-6">
+                        <div class="grid gap-6 grid-cols-1 md:grid-cols-2">
+                            <!-- Logo Upload -->
+                            <div>
+                                <h4 class="font-semibold text-gray-700 flex items-center gap-2 mb-4">
+                                    <span class="icon-[tabler--brand] size-4 text-cyan-500"></span>
+                                    File Logo
+                                </h4>
+                                <div class="flex flex-col items-center gap-4 p-6 bg-gradient-to-br from-cyan-50 to-blue-50 rounded-2xl border-2 border-cyan-100">
+                                    <figure class="max-w-48">
+                                        <div class="w-32 h-32 rounded-xl bg-white shadow-lg flex items-center justify-center overflow-hidden border-2 border-cyan-200">
+                                            <img class="w-full h-full object-contain p-2" :title="data.appName" :src="data.file_logo" alt="Logo" />
+                                        </div>
+                                    </figure>
+                                    <div class="w-full">
+                                        <input type="file" x-ref="file" @change="file_upload"
+                                            class="block w-full text-sm file:mr-0 file:py-2 file:px-4 file:rounded-xl file:border-2 file:border-cyan-200 file:bg-white file:text-cyan-600 file:font-semibold file:cursor-pointer hover:file:bg-cyan-50 hover:file:border-cyan-300 transition-all duration-200"
+                                            aria-label="file-input" accept="image/*" />
+                                        <p class="text-xs text-gray-500 mt-2">Maksimal 2MB (JPG, PNG)</p>
+                                    </div>
+                                    <button class="btn btn-gradient-to-r btn-cyan w-full gap-2 text-sm font-semibold shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/40 transition-all duration-300" @click="logoUpload">
+                                        <span class="icon-[hugeicons--file-upload] size-4"></span>
+                                        Upload Logo
                                     </button>
                                 </div>
                             </div>
-                        </div>
-                    </form>
 
-                    <div class="max-w-3xl grid grid-cols-1 md:grid-cols-2">
-                        <div>
-                            <h5 class="card-title mb-2.5 mt-8">File Logo</h5>
-                            <div class="lg:col-span-1 flex item-center flex-col gap-4 py-6">
-                                <figure class="max-w-48">
-                                    <img class="rounded-lg" :title="data.appName" :src="data.file_logo"
-                                        alt="Watch" />
-                                </figure>
-                                <div>
-                                    <input type="file" x-ref="file" @change="file_upload"
-                                        class="block text-sm file:uppercase file:btn file:btn-secondary file:btn-soft file:rounded-full file:me-3 file:btn-sm"
-                                        aria-label="file-input" />
-                                </div>
-                                <div class="">
-                                    <button class=" btn btn-soft btn-info rounded-full" @click="logoUpload">
-                                        <span class="icon-[hugeicons--file-upload] size-5"></span>
-                                        <label for="">Upload File</label>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <h5 class="card-title mb-2.5 mt-8">File Icon</h5>
-                            <div class="lg:col-span-1 flex item-center flex-col gap-4 py-6">
-                                <figure class="max-w-48">
-                                    <img class="rounded-lg" :title="data.appName" :src="data.icon"
-                                        alt="Watch" />
-                                </figure>
-                                <div>
-                                    <input type="file" x-ref="icon" @change="icon_upload"
-                                        class="block text-sm file:uppercase file:btn file:btn-secondary file:btn-soft file:rounded-full file:me-3 file:btn-sm"
-                                        aria-label="file-input" />
-                                </div>
-                                <div>
-
-                                    <button class=" btn btn-soft btn-info rounded-full" type="button"
-                                        @click="iconUpload">
-                                        <span class="icon-[hugeicons--file-upload] size-5"></span>
-                                        <label for="">Upload File</label>
+                            <!-- Icon Upload -->
+                            <div>
+                                <h4 class="font-semibold text-gray-700 flex items-center gap-2 mb-4">
+                                    <span class="icon-[tabler--fingerprint] size-4 text-blue-500"></span>
+                                    File Icon
+                                </h4>
+                                <div class="flex flex-col items-center gap-4 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border-2 border-blue-100">
+                                    <figure class="max-w-48">
+                                        <div class="w-32 h-32 rounded-xl bg-white shadow-lg flex items-center justify-center overflow-hidden border-2 border-blue-200">
+                                            <img class="w-full h-full object-contain p-2" :title="data.appName" :src="data.icon" alt="Icon" />
+                                        </div>
+                                    </figure>
+                                    <div class="w-full">
+                                        <input type="file" x-ref="icon" @change="icon_upload"
+                                            class="block w-full text-sm file:mr-0 file:py-2 file:px-4 file:rounded-xl file:border-2 file:border-blue-200 file:bg-white file:text-blue-600 file:font-semibold file:cursor-pointer hover:file:bg-blue-50 hover:file:border-blue-300 transition-all duration-200"
+                                            aria-label="file-input" accept="image/*" />
+                                        <p class="text-xs text-gray-500 mt-2">Maksimal 2MB (JPG, PNG)</p>
+                                    </div>
+                                    <button class="btn btn-gradient-to-r btn-blue w-full gap-2 text-sm font-semibold shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300" type="button" @click="iconUpload">
+                                        <span class="icon-[hugeicons--file-upload] size-4"></span>
+                                        Upload Icon
                                     </button>
                                 </div>
                             </div>
@@ -111,6 +202,7 @@
             </div>
         </div>
     </div>
+
     @push('js')
         <script>
             function settingIndex() {

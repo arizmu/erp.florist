@@ -27,7 +27,6 @@ class AuthController extends Controller
             $request->session()->regenerate();
             return redirect()->intended('dashboard');
         }
-
         return back()->withErrors([
             'username' => 'The provided credentials do not match our records.',
         ])->onlyInput('username');
@@ -39,11 +38,12 @@ class AuthController extends Controller
         return redirect('/');
     }
 
-    public function me() {
+    public function me()
+    {
         $user = Auth::user();
         $pegawai = Pegawai::select('pegawai_name', 'telpon')->find($user->pegawai_id);
-        
-        
+
+
         $data = [
             'name' => $pegawai->pegawai_name,
             'telpon' => $pegawai->telpon,

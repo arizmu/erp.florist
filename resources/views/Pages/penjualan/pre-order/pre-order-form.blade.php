@@ -22,542 +22,750 @@
             }
         </style>
     @endpush
-    <div class="breadcrumbs mb-2">
-        <ol>
-            <li>
-                <a href="#"> <span class="icon-[tabler--folder] size-5"></span>Home</a>
-            </li>
-            <li class="breadcrumbs-separator rtl:rotate-180"><span class="icon-[tabler--chevron-right]"></span></li>
-            <li>
-                <a href="#" aria-label="More Pages"><span class="icon-[tabler--dots]"></span></a>
-            </li>
-            <li class="breadcrumbs-separator rtl:rotate-180"><span class="icon-[tabler--chevron-right]"></span></li>
-            <li aria-current="page">
-                <span class="icon-[tabler--file] me-1 size-5"></span>
-                Pre-order
-            </li>
-        </ol>
-    </div>
-    <div class="mt-4" x-data="indexPreorder">
-        <div data-stepper=""
-            class="bg-base-100 flex w-full items-start gap-10 rounded-lg p-8 md:px-24 shadow-lg max-sm:flex-wrap max-sm:justify-center min-h-96 md:gap-24 md:py-24"
-            id="wizard-validation">
-            <ul class="relative flex flex-col gap-y-4">
-                <li class="group flex flex-1 flex-col items-center" data-stepper-nav-item='{ "index": 1 }'>
-                    <span class="min-h-7.5 group inline-flex flex-col items-center gap-2 align-middle text-sm">
-                        <span
-                            class="stepper-active:bg-primary stepper-active:shadow stepper-active:text-primary-content stepper-success:bg-primary stepper-success:shadow stepper-success:text-primary-content stepper-error:bg-error stepper-error:text-error-content stepper-completed:bg-success stepper-completed:group-focus:bg-success bg-base-200/50 text-base-content group-focus:bg-base-content/20 size-7.5 flex shrink-0 items-center justify-center rounded-full font-medium">
-                            <span
-                                class="stepper-success:hidden stepper-error:hidden stepper-completed:hidden text-sm">1</span>
-                            <span class="icon-[tabler--check] stepper-success:block hidden size-4 shrink-0"></span>
-                            <span class="icon-[tabler--x] stepper-error:block hidden size-4 shrink-0"></span>
+    <div x-data="indexPreorder">
+        <!-- Page Header -->
+        <div class="mb-6">
+            <!-- Breadcrumbs -->
+            <div class="breadcrumbs mb-4 text-sm">
+                <ol>
+                    <li>
+                        <a href="#" class="flex items-center gap-2 hover:text-primary transition-colors">
+                            <span class="icon-[tabler--home] size-5"></span>
+                            Home
+                        </a>
+                    </li>
+                    <li class="breadcrumbs-separator rtl:rotate-180">
+                        <span class="icon-[tabler--chevron-right]"></span>
+                    </li>
+                    <li>
+                        <a href="#" aria-label="Penjualan" class="hover:text-primary transition-colors">
+                            <span class="icon-[tabler--shopping-cart]"></span>
+                            Penjualan
+                        </a>
+                    </li>
+                    <li class="breadcrumbs-separator rtl:rotate-180">
+                        <span class="icon-[tabler--chevron-right]"></span>
+                    </li>
+                    <li aria-current="page" class="font-medium text-primary">
+                        <span class="icon-[tabler--file-invoice] me-1 size-5"></span>
+                        Pre-order
+                    </li>
+                </ol>
+            </div>
+
+            <!-- Page Title -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h1 class="text-xl md:text-1xl font-bold text-gray-700 flex items-center gap-3">
+                        <span class="bg-gradient-to-br from-orange-500 to-red-600 rounded-xl p-2.5 shadow-lg shadow-orange-500/30">
+                            <span class="icon-[solar--box-broken] size-5 text-white"></span>
                         </span>
-                        <span class="text-base-content text-nowrap font-medium">
+                        Pre-order Management
+                    </h1>
+                    <p class="text-gray-500 mt-2 ml-1">Create and manage pre-order productions</p>
+                </div>
+            </div>
+        </div>
+        <!-- Main Content Card -->
+        <div class="card shadow-xl border-0">
+            <div class="card-body p-6 md:p-8">
+                <div data-stepper=""
+                    class="flex w-full items-start gap-6 md:gap-10 max-sm:flex-wrap max-sm:justify-center min-h-96"
+                    id="wizard-validation">
+                    <!-- Modern Stepper Navigation -->
+                    <ul class="relative flex flex-col gap-y-6 shrink-0">
+                        <li class="group flex flex-1 flex-col items-center" data-stepper-nav-item='{ "index": 1 }'>
+                            <span class="min-h-7.5 group inline-flex flex-col items-center gap-2 align-middle text-sm">
+                                <span
+                                    class="stepper-active:bg-gradient-to-br stepper-active:from-orange-500 stepper-active:to-red-600 stepper-active:shadow-lg stepper-active:text-white stepper-success:bg-gradient-to-br stepper-success:from-green-500 stepper-success:to-emerald-600 stepper-success:shadow-lg stepper-success:text-white stepper-error:bg-gradient-to-br stepper-error:from-red-500 stepper-error:to-rose-600 stepper-error:text-white stepper-completed:bg-gradient-to-br stepper-completed:from-green-500 stepper-completed:to-emerald-600 stepper-completed:group-focus:from-emerald-600 stepper-completed:group-focus:to-green-700 bg-gray-100 text-gray-600 group-focus:bg-gray-200 size-10 flex shrink-0 items-center justify-center rounded-full font-bold transition-all duration-300">
+                                    <span
+                                        class="stepper-success:hidden stepper-error:hidden stepper-completed:hidden text-lg">1</span>
+                                    <span class="icon-[tabler--check] stepper-success:block hidden size-5 shrink-0"></span>
+                                    <span class="icon-[tabler--x] stepper-error:block hidden size-5 shrink-0"></span>
+                                </span>
+                                <span class="text-gray-700 text-nowrap font-semibold text-sm">
+                                    Material
+                                </span>
+                            </span>
+                            <div
+                                class="stepper-success:bg-gradient-to-b stepper-success:from-green-500 stepper-success:to-emerald-600 stepper-completed:bg-gradient-to-b stepper-completed:from-green-500 stepper-completed:to-emerald-600 bg-gray-200 mt-3 h-12 w-0.5 group-last:hidden transition-all duration-300">
+                            </div>
+                        </li>
+                        <li class="group flex flex-1 flex-col items-center" data-stepper-nav-item='{ "index": 2 }'>
+                            <span class="min-h-7.5 group inline-flex flex-col items-center gap-2 align-middle text-sm">
+                                <span
+                                    class="stepper-active:bg-gradient-to-br stepper-active:from-orange-500 stepper-active:to-red-600 stepper-active:shadow-lg stepper-active:text-white stepper-success:bg-gradient-to-br stepper-success:from-green-500 stepper-success:to-emerald-600 stepper-success:shadow-lg stepper-success:text-white stepper-error:bg-gradient-to-br stepper-error:from-red-500 stepper-error:to-rose-600 stepper-error:text-white stepper-completed:bg-gradient-to-br stepper-completed:from-green-500 stepper-completed:to-emerald-600 stepper-completed:group-focus:from-emerald-600 stepper-completed:group-focus:to-green-700 bg-gray-100 text-gray-600 group-focus:bg-gray-200 size-10 flex shrink-0 items-center justify-center rounded-full font-bold transition-all duration-300">
+                                    <span
+                                        class="stepper-success:hidden stepper-error:hidden stepper-completed:hidden text-lg">2</span>
+                                    <span class="icon-[tabler--check] stepper-success:block hidden size-5 shrink-0"></span>
+                                    <span class="icon-[tabler--x] stepper-error:block hidden size-5 shrink-0"></span>
+                                </span>
+                                <span class="text-gray-700 text-nowrap font-semibold text-sm">
+                                    Product List
+                                </span>
+                            </span>
+                            <div
+                                class="stepper-success:bg-gradient-to-b stepper-success:from-green-500 stepper-success:to-emerald-600 stepper-completed:bg-gradient-to-b stepper-completed:from-green-500 stepper-completed:to-emerald-600 bg-gray-200 mt-3 h-12 w-0.5 group-last:hidden transition-all duration-300">
+                            </div>
+                        </li>
+                        <li class="group flex flex-1 flex-col items-center" data-stepper-nav-item='{ "index": 3 }'>
+                            <span class="min-h-7.5 group inline-flex flex-col items-center gap-2 align-middle text-sm">
+                                <span
+                                    class="stepper-active:bg-gradient-to-br stepper-active:from-orange-500 stepper-active:to-red-600 stepper-active:shadow-lg stepper-active:text-white stepper-success:bg-gradient-to-br stepper-success:from-green-500 stepper-success:to-emerald-600 stepper-success:shadow-lg stepper-success:text-white stepper-error:bg-gradient-to-br stepper-error:from-red-500 stepper-error:to-rose-600 stepper-error:text-white stepper-completed:bg-gradient-to-br stepper-completed:from-green-500 stepper-completed:to-emerald-600 stepper-completed:group-focus:from-emerald-600 stepper-completed:group-focus:to-green-700 bg-gray-100 text-gray-600 group-focus:bg-gray-200 size-10 flex shrink-0 items-center justify-center rounded-full font-bold transition-all duration-300">
+                                    <span
+                                        class="stepper-success:hidden stepper-error:hidden stepper-completed:hidden text-lg">3</span>
+                                    <span class="icon-[tabler--check] stepper-success:block hidden size-5 shrink-0"></span>
+                                    <span class="icon-[tabler--x] stepper-error:block hidden size-5 shrink-0"></span>
+                                </span>
+                                <span class="text-gray-700 text-nowrap font-semibold text-sm">Customer</span>
+                            </span>
+                        </li>
+                    </ul>
+
+                    <!-- Stepper Content -->
+                    <div id="wizard-validation-form" class="form-validate w-full" novalidate>
+                <!-- Step 1: Material Production -->
+                <div id="account-details-validation" class="space-y-6" data-stepper-content-item='{ "index": 1 }'>
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="bg-gradient-to-br from-orange-500 to-red-600 text-white rounded-xl p-2.5 shadow-lg shadow-orange-500/30">
+                            <span class="icon-[solar--box-broken] size-5"></span>
+                        </span>
+                        <span class="text-gray-700 text-xl font-bold">
                             Material Produksi
                         </span>
-                    </span>
-                    <div
-                        class="stepper-success:bg-primary stepper-completed:bg-success bg-base-content/20 mt-2 h-8 w-px group-last:hidden">
                     </div>
-                </li>
-                <li class="group flex flex-1 flex-col items-center" data-stepper-nav-item='{ "index": 2 }'>
-                    <span class="min-h-7.5 group inline-flex flex-col items-center gap-2 align-middle text-sm">
-                        <span
-                            class="stepper-active:bg-primary stepper-active:shadow stepper-active:text-primary-content stepper-success:bg-primary stepper-success:shadow stepper-success:text-primary-content stepper-error:bg-error stepper-error:text-error-content stepper-completed:bg-success stepper-completed:group-focus:bg-success bg-base-200/50 text-base-content group-focus:bg-base-content/20 size-7.5 flex shrink-0 items-center justify-center rounded-full font-medium">
-                            <span
-                                class="stepper-success:hidden stepper-error:hidden stepper-completed:hidden text-sm">2</span>
-                            <span class="icon-[tabler--check] stepper-success:block hidden size-4 shrink-0"></span>
-                            <span class="icon-[tabler--x] stepper-error:block hidden size-4 shrink-0"></span>
-                        </span>
-                        <span class="text-base-content text-nowrap font-medium">
-                            Profile Costumer
-                        </span>
-                    </span>
-                    <div
-                        class="stepper-success:bg-primary stepper-completed:bg-success bg-base-content/20 mt-2 h-8 w-px group-last:hidden">
-                    </div>
-                </li>
-                <li class="group flex flex-1 flex-col items-center" data-stepper-nav-item='{ "index": 3 }'>
-                    <span class="min-h-7.5 group inline-flex flex-col items-center gap-2 align-middle text-sm">
-                        <span
-                            class="stepper-active:bg-primary stepper-active:shadow stepper-active:text-primary-content stepper-success:bg-primary stepper-success:shadow stepper-success:text-primary-content stepper-error:bg-error stepper-error:text-error-content stepper-completed:bg-success stepper-completed:group-focus:bg-success bg-base-200/50 text-base-content group-focus:bg-base-content/20 size-7.5 flex shrink-0 items-center justify-center rounded-full font-medium">
-                            <span
-                                class="stepper-success:hidden stepper-error:hidden stepper-completed:hidden text-sm">3</span>
-                            <span class="icon-[tabler--check] stepper-success:block hidden size-4 shrink-0"></span>
-                            <span class="icon-[tabler--x] stepper-error:block hidden size-4 shrink-0"></span>
-                        </span>
-                        <span class="text-base-content text-nowrap font-medium">Crafter</span>
-                    </span>
-                    <div
-                        class="stepper-success:bg-primary stepper-completed:bg-success bg-base-content/20 mt-2 h-8 w-px group-last:hidden">
-                    </div>
-                </li>
-            </ul>
-            <div id="wizard-validation-form" class="form-validate w-full p-3 md:p-8 border rounded-lg" novalidate>
-                <div id="account-details-validation" class="space-y-5" data-stepper-content-item='{ "index": 1 }'>
-                    <div class="flex gap-4 mb-8">
-                        <span class="icon-[solar--box-broken] text-red-400" style="width: 24px; height: 24px;"></span>
-                        <span class="text-gray-400 text-lg font-semibold">
-                            Material Produksi
-                        </span>
-                    </div>
-                    <div class="grid gap-6 grid-cols-1 lg:grid-cols-5">
-                        <div class="lg:col-span-2 flex flex-col gap-4">
-                            <div class=" flex justify-between gap-4">
-                                <input x-model="searchMaterial" @keyup.enter="getMaterialFunc" type="text"
-                                    class="input rounded-full">
-                                <div class="flex gap-2">
-                                    <button x-on:click="getMaterialFunc" type="button"
-                                        class="btn btn-circle btn-soft btn-info">
-                                        <span class="icon-[fluent--box-search-24-regular]"
-                                            style="width: 24px; height: 24px;"></span>
-                                    </button>
-                                    <button type="button" class="btn btn-circle btn-soft btn-warning"
-                                        aria-haspopup="dialog" aria-expanded="false" aria-controls="add-item-modal"
-                                        data-overlay="#add-item-modal">
-                                        <span class="icon-[gridicons--add-outline]"
-                                            style="width: 24px; height: 24px;"></span>
-                                    </button>
+                    <div class="grid gap-6 grid-cols-1 xl:grid-cols-5">
+                        <!-- Material Search & List -->
+                        <div class="xl:col-span-2 flex flex-col gap-4">
+                            <div class="card shadow-md border-0">
+                                <div class="card-body p-5">
+                                    <!-- Search Bar -->
+                                    <div class="relative w-full mb-4">
+                                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                                            <span class="icon-[tabler--search] size-5"></span>
+                                        </span>
+                                        <input x-model="searchMaterial" @keyup.enter="getMaterialFunc" type="search"
+                                            class="input input-bordered pl-12 w-full py-3 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200"
+                                            placeholder="Search materials..." />
+                                    </div>
+                                    <div class="flex gap-3">
+                                        <button x-on:click="getMaterialFunc" type="button"
+                                            class="btn btn-primary flex-1 gap-2 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300">
+                                            <span class="icon-[fluent--box-search-24-regular] size-5"></span>
+                                            <span class="font-semibold">Search</span>
+                                        </button>
+                                        <button type="button" class="btn btn-warning gap-2 shadow-lg shadow-warning/30 hover:shadow-xl hover:shadow-warning/40 transition-all duration-300"
+                                            aria-haspopup="dialog" aria-expanded="false" aria-controls="add-item-modal"
+                                            data-overlay="#add-item-modal">
+                                            <span class="icon-[gridicons--add-outline] size-5"></span>
+                                            <span class="font-semibold hidden sm:inline">Add New</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="flex flex-col gap-2">
-                                <template x-for="item in xmaterial">
-                                    <div class="border rounded-lg p-4">
-                                        <div class="flex gap-2 justify-between flex-wrap items-center">
-                                            <div class="flex flex-col gap-0">
-                                                <span class="font-semibold font-space text-wrap"
-                                                    x-text="item.nama_barang">Title</span>
-                                                <i class="text-sm text-gray-400 flex justify-start gap-2">
-                                                    <span>Rp. <span x-text="formatRupiah(item.price)"></span></span>
-                                                    <span>|</span>
-                                                    <span><span x-text="item.stock"></span> Pcs</span>
-                                                </i>
-                                            </div>
-                                            <div class="flex gap-2">
-                                                <div class="input-group min-w-32 max-w-32" data-input-number>
-                                                    <span class="input-group-text gap-3">
-                                                        <button type="button" @click="decrement(item.id)"
-                                                            class="btn btn-primary btn-soft size-[22px] rounded-sm min-h-0 p-0"
-                                                            aria-label="Decrement button" data-input-number-decrement>
-                                                            <span
-                                                                class="icon-[tabler--minus] size-3.5 shrink-0"></span>
-                                                        </button>
-                                                    </span>
-                                                    <input x-model="xitem_qty[item.id]" class="input text-center"
-                                                        id="number-input-mini" type="text" value="0"
-                                                        data-input-number-input />
-                                                    <span class="input-group-text gap-3">
-                                                        <button type="button" @click="increment(item.id)"
-                                                            class="btn btn-primary btn-soft size-[22px] rounded-sm min-h-0 p-0"
-                                                            aria-label="Increment button" data-input-number-increment>
-                                                            <span
-                                                                class="icon-[tabler--plus] size-3.5 shrink-0"></span>
-                                                        </button>
-                                                    </span>
+
+                            <!-- Material List -->
+                            <div class="flex-1 overflow-y-auto pr-1" style="max-height: 450px;">
+                                <div class="flex flex-col gap-3">
+                                    <template x-for="item in xmaterial">
+                                        <div class="bg-gradient-to-br from-slate-50 to-gray-100 p-4 rounded-2xl border border-gray-200/50 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 group">
+                                            <div class="flex gap-3 justify-between flex-wrap items-center">
+                                                <div class="flex flex-col gap-1 flex-1 min-w-0">
+                                                    <span class="font-bold text-gray-800 text-wrap truncate" x-text="item.nama_barang">Title</span>
+                                                    <div class="flex items-center gap-3 flex-wrap">
+                                                        <span class="badge badge-soft badge-success gap-2 px-3 badge-sm">
+                                                            <span class="icon-[hugeicons--money-bag-02] size-3"></span>
+                                                            <span class="font-semibold text-xs">Rp. <span x-text="formatRupiah(item.price)"></span></span>
+                                                        </span>
+                                                        <span class="badge badge-soft badge-info gap-2 px-3 badge-sm">
+                                                            <span class="icon-[hugeicons--discount-01] size-3"></span>
+                                                            <span class="font-semibold text-xs"><span x-text="item.stock"></span> Pcs</span>
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                                <button x-on:click="addItem(item)" type="button"
-                                                    class="btn btn-soft btn-error btn-circle">
-                                                    <span class="icon-[typcn--arrow-right-outline]"
-                                                        style="width: 24px; height: 24px;"></span>
-                                                </button>
+                                                <div class="flex items-center gap-3 flex-shrink-0">
+                                                    <div class="flex items-center gap-2 bg-white rounded-xl p-1 border border-gray-200 shadow-sm">
+                                                        <button type="button" @click="decrement(item.id)"
+                                                            class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-primary/5 text-gray-600 hover:text-primary transition-all duration-200"
+                                                            aria-label="Decrement button">
+                                                            <span class="icon-[tabler--minus] size-4"></span>
+                                                        </button>
+                                                        <input x-model="xitem_qty[item.id]" class="w-12 text-center bg-transparent border-0 text-base font-bold text-gray-800 focus:outline-none"
+                                                            type="text" value="0" @keyup.enter="addItem(item)" />
+                                                        <button type="button" @click="increment(item.id)"
+                                                            class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-primary/5 text-gray-600 hover:text-primary transition-all duration-200"
+                                                            aria-label="Increment button">
+                                                            <span class="icon-[tabler--plus] size-4"></span>
+                                                        </button>
+                                                    </div>
+                                                    <button x-on:click="addItem(item)" type="button"
+                                                        class="btn btn-circle btn-sm btn-primary shadow-lg shadow-primary/30 hover:scale-110 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300">
+                                                        <span class="icon-[typcn--arrow-right-outline] size-5"></span>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </template>
-                            </div>
-                        </div>
-                        <div class="lg:col-span-3">
-                            <div class="border rounded-lg p-4 flex flex-col gap-4">
-                                <h5 class="text-md font-semibold flex gap-4 items-center mb-2">
-                                    <span class="icon-[circum--box-list]" style="width: 24px; height: 24px;"></span>
-                                    Material Produksi
-                                </h5>
-                                <div class="border-base-content/25 w-full rounded-lg border">
-                                    <div class="overflow-x-auto">
-                                        <table class="table rounded-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Item Name</th>
-                                                    <th>Total</th>
-                                                    <th>#</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <template x-for="item in xitems" :key="item.item_code">
-                                                    <tr class="hover:bg-slate-100">
-                                                        <td class="flex flex-col gap-1 font-space">
-                                                            <span x-text="item.item_name">Product name</span>
-                                                            <div
-                                                                class="flex gap-2 text-xs text-red-400 dark:text-white">
-                                                                <span x-text="formatRupiah(item.item_price)">
-                                                                    Rp. 3.000
-                                                                </span>
-                                                                *
-                                                                <span x-text="item.item_qty">3</span>
-                                                            </div>
-                                                        </td>
-                                                        <td x-text="formatRupiah(item.item_total)">Rp. 9.000</td>
-                                                        <td>
-                                                            <button x-on:click="deleteItem(item.item_code)"
-                                                                type="button"
-                                                                class="btn btn-circle btn-error btn-soft">
-                                                                <span class="icon-[tabler--trash]"
-                                                                    style="width: 24px; height: 24px;">
-                                                                </span>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                </template>
-                                            </tbody>
-                                        </table>
+                                    </template>
+
+                                    <!-- Empty State -->
+                                    <div x-show="xmaterial.length === 0" class="flex flex-col items-center justify-center py-12 text-gray-400">
+                                        <div class="bg-gray-100 rounded-full p-4 mb-4">
+                                            <span class="icon-[tabler--box] size-12"></span>
+                                        </div>
+                                        <p class="font-medium">No materials found</p>
+                                        <p class="text-sm">Try searching for a different term</p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="grid gap-4 grid-cols-1 md:grid-cols-5 mt-4">
-                                <div class="col-span-1 md:col-span-2">
-                                    <div class="border rounded-lg p-4">
-                                        <h5 class=" text-md font-semibold flex gap-4 items-center mb-3">
-                                            <span class="icon-[si--wallet-detailed-duotone]"
-                                                style="width: 24px; height: 24px;"></span>
-                                            Biaya
-                                        </h5>
-                                        <div class="flex flex-col gap-4">
+                        </div>
+
+                        <!-- Selected Materials & Product Form -->
+                        <div class="xl:col-span-3 flex flex-col gap-4">
+                            <!-- Selected Materials Card -->
+                            <div class="card shadow-md border-0">
+                                <div class="card-header bg-gradient-to-r from-orange-500 to-red-600 px-5 py-3">
+                                    <div class="flex items-center gap-3 text-white">
+                                        <span class="icon-[circum--box-list] size-5"></span>
+                                        <h3 class="font-bold text-lg">Selected Materials</h3>
+                                    </div>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="border-2 border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+                                        <div class="overflow-x-auto">
+                                            <table class="table">
+                                                <thead class="bg-gray-50">
+                                                    <tr>
+                                                        <th class="font-semibold text-gray-600">Item</th>
+                                                        <th class="font-semibold text-gray-600 text-right">Total</th>
+                                                        <th class="font-semibold text-gray-600 text-center w-16">#</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <template x-for="item in xitems" :key="item.item_code">
+                                                        <tr class="hover:bg-primary/5 transition-colors">
+                                                            <td class="flex flex-col gap-1 py-3">
+                                                                <span class="font-semibold text-gray-800" x-text="item.item_name">Product name</span>
+                                                                <div class="flex items-center gap-2 text-xs text-gray-500">
+                                                                    <span class="text-orange-600 font-semibold" x-text="formatRupiah(item.item_price)">
+                                                                        Rp. 3.000
+                                                                    </span>
+                                                                    <span>×</span>
+                                                                    <span class="font-bold" x-text="item.item_qty">3</span>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-right">
+                                                                <span class="font-bold text-gray-800" x-text="formatRupiah(item.item_total)">Rp. 9.000</span>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <button x-on:click="deleteItem(item.item_code)"
+                                                                    type="button"
+                                                                    class="btn btn-circle btn-sm btn-soft btn-error hover:scale-110 transition-transform">
+                                                                    <span class="icon-[tabler--trash] size-4"></span>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <!-- Empty State -->
+                                        <div x-show="xitems.length === 0" class="flex flex-col items-center justify-center py-10 text-gray-400">
+                                            <span class="icon-[tabler--shopping-cart-off] size-12 mb-3"></span>
+                                            <p class="font-medium">No materials selected</p>
+                                            <p class="text-sm">Add materials from the list</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cost & Product Details -->
+                            <div class="grid gap-4 grid-cols-1 lg:grid-cols-2">
+                                <!-- Cost Section -->
+                                <div class="col-span-1 lg:col-span-1">
+                                    <div class="card shadow-md border-0 h-full">
+                                        <div class="card-header bg-gradient-to-r from-blue-500 to-indigo-600 px-5 py-3">
+                                            <div class="flex items-center gap-3 text-white">
+                                                <span class="icon-[si--wallet-detailed-duotone] size-5"></span>
+                                                <h3 class="font-bold">Biaya</h3>
+                                            </div>
+                                        </div>
+                                        <div class="card-body p-4 flex flex-col gap-4">
                                             <div class="flex flex-col gap-2">
-                                                <label>Biaya Material</label>
+                                                <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                                    <span class="icon-[hugeicons--money-bag-02] size-4 text-blue-500"></span>
+                                                    Biaya Material
+                                                </label>
                                                 <input x-model="xproduction.cost" readonly
-                                                    class="input input-lg w-full bg-gray-300" type="number" />
+                                                    class="w-full px-4 py-3 bg-gray-100 border-2 border-gray-200 rounded-xl text-gray-800 font-bold text-lg focus:outline-none" type="number" />
                                             </div>
                                             <div class="flex flex-col gap-2">
-                                                <label>Biaya Produksi</label>
+                                                <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                                    <span class="icon-[carbon--production-queue] size-4 text-indigo-500"></span>
+                                                    Biaya Produksi
+                                                </label>
                                                 <input @keyup="subtotal" x-model="xproduction.price"
-                                                    class="input w-full" type="number" />
+                                                    class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 font-semibold placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200" type="number" />
                                             </div>
                                             <div class="flex flex-col gap-2">
-                                                <label>Subtotal</label>
+                                                <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                                    <span class="icon-[hugeicons--calculator] size-4 text-emerald-500"></span>
+                                                    Subtotal
+                                                </label>
                                                 <input x-model="xproduction.subtotal"
-                                                    class="input input-lg w-full bg-gray-300" type="text"
+                                                    class="w-full px-4 py-3 bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-300 rounded-xl text-emerald-700 font-bold text-lg focus:outline-none" type="text"
                                                     readonly />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-span-1 md:col-span-3">
-                                    <div class="border rounded-lg p-4">
-                                        <h5 class=" text-md font-semibold flex gap-4 items-center mb-3">
-                                            <span class="icon-[carbon--ibm-data-product-exchange]"
-                                                style="width: 24px; height: 24px;"></span>
-                                            Product
-                                        </h5>
-                                        <div class="flex flex-col gap-2 mt-2">
-                                            <label>Title Product</label>
-                                            <input class="input w-full" type="text" x-model="xproduction.title" />
-                                        </div>
-                                        <div class="flex flex-col gap-2 mt-">
-                                            <label>Keterangan</label>
-                                            <textarea x-model="xproduction.keterangan" class="textarea" placeholder="Keterangan ..."></textarea>
-                                        </div>
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
-                                            <div class="w-full">
-                                                <label class="label label-text" for="favorite-simpson">Crafter</label>
-                                                <select x-model="xproduction.crafter" class="select"
-                                                    id="favorite-simpson">
-                                                    <option>Pilih..</option>
-                                                    <template x-for="val in xcrafter">
-                                                        <option :value="val.id" x-text="val.pegawai_name">
-                                                        </option>
-                                                    </template>
-                                                </select>
+
+                                <!-- Product Section -->
+                                <div class="col-span-1 lg:col-span-1">
+                                    <div class="card shadow-md border-0 h-full">
+                                        <div class="card-header bg-gradient-to-r from-purple-500 to-pink-600 px-5 py-3">
+                                            <div class="flex items-center gap-3 text-white">
+                                                <span class="icon-[carbon--ibm-data-product-exchange] size-5"></span>
+                                                <h3 class="font-bold">Product</h3>
                                             </div>
-                                            <div class="w-full">
-                                                <label class="label label-text" for="favorite-simpson">
-                                                    Jasa Crafter
+                                        </div>
+                                        <div class="card-body p-4 flex flex-col gap-4">
+                                            <div class="flex flex-col gap-2">
+                                                <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                                    <span class="icon-[tabler--tag] size-4 text-purple-500"></span>
+                                                    Title Product
                                                 </label>
-                                                <select x-model="xproduction.jasa" class="select"
-                                                    id="favorite-simpson">
-                                                    <option value="">Pilih...</option>
-                                                    <template x-for="val in xjasalayanan">
-                                                        <option :value="val.id">
-                                                            <span x-text="val.title"></span> |
-                                                            <i class="text-sm font-semibold"
-                                                                x-text="formatRupiah(val.salary)"></i>
-                                                        </option>
-                                                    </template>
-                                                </select>
+                                                <input class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200" type="text" x-model="xproduction.title" placeholder="Enter product title..." />
+                                            </div>
+                                            <div class="flex flex-col gap-2">
+                                                <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                                    <span class="icon-[tabler--file-text] size-4 text-pink-500"></span>
+                                                    Keterangan
+                                                </label>
+                                                <textarea x-model="xproduction.keterangan" class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 resize-none" placeholder="Add description..."></textarea>
+                                            </div>
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                <div class="w-full">
+                                                    <label class="text-sm font-semibold text-gray-700 flex items-center gap-2 mb-2">
+                                                        <span class="icon-[tabler--user] size-4 text-blue-500"></span>
+                                                        Crafter
+                                                    </label>
+                                                    <select x-model="xproduction.crafter" class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200"
+                                                        id="favorite-simpson">
+                                                        <option value="">Pilih..</option>
+                                                        <template x-for="val in xcrafter">
+                                                            <option :value="val.id" x-text="val.pegawai_name">
+                                                            </option>
+                                                        </template>
+                                                    </select>
+                                                </div>
+                                                <div class="w-full">
+                                                    <label class="text-sm font-semibold text-gray-700 flex items-center gap-2 mb-2">
+                                                        <span class="icon-[tabler--tool] size-4 text-orange-500"></span>
+                                                        Jasa Crafter
+                                                    </label>
+                                                    <select x-model="xproduction.jasa" class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200"
+                                                        id="favorite-simpson">
+                                                        <option value="">Pilih...</option>
+                                                        <template x-for="val in xjasalayanan">
+                                                            <option :value="val.id">
+                                                                <span x-text="val.title"></span> |
+                                                                <span class="text-sm font-semibold" x-text="formatRupiah(val.salary)"></span>
+                                                            </option>
+                                                        </template>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="mt-4 px-2 md:px-0">
-                                <button class="btn btn-soft btn-error w-full rounded-full" x-on:click="addProduct">
-                                    <span class="icon-[hugeicons--file-add] size-5"></span>
-                                    Add Pre-order List
+
+                            <!-- Add Product Button -->
+                            <div class="mt-2 px-0">
+                                <button class="btn btn-gradient-to-r btn-error w-full gap-3 text-base font-semibold shadow-lg shadow-error/30 hover:shadow-xl hover:shadow-error/40 transition-all duration-300" x-on:click="addProduct">
+                                    <span class="icon-[hugeicons--file-add] size-6"></span>
+                                    <span>Add to Pre-order List</span>
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div id="personal-info-validation" class="space-y-5" data-stepper-content-item='{ "index": 2 }'
+
+                <!-- Step 2: Pre-order List -->
+                <div id="personal-info-validation" class="space-y-6" data-stepper-content-item='{ "index": 2 }'
                     style="display: none">
-                    <div class="flex gap-4 mb-8">
-                        <span class="icon-[gravity-ui--trolley] size-6 text-orange-500"></span>
-                        <span class="text-gray-400 text-lg font-semibold">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="bg-gradient-to-br from-orange-500 to-red-600 text-white rounded-xl p-2.5 shadow-lg shadow-orange-500/30">
+                            <span class="icon-[gravity-ui--trolley] size-5"></span>
+                        </span>
+                        <span class="text-gray-700 text-xl font-bold">
                             Pre-order List
                         </span>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
-                        <div class="col-span-1 md:col-span-4 p-4 py-0">
-                            <div class="border-base-content/25 w-full rounded-lg border">
-                                <div class="overflow-x-auto">
-                                    <table class="table rounded-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Product</th>
-                                                <th>Price</th>
-                                                <th>Qty</th>
-                                                <th>Total</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <template x-if="xproduct <= 0">
-                                                <tr>
-                                                    <td class="text-gray-400" colspan="5">
-                                                        Empty data!
-                                                    </td>
-                                                </tr>
-                                            </template>
-                                            <template x-for="item in xproduct">
-                                                <tr>
-                                                    <td class="text-nowrap" x-text="item.title"></td>
-                                                    <td x-text="formatRupiah(item.total_cost)"></td>
-                                                    <td x-text="item.qty"></td>
-                                                    <td x-text="formatRupiah(item.qty * item.total_cost)"></td>
-                                                    <td>
-                                                        <button type="button" x-on:click="delProduct(item._fake_id)"
-                                                            class="btn btn-circle btn-text btn-sm btn-error btn-soft"
-                                                            aria-label="Action button"><span
-                                                                class="icon-[tabler--trash] size-5"></span>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            </template>
-                                        </tbody>
-                                    </table>
+                    <div class="grid grid-cols-1 xl:grid-cols-6 gap-6">
+                        <!-- Product Table -->
+                        <div class="col-span-1 xl:col-span-4">
+                            <div class="card shadow-md border-0">
+                                <div class="card-header bg-gradient-to-r from-blue-500 to-indigo-600 px-5 py-3">
+                                    <div class="flex items-center gap-3 text-white">
+                                        <span class="icon-[tabler--shopping-cart] size-5"></span>
+                                        <h3 class="font-bold">Products</h3>
+                                    </div>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="border-2 border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+                                        <div class="overflow-x-auto">
+                                            <table class="table">
+                                                <thead class="bg-gray-50">
+                                                    <tr>
+                                                        <th class="font-semibold text-gray-600">Product</th>
+                                                        <th class="font-semibold text-gray-600 text-right">Price</th>
+                                                        <th class="font-semibold text-gray-600 text-center">Qty</th>
+                                                        <th class="font-semibold text-gray-600 text-right">Total</th>
+                                                        <th class="font-semibold text-gray-600 text-center w-16">#</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <template x-if="xproduct.length === 0">
+                                                        <tr>
+                                                            <td colspan="5">
+                                                                <div class="flex flex-col items-center justify-center py-12 text-gray-400">
+                                                                    <span class="icon-[tabler--shopping-cart-off] size-12 mb-3"></span>
+                                                                    <p class="font-medium">No products added</p>
+                                                                    <p class="text-sm">Add products from step 1</p>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                    <template x-for="item in xproduct">
+                                                        <tr class="hover:bg-primary/5 transition-colors">
+                                                            <td class="font-semibold text-gray-800 py-3" x-text="item.title"></td>
+                                                            <td class="text-right">
+                                                                <span class="font-semibold text-gray-700" x-text="formatRupiah(item.total_cost)"></span>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <span class="badge badge-soft badge-info font-semibold px-3 py-1.5" x-text="item.qty"></span>
+                                                            </td>
+                                                            <td class="text-right">
+                                                                <span class="font-bold text-orange-600" x-text="formatRupiah(item.qty * item.total_cost)"></span>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <button type="button" x-on:click="delProduct(item._fake_id)"
+                                                                    class="btn btn-circle btn-sm btn-soft btn-error hover:scale-110 transition-transform"
+                                                                    aria-label="Action button">
+                                                                    <span class="icon-[tabler--trash] size-4"></span>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-span-1 md:col-span-2 p-4 py-0 flex flex-col gap-2">
-                            <div
-                                class="w-full rounded-lg p-4 px-6 bg-red-400 shadow-sm flex justify-between items-center">
+
+                        <!-- Summary Section -->
+                        <div class="col-span-1 xl:col-span-2 flex flex-col gap-4">
+                            <!-- Total Card -->
+                            <div class="bg-gradient-to-br from-red-500 to-rose-600 rounded-2xl p-6 shadow-lg shadow-red-500/30 flex justify-between items-center">
                                 <div class="text-white flex flex-col gap-2">
-                                    <label for="">Subtotal Pembayaran</label>
-                                    <div class="font-bold text-2xl">
+                                    <label class="font-semibold text-sm opacity-90">Subtotal Pembayaran</label>
+                                    <div class="font-bold text-3xl">
                                         Rp.
                                         <span x-text="subtotalPreorderView">0</span>
                                     </div>
                                 </div>
                                 <div class="avatar placeholder">
-                                    <div class="bg-white text-red-300 w-14 rounded-full">
+                                    <div class="bg-white text-red-500 w-16 rounded-full flex items-center justify-center">
                                         <span class="icon-[solar--tag-price-linear] size-8"></span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex flex-col gap-2 mt-4">
-                                <label class="" for="floatingInput">Estimasi</label>
-                                <input x-model="xproduction.estimasi" type="text" class="input flatpickr-input"
-                                    placeholder="YYYY-MM-DD to YYYY-MM-DD" id="flatpickr-range" readonly="readonly">
-                            </div>
-                            <div class="flex flex-col gap-2 mb-3">
-                                <label class="" for="textareaFloating">Keterangan</label>
-                                <textarea x-model="xproduction.comment" class="textarea" placeholder="" id=""></textarea>
+
+                            <!-- Estimation & Notes -->
+                            <div class="card shadow-md border-0 flex-1">
+                                <div class="card-body p-5 flex flex-col gap-4">
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                            <span class="icon-[tabler--calendar] size-4 text-blue-500"></span>
+                                            Estimasi
+                                        </label>
+                                        <div class="relative">
+                                            <input x-model="xproduction.estimasi" type="text" class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 flatpickr-input"
+                                                placeholder="Select date range..." id="flatpickr-range" readonly="readonly">
+                                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                                                <span class="icon-[tabler--calendar] size-5"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                            <span class="icon-[tabler--message] size-4 text-orange-500"></span>
+                                            Keterangan
+                                        </label>
+                                        <textarea x-model="xproduction.comment" class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 resize-none" placeholder="Add notes..." rows="3"></textarea>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div id="social-links-validation" class="space-y-5" data-stepper-content-item='{ "index": 3}'
+
+                <!-- Step 3: Customer Profile -->
+                <div id="social-links-validation" class="space-y-6" data-stepper-content-item='{ "index": 3}'
                     style="display: none">
 
-                    <div class="flex gap-4 mb-8">
-                        <span class="icon-[solar--user-id-line-duotone] text-red-400"
-                            style="width: 24px; height: 24px;"></span>
-                        <span class="text-gray-400 text-lg font-semibold">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="bg-gradient-to-br from-orange-500 to-red-600 text-white rounded-xl p-2.5 shadow-lg shadow-orange-500/30">
+                            <span class="icon-[solar--user-id-line-duotone] size-5"></span>
+                        </span>
+                        <span class="text-gray-700 text-xl font-bold">
                             Profile Costumer
                         </span>
                     </div>
 
-                    <div class="grid gap-6 grid-cols-1 md:grid-cols-6">
-                        <div class="md:col-span-4 flex flex-col">
-                            <div class="border rounded-xl p-8 flex flex-col gap-4">
-                                <div class="w-full">
-                                    <label class="label label-text" for=""> Nama Costumer </label>
-                                    <input x-model="xcostumer.name" type="text" placeholder="nama costumer"
-                                        class="input" id="" />
-                                </div>
-                                <div class="flex gap-4">
-                                    <div class="flex items-center gap-1">
-                                        <input x-model="xcostumer.gender" :value="1" type="radio"
-                                            name="radio-3" class="radio-inset radio-inset-primary" id="radioType3" />
-                                        <label class="label label-text text-base" for="radioType3"> Pria </label>
-                                    </div>
-                                    <div class="flex items-center gap-1">
-                                        <input x-model="xcostumer.gender" :value="0" type="radio"
-                                            name="radio-3" class="radio-inset radio-inset-primary" id="radioType4"
-                                            checked />
-                                        <label class="label label-text text-base" for="radioType4"> Wanita </label>
+                    <div class="grid gap-6 grid-cols-1 xl:grid-cols-6">
+                        <!-- Customer Form -->
+                        <div class="xl:col-span-4">
+                            <div class="card shadow-md border-0">
+                                <div class="card-header bg-gradient-to-r from-purple-500 to-pink-600 px-5 py-3">
+                                    <div class="flex items-center gap-3 text-white">
+                                        <span class="icon-[tabler--user] size-5"></span>
+                                        <h3 class="font-bold">Customer Information</h3>
                                     </div>
                                 </div>
-                                <div class="w-full hidden">
-                                    <label class="label label-text" for=""> Alamat Costumer</label>
-                                    <textarea x-model="xcostumer.address" type="text" placeholder="Alamat..." class="textarea" id=""></textarea>
-                                </div>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div class="w-full">
-                                        <label class="label label-text" for="">Telpon </label>
-                                        <input x-model="xcostumer.phone" @keyup.enter="findCostumer" type="text"
-                                            placeholder="08..." class="input" id="" />
+                                <div class="card-body p-5 flex flex-col gap-5">
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                            <span class="icon-[tabler--user-circle] size-4 text-purple-500"></span>
+                                            Nama Costumer
+                                        </label>
+                                        <input x-model="xcostumer.name" type="text" placeholder="Enter customer name..."
+                                            class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200" />
                                     </div>
-                                    <div class="w-full hidden">
-                                        <label class="label label-text" for="">Email</label>
-                                        <input x-model="xcostumer.email" type="text" placeholder=".....@mail.com"
-                                            class="input" id="" />
+
+                                    <!-- Gender Selection -->
+                                    <div class="flex gap-4">
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input x-model="xcostumer.gender" :value="1" type="radio"
+                                                name="radio-3" class="radio radio-primary radio-bordered" id="radioType3" />
+                                            <span class="text-sm font-medium text-gray-700"> Pria </span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input x-model="xcostumer.gender" :value="0" type="radio"
+                                                name="radio-3" class="radio radio-primary radio-bordered" id="radioType4"
+                                                checked />
+                                            <span class="text-sm font-medium text-gray-700"> Wanita </span>
+                                        </label>
                                     </div>
-                                </div>
-                                <div class="w-full hidden">
-                                    <label class="label label-text" for="">Sosial Media
-                                        (FB/IG/Tiktok/Lainnya)</label>
-                                    <input x-model="xcostumer.sosmed" type="text" placeholder="@username-sosmed"
-                                        class="input" id="" />
+
+                                    <div class="hidden">
+                                        <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                            <span class="icon-[tabler--map-pin] size-4 text-pink-500"></span>
+                                            Alamat Costumer
+                                        </label>
+                                        <textarea x-model="xcostumer.address" type="text" placeholder="Alamat..."
+                                            class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 resize-none"></textarea>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div class="flex flex-col gap-2">
+                                            <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                                <span class="icon-[tabler--phone] size-4 text-blue-500"></span>
+                                                Telpon
+                                            </label>
+                                            <input x-model="xcostumer.phone" @keyup.enter="findCostumer" type="text"
+                                                placeholder="08..."
+                                                class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200" />
+                                        </div>
+                                        <div class="hidden">
+                                            <div class="flex flex-col gap-2">
+                                                <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                                    <span class="icon-[tabler--mail] size-4 text-emerald-500"></span>
+                                                    Email
+                                                </label>
+                                                <input x-model="xcostumer.email" type="text" placeholder="email@example.com"
+                                                    class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="hidden">
+                                        <div class="flex flex-col gap-2">
+                                            <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                                <span class="icon-[tabler--brand-instagram] size-4 text-orange-500"></span>
+                                                Sosial Media (FB/IG/Tiktok/Lainnya)
+                                            </label>
+                                            <input x-model="xcostumer.sosmed" type="text" placeholder="@username-sosmed"
+                                                class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200" />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="md:col-span-2">
-                            <div class="bg-blue-300 p-5 rounded-lg flex flex-col gap-4">
+
+                        <!-- Member Points Section -->
+                        <div class="xl:col-span-2">
+                            <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-6 shadow-lg shadow-blue-500/30 flex flex-col gap-4">
                                 <div class="flex gap-4">
-                                    <span class="icon-[iconoir--coins] text-yellow-200"
-                                        style="width: 24px; height: 24px;"></span>
-                                    <span class="font-space font-semibold text-white">Point Member</span>
+                                    <span class="icon-[iconoir--coins] text-yellow-300 size-6"></span>
+                                    <span class="font-semibold font-space text-white text-lg">Point Member</span>
                                 </div>
-                                <div class="flex justify-start mb-4">
-                                    <span class="text-4xl font-semibold font-space text-white">Rp.
+                                <div class="flex justify-start">
+                                    <span class="text-4xl font-bold font-space text-white">Rp.
                                         <span x-text="xcostumer.point_view"></span>
                                     </span>
                                 </div>
                             </div>
-                            <div class="py-4">
-                                <div class="flex items-center gap-1.5">
-                                    <input x-model="xcostumer.point_use" type="checkbox"
-                                        class="switch switch-outline switch-lg switch-primary" id="" />
-                                    <label class="label label-text text-lg font-semibold font-space text-gray-700"
-                                        for=""> Gunakan Point </label>
+
+                            <div class="card shadow-md border-0 mt-4">
+                                <div class="card-body p-5">
+                                    <div class="flex items-center gap-3">
+                                        <input x-model="xcostumer.point_use" type="checkbox"
+                                            class="toggle toggle-lg toggle-primary" id="" />
+                                        <label class="text-sm font-semibold font-space text-gray-700"
+                                            for=""> Gunakan Point </label>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="mt-4">
-                                <span>INFORMASI :</span>
-                                <br>
-                                <i class="text-sm text-warning">
-                                    Gunakan nomor telpon untuk pencarian data costumer member!
-                                </i>
+
+                            <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-5 mt-4">
+                                <div class="flex items-start gap-3">
+                                    <span class="icon-[tabler--info-circle] text-amber-600 size-5 mt-0.5"></span>
+                                    <div>
+                                        <span class="font-bold text-amber-700">INFORMASI:</span>
+                                        <br>
+                                        <p class="text-sm text-amber-600 mt-1">
+                                            Gunakan nomor telpon untuk pencarian data costumer member!
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                 </div>
+
+                <!-- Final Step: Success -->
                 <div data-stepper-content-item='{ "isFinal": true }' style="display: none">
-                    <div class="bg-base-200/50 flex h-48 items-center justify-center rounded-xl p-4">
-                        <h3 class="text-base-content/50 text-3xl">Your Form has been Submitted</h3>
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 flex h-64 items-center justify-center rounded-2xl p-6 border-2 border-emerald-200">
+                        <div class="text-center">
+                            <div class="bg-emerald-500 text-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-emerald-500/30">
+                                <span class="icon-[tabler--check] size-10"></span>
+                            </div>
+                            <h3 class="text-emerald-700 text-2xl font-bold">Your Form has been Submitted</h3>
+                            <p class="text-emerald-600 mt-2">Thank you for your submission</p>
+                        </div>
                     </div>
                 </div>
-                <div class="mt-16 flex items-center justify-start gap-x-2 font-space">
-                    <button type="button" class="btn rounded-full px-8 btn-primary btn-prev max-sm:btn-square"
+
+                <!-- Navigation Buttons -->
+                <div class="mt-8 flex flex-wrap items-center justify-start gap-3 font-space">
+                    <button type="button" class="btn rounded-xl px-8 btn-primary gap-2 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300 btn-prev max-sm:btn-square max-sm:px-4"
                         data-stepper-back-btn="">
                         <span class="icon-[tabler--chevron-left] text-primary-content size-5 rtl:rotate-180"></span>
-                        <span class="max-sm:hidden">Back</span>
+                        <span class="max-sm:hidden font-semibold">Back</span>
                     </button>
-                    <button type="button" class="btn rounded-full px-8 btn-primary btn-next max-sm:btn-square"
+                    <button type="button" class="btn rounded-xl px-8 btn-primary gap-2 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300 btn-next max-sm:btn-square max-sm:px-4"
                         data-stepper-next-btn="">
-                        <span class="max-sm:hidden">Next</span>
+                        <span class="max-sm:hidden font-semibold">Next</span>
                         <span class="icon-[tabler--chevron-right] text-primary-content size-5 rtl:rotate-180"></span>
                     </button>
 
-                    <button x-on:click="storeFinish" type="button" class="btn rounded-full px-8 btn-primary"
+                    <button x-on:click="storeFinish" type="button" class="btn rounded-xl px-8 btn-success gap-2 shadow-lg shadow-success/30 hover:shadow-xl hover:shadow-success/40 transition-all duration-300"
                         data-stepper-finish-btn="" style="display: none">
-                        <span class="icon-[mynaui--store]" style="width: 24px; height: 24px;"></span>
-                        <span x-text="isStoring ? 'Processing...':'Finishing Store'"></span>
+                        <span class="icon-[mynaui--store]" size-5"></span>
+                        <span class="font-semibold" x-text="isStoring ? 'Processing...':'Finishing Store'"></span>
                     </button>
 
                     <button :disabled="isStoring" type="button" x-on:click="resetFrom"
-                        class="btn rounded-full px-8 btn-primary" data-stepper-reset-btn="" style="display: none">
-                        <span x-text="isStoring ? 'Is Loading...!':'Back'" x-show="!isSuccess"></span>
-                        <span x-show="isSuccess">Back</span>
-
+                        class="btn rounded-xl px-8 btn-warning gap-2 shadow-lg shadow-warning/30 hover:shadow-xl hover:shadow-warning/40 transition-all duration-300" data-stepper-reset-btn="" style="display: none">
+                        <span class="font-semibold" x-text="isStoring ? 'Is Loading...!':'Back'" x-show="!isSuccess"></span>
+                        <span class="font-semibold" x-show="isSuccess">Back</span>
                     </button>
                     <button x-show="isPembayaran" type="button" x-on:click="prosesBayar"
-                        class="btn rounded-full px-8 btn-error" data-stepper-reset-btn="">Proses Pembayaran</button>
+                        class="btn rounded-xl px-8 btn-error gap-2 shadow-lg shadow-error/30 hover:shadow-xl hover:shadow-error/40 transition-all duration-300" data-stepper-reset-btn="">
+                        <span class="icon-[tabler--credit-card]" size-5"></span>
+                        <span class="font-semibold">Proses Pembayaran</span>
+                    </button>
+                </div>
+            </div>
                 </div>
             </div>
         </div>
 
-        {{-- modal item add --}}
+        {{-- Modal Item Add --}}
         <div id="add-item-modal" class="overlay modal overlay-open:opacity-100 hidden" role="dialog"
             tabindex="-1">
             <div
                 class="modal-dialog overlay-open:mt-12 overlay-open:opacity-100 overlay-open:duration-500 transition-all ease-out">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">Form item</h3>
-                        <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3"
+                    <div class="modal-header bg-gradient-to-r from-orange-500 to-red-600 px-6 py-4">
+                        <h3 class="modal-title text-white font-bold text-lg flex items-center gap-2">
+                            <span class="icon-[gridicons--add-outline] size-5"></span>
+                            Form item
+                        </h3>
+                        <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3 text-white hover:bg-white/20"
                             aria-label="Close" data-overlay="#add-item-modal" id="close-modal">
-                            <span class="icon-[tabler--x] size-4"></span>
+                            <span class="icon-[tabler--x] size-5"></span>
                         </button>
                     </div>
                     <form @submit.prevent="addCostumeItem">
-                        <div class="modal-body flex flex-col gap-2">
+                        <div class="modal-body flex flex-col gap-4 p-6">
                             <div class="w-full">
-                                <label class="label label-text" for="inte-name">
+                                <label class="text-sm font-semibold text-gray-700 flex items-center gap-2 mb-2">
+                                    <span class="icon-[tabler--tag] size-4 text-orange-500"></span>
                                     Nama item
                                 </label>
-                                <input x-model="csForm.item" type="text" placeholder="item name" class="input"
+                                <input x-model="csForm.item" type="text" placeholder="item name" class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200"
                                     id="inte-name" />
                             </div>
-                            <div class="grid grid-flow-row md:grid-cols-3 gap-2">
-                                <div class="md:col-span-2 w-full">
-                                    <label class="label label-text" for="biaya">
+                            <div class="grid grid-flow-row md:grid-cols-2 gap-4">
+                                <div class="md:col-span-1 w-full">
+                                    <label class="text-sm font-semibold text-gray-700 flex items-center gap-2 mb-2">
+                                        <span class="icon-[tabler--cash] size-4 text-emerald-500"></span>
                                         Biaya
                                     </label>
                                     <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input x-model="csForm.price" type="number" class="input grow"
+                                        <span class="input-group-text bg-gray-100 border-2 border-gray-200 rounded-l-xl text-gray-600 font-semibold">Rp</span>
+                                        <input x-model="csForm.price" type="number" class="input grow rounded-r-xl border-2 border-gray-200 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200"
                                             placeholder="00.00" id="biaya" />
                                         <label class="sr-only" for="biaya">Enter amount</label>
-                                        <span class="input-group-text">Rp</span>
                                     </div>
                                 </div>
                                 <div class="w-full">
-                                    <label class="label label-text" for="qty">
+                                    <label class="text-sm font-semibold text-gray-700 flex items-center gap-2 mb-2">
+                                        <span class="icon-[tabler--shopping-bag] size-4 text-blue-500"></span>
                                         Qty
                                     </label>
-                                    <input x-model="csForm.qty" type="number" placeholder="qty" class="input"
+                                    <input x-model="csForm.qty" type="number" placeholder="qty" class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200"
                                         id="qty" />
                                 </div>
                             </div>
                             <div class="relative mt-2">
-                                <textarea x-model="csForm.comment" class="textarea textarea-floating peer" placeholder="comment..."
-                                    id="comment-cs-form"></textarea>
-                                <label class="textarea-floating-label" for="comment-cs-form">Comment</label>
+                                <textarea x-model="csForm.comment" class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 resize-none" placeholder="comment..."
+                                    id="comment-cs-form" rows="3"></textarea>
+                                <label class="absolute left-3 -top-2.5 bg-white px-1 text-xs font-semibold text-gray-500" for="comment-cs-form">Comment</label>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-soft btn-secondary" data-overlay="#add-item-modal">
-                                Close
+                        <div class="modal-footer px-6 py-4 bg-gray-50 border-t border-gray-200 flex gap-3 justify-end">
+                            <button type="button" class="btn btn-soft btn-secondary px-6 gap-2" data-overlay="#add-item-modal">
+                                <span class="icon-[tabler--x]" size-4"></span>
+                                <span class="font-semibold">Close</span>
                             </button>
-                            <button type="submit" class="btn btn-primary">Add item</button>
+                            <button type="submit" class="btn btn-primary px-6 gap-2 shadow-lg shadow-primary/30">
+                                <span class="icon-[tabler--check]" size-4"></span>
+                                <span class="font-semibold">Add item</span>
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-        {{-- end modal --}}
+        {{-- End modal --}}
     </div>
     @push('js')
         <script>
@@ -615,13 +823,11 @@
                     isStoring: false,
                     isSuccess: false,
                     transaksi_id: '',
+                    paymentKey : '',
                     prosesBayar() {
                         try {
-                            console.log(this.transaksi_id);
-                            window.location.href = `/transaksi/kasir-proses-bayar/${this.transaksi_id}`;
+                            window.location.href = `/transaksi/kasir-proses-bayar/${this.paymentKey}`;
                         } catch (error) {
-                            console.log(this.transaksi_id);
-                            console.log(error);
                         }
                     },
                     async storeFinish() {
@@ -637,9 +843,8 @@
                             const url = "/transaksi/pre-order-action";
                             const store = await axios.post(url, data);
                             const res = store.data;
-                            console.log(res);
                             this.transaksi_id = res.data.transaction_id;
-                            console.log(this.transaksi_id);
+                            this.paymentKey = res.data.payment_id;
 
                             this.isPembayaran = true;
                             this.isSuccess = true;

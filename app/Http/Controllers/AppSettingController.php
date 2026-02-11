@@ -6,9 +6,18 @@ use App\Models\AppSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class AppSettingController extends Controller
+class AppSettingController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('role_or_permission:app-setting', only: ['index', 'appFirst', 'storeOrUpdate', 'udpateLogo', 'updateIcon'])
+        ];
+    }
+
     public function index()
     {
         return view('Pages.setting-index');
@@ -133,7 +142,8 @@ class AppSettingController extends Controller
         ]);
     }
 
-    public function publicJson() {
+    public function publicJson()
+    {
         $query = AppSetting::first();
         return getResponseJson('ok', 200, 'success', $query, false);
     }

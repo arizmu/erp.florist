@@ -1,117 +1,199 @@
 <x-master-layout>
     @push('css')
     @endpush
-    <div class="font-[sans-serif] bg-white flex items-center justify-center md:h-screen p-4">
-        <div class="shadow-[0_2px_16px_-3px_rgba(6,81,237,0.3)] max-w-6xl max-md:max-w-lg rounded-md p-6">
-            {{-- <a href="javascript:void(0)"><img
-            src="https://readymadeui.com/readymadeui.svg" alt="logo" class='w-40 md:mb-4 mb-12' />
-          </a> --}}
-            <a class="flex gap-2" href="#">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                    class="size-16 text-red-600">
-                    <path
-                        d="M11.25 3v4.046a3 3 0 0 0-4.277 4.204H1.5v-6A2.25 2.25 0 0 1 3.75 3h7.5ZM12.75 3v4.011a3 3 0 0 1 4.239 4.239H22.5v-6A2.25 2.25 0 0 0 20.25 3h-7.5ZM22.5 12.75h-8.983a4.125 4.125 0 0 0 4.108 3.75.75.75 0 0 1 0 1.5 5.623 5.623 0 0 1-4.875-2.817V21h7.5a2.25 2.25 0 0 0 2.25-2.25v-6ZM11.25 21v-5.817A5.623 5.623 0 0 1 6.375 18a.75.75 0 0 1 0-1.5 4.126 4.126 0 0 0 4.108-3.75H1.5v6A2.25 2.25 0 0 0 3.75 21h7.5Z" />
-                    <path
-                        d="M11.085 10.354c.03.297.038.575.036.805a7.484 7.484 0 0 1-.805-.036c-.833-.084-1.677-.325-2.195-.843a1.5 1.5 0 0 1 2.122-2.12c.517.517.759 1.36.842 2.194ZM12.877 10.354c-.03.297-.038.575-.036.805.23.002.508-.006.805-.036.833-.084 1.677-.325 2.195-.843A1.5 1.5 0 0 0 13.72 8.16c-.518.518-.76 1.362-.843 2.194Z" />
 
-                    {{-- <path
-                    d="M10.5 1.875a1.125 1.125 0 0 1 2.25 0v8.219c.517.162 1.02.382 1.5.659V3.375a1.125 1.125 0 0 1 2.25 0v10.937a4.505 4.505 0 0 0-3.25 2.373 8.963 8.963 0 0 1 4-.935A.75.75 0 0 0 18 15v-2.266a3.368 3.368 0 0 1 .988-2.37 1.125 1.125 0 0 1 1.591 1.59 1.118 1.118 0 0 0-.329.79v3.006h-.005a6 6 0 0 1-1.752 4.007l-1.736 1.736a6 6 0 0 1-4.242 1.757H10.5a7.5 7.5 0 0 1-7.5-7.5V6.375a1.125 1.125 0 0 1 2.25 0v5.519c.46-.452.965-.832 1.5-1.141V3.375a1.125 1.125 0 0 1 2.25 0v6.526c.495-.1.997-.151 1.5-.151V1.875Z" /> --}}
+    <div class="min-h-screen font-[sans-serif] bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-6xl">
+            <!-- Decorative Background Elements -->
+            <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+                <div class="absolute top-20 left-20 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
+                <div class="absolute top-40 right-20 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
+                <div class="absolute bottom-20 left-1/2 w-72 h-72 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-4000"></div>
+            </div>
 
-                </svg>
+            <div class="grid md:grid-cols-2 gap-8 items-center bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden">
+                <!-- Left Column - Branding & Image -->
+                <div class="relative hidden md:flex flex-col justify-between p-8 lg:p-12 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-r-3xl">
+                    <!-- Decorative Pattern -->
+                    <div class="absolute inset-0 opacity-10">
+                        <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                            <defs>
+                                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                                    <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" stroke-width="0.5"/>
+                                </pattern>
+                            </defs>
+                            <rect width="100" height="100" fill="url(#grid)" />
+                        </svg>
+                    </div>
 
-                <div class="font-bold text-xl mt-1 text-red-400 font-muse flex flex-col border-l-2 border-gray-400 pl-2"
-                    style="--fw:700">
-                    <span class="text-blue-600 text-base">
-                        Enterprise Resource Planning
-                    </span>
-                    <span class="text-2xl">
-                        Naira Gift Florist
-                    </span>
-                </div>
-            </a>
-
-            <div class="grid md:grid-cols-2 items-center gap-8">
-                <div class="max-md:order-1 lg:min-w-[450px]">
-                    <img src="https://readymadeui.com/signin-image.webp" class="lg:w-11/12 w-full object-cover"
-                        alt="login-image" />
-                </div>
-
-                <form class="md:max-w-md w-full mx-auto" method="post" action="{{ route('login.action') }}">
-                    @csrf
-                    <div class="">
-                        <div class="mb-12">
-                            <h3 class="text-4xl font-extrabold text-blue-600 font-muse" style="--fw:700">Sign in</h3>
-                        </div>
-
-                        <div>
-                            <div class="relative flex items-center">
-                                <input name="username" type="text"
-                                    class="w-full text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-hidden"
-                                    placeholder="Username" />
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb"
-                                    class="w-[18px] h-[18px] absolute right-2" viewBox="0 0 682.667 682.667">
-                                    <defs>
-                                        <clipPath id="a" clipPathUnits="userSpaceOnUse">
-                                            <path d="M0 512h512V0H0Z" data-original="#000000"></path>
-                                        </clipPath>
-                                    </defs>
-                                    <g clip-path="url(#a)" transform="matrix(1.33 0 0 -1.33 0 682.667)">
-                                        <path fill="none" stroke-miterlimit="10" stroke-width="40"
-                                            d="M452 444H60c-22.091 0-40-17.909-40-40v-39.446l212.127-157.782c14.17-10.54 33.576-10.54 47.746 0L492 364.554V404c0 22.091-17.909 40-40 40Z"
-                                            data-original="#000000"></path>
-                                        <path
-                                            d="M472 274.9V107.999c0-11.027-8.972-20-20-20H60c-11.028 0-20 8.973-20 20V274.9L0 304.652V107.999c0-33.084 26.916-60 60-60h392c33.084 0 60 26.916 60 60v196.653Z"
-                                            data-original="#000000"></path>
-                                    </g>
-                                </svg>
-                            </div>
-                        </div>
-
-                        <div class="mt-8">
-                            <div class="relative flex items-center">
-                                <input name="password" type="password"
-                                    class="w-full text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-hidden"
-                                    placeholder="Enter password" />
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb"
-                                    class="w-[18px] h-[18px] absolute right-2 cursor-pointer" viewBox="0 0 128 128">
+                    <!-- Logo Section -->
+                    <div class="relative z-10">
+                        <a class="flex gap-4 items-start" href="#">
+                            <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/30 shadow-xl">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                    class="size-8 text-white">
                                     <path
-                                        d="M64 104C22.127 104 1.367 67.496.504 65.943a4 4 0 0 1 0-3.887C1.367 60.504 22.127 24 64 24s62.633 36.504 63.496 38.057a4 4 0 0 1 0 3.887C126.633 67.496 105.873 104 64 104zM8.707 63.994C13.465 71.205 32.146 96 64 96c31.955 0 50.553-24.775 55.293-31.994C114.535 56.795 95.854 32 64 32 32.045 32 13.447 56.775 8.707 63.994zM64 88c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm0-40c-8.822 0-16 7.178-16 16s7.178 16 16 16 16-7.178 16-16-7.178-16-16-16z"
-                                        data-original="#000000"></path>
+                                        d="M11.25 3v4.046a3 3 0 0 0-4.277 4.204H1.5v-6A2.25 2.25 0 0 1 3.75 3h7.5ZM12.75 3v4.011a3 3 0 0 1 4.239 4.239H22.5v-6A2.25 2.25 0 0 0 20.25 3h-7.5ZM22.5 12.75h-8.983a4.125 4.125 0 0 0 4.108 3.75.75.75 0 0 1 0 1.5 5.623 5.623 0 0 1-4.875-2.817V21h7.5a2.25 2.25 0 0 0 2.25-2.25v-6ZM11.25 21v-5.817A5.623 5.623 0 0 1 6.375 18a.75.75 0 0 1 0-1.5 4.126 4.126 0 0 0 4.108-3.75H1.5v6A2.25 2.25 0 0 0 3.75 21h7.5Z" />
+                                    <path
+                                        d="M11.085 10.354c.03.297.038.575.036.805a7.484 7.484 0 0 1-.805-.036c-.833-.084-1.677-.325-2.195-.843a1.5 1.5 0 0 1 2.122-2.12c.517.517.759 1.36.842 2.194ZM12.877 10.354c-.03.297-.038.575-.036.805.23.002.508-.006.805-.036.833-.084 1.677-.325 2.195-.843A1.5 1.5 0 0 0 13.72 8.16c-.518.518-.76 1.362-.843 2.194Z" />
                                 </svg>
+                            </div>
+
+                            <div class="flex flex-col">
+                                <span class="text-white/80 text-sm font-medium">
+                                    Enterprise Resource Planning
+                                </span>
+                                <span class="text-white text-2xl font-bold">
+                                    Florist Crafter
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Welcome Text -->
+                    <div class="relative z-10 space-y-6 mt-5">
+                        <div>
+                            <h2 class="text-4xl font-bold text-white mb-3">Welcome Back!</h2>
+                            <p class="text-white/80 text-lg">Sign in to access your dashboard and manage your business efficiently.</p>
+                        </div>
+
+                    </div>
+
+                    <!-- Footer Info -->
+                    <div class="relative z-10">
+                        <p class="text-white/60 text-sm">© 2026 Florist Crafter. All rights reserved.</p>
+                    </div>
+                </div>
+
+                <!-- Right Column - Login Form -->
+                <div class="p-8 lg:p-12">
+                    <!-- Mobile Logo -->
+                    <div class="md:hidden flex justify-center mb-8">
+                        <a class="flex items-center gap-3" href="#">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                    class="size-6 text-white">
+                                    <path
+                                        d="M11.25 3v4.046a3 3 0 0 0-4.277 4.204H1.5v-6A2.25 2.25 0 0 1 3.75 3h7.5ZM12.75 3v4.011a3 3 0 0 1 4.239 4.239H22.5v-6A2.25 2.25 0 0 0 20.25 3h-7.5ZM22.5 12.75h-8.983a4.125 4.125 0 0 0 4.108 3.75.75.75 0 0 1 0 1.5 5.623 5.623 0 0 1-4.875-2.817V21h7.5a2.25 2.25 0 0 0 2.25-2.25v-6ZM11.25 21v-5.817A5.623 5.623 0 0 1 6.375 18a.75.75 0 0 1 0-1.5 4.126 4.126 0 0 0 4.108-3.75H1.5v6A2.25 2.25 0 0 0 3.75 21h7.5Z" />
+                                </svg>
+                            </div>
+                            <span class="text-xl font-bold text-gray-800 font-poppins">NGF</span>
+                        </a>
+                    </div>
+
+                    <!-- Form Header -->
+                    <div class="mb-8">
+                        <h3 class="text-3xl font-bold text-gray-800 mb-2">Sign in</h3>
+                        <p class="text-gray-500">Enter your credentials to access your account</p>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form class="space-y-6" method="post" action="{{ route('login.action') }}">
+                        @csrf
+
+                        <!-- Username Field -->
+                        <div class="flex flex-col gap-2">
+                            <label for="username" class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                <span class="icon-[tabler--user] size-4 text-blue-500"></span>
+                                Username
+                            </label>
+                            <div class="relative">
+                                <input id="username" name="username" type="text"
+                                    class="w-full pl-12 pr-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 shadow-sm"
+                                    placeholder="Enter your username" autocomplete="username" />
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                    <span class="icon-[tabler--user] size-5"></span>
+                                </span>
                             </div>
                         </div>
 
-                        <div class="flex flex-wrap items-center justify-between gap-4 mt-6">
-                            <div class="flex items-center">
+                        <!-- Password Field -->
+                        <div class="flex flex-col gap-2">
+                            <label for="password" class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                <span class="icon-[tabler--lock] size-4 text-purple-500"></span>
+                                Password
+                            </label>
+                            <div class="relative">
+                                <input id="password" name="password" type="password"
+                                    class="w-full pl-12 pr-12 py-3.5 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 transition-all duration-200 shadow-sm"
+                                    placeholder="Enter your password" autocomplete="current-password" />
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                    <span class="icon-[tabler--lock] size-5"></span>
+                                </span>
+                                <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors" onclick="togglePassword()">
+                                    <span class="icon-[tabler--eye] size-5" id="eye-icon"></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Remember & Forgot -->
+                        <div class="flex flex-wrap items-center justify-between gap-4">
+                            <div class="flex items-center gap-2">
                                 <input id="remember-me" name="remember-me" type="checkbox"
-                                    class="h-4 w-4 shrink-0 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-sm" />
-                                <label for="remember-me" class="text-gray-800 ml-3 block text-sm">
+                                    class="checkbox checkbox-primary checkbox-sm border-2 border-gray-300" />
+                                <label for="remember-me" class="text-gray-600 text-sm font-medium cursor-pointer select-none">
                                     Remember me
                                 </label>
                             </div>
-                            <div>
-                                <a href="jajvascript:void(0);"
-                                    class="text-blue-600 font-semibold text-sm hover:underline">
-                                    Forgot Password?
-                                </a>
-                            </div>
                         </div>
 
-                        <div class="mt-12">
+                        <!-- Submit Button -->
+                        <div class="pt-2">
                             <button type="submit"
-                                class="w-full btn btn-outline btn-gradient btn-primary shadow-sm font-muse"
-                                style="--fw:500">
+                                class="w-full btn bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 rounded-xl font-bold text-lg shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 flex items-center justify-center gap-2 border-0">
+                                <span class="icon-[tabler--login] size-5"></span>
                                 Sign in
                             </button>
-
-                            <p class="text-gray-800 text-sm text-center mt-6">Don't have an account <a
-                                    href="javascript:void(0);"
-                                    class="text-gray-600 font-semibold hover:underline ml-1 whitespace-nowrap">Register
-                                    here</a></p>
                         </div>
+
+                        
+                    </form>
+
+                    <!-- Security Badge -->
+                    <div class="mt-8 flex items-center justify-center gap-2 text-gray-400 text-sm">
+                        <span class="icon-[tabler--shield-check] size-4"></span>
+                        <span>Secured with industry-standard encryption</span>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eye-icon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('icon-[tabler--eye]');
+                eyeIcon.classList.add('icon-[tabler--eye-off]');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('icon-[tabler--eye-off]');
+                eyeIcon.classList.add('icon-[tabler--eye]');
+            }
+        }
+    </script>
+
+    <style>
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+
+        .animate-blob {
+            animation: blob 7s infinite;
+        }
+
+        .animation-delay-2000 {
+            animation-delay: 2s;
+        }
+
+        .animation-delay-4000 {
+            animation-delay: 4s;
+        }
+    </style>
 </x-master-layout>
