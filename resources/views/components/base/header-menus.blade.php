@@ -48,6 +48,11 @@
                     <span class="icon-[tabler--category] size-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors"></span>
                     <span class="truncate">Production</span>
                 </a>
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-800/30 hover:text-blue-700 dark:hover:text-blue-300 transition-all duration-200 group"
+                    href="{{ route('produksi.details') }}">
+                    <span class="icon-[tabler--category] size-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors"></span>
+                    <span class="truncate">Bahan Detail</span>
+                </a>
             </div>
         </div>
 
@@ -67,6 +72,11 @@
                     href="{{ route('inventory.form') }}">
                     <span class="icon-[tabler--circle-plus] size-4 text-gray-400 dark:text-gray-500 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors"></span>
                     <span class="truncate">Inventory Masuk</span>
+                </a>
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-amber-100 dark:hover:bg-amber-800/30 hover:text-amber-700 dark:hover:text-amber-300 transition-all duration-200 group"
+                    href="{{ route('inventory.details') }}">
+                    <span class="icon-[tabler--circle-plus] size-4 text-gray-400 dark:text-gray-500 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors"></span>
+                    <span class="truncate">Penerimaan Detail</span>
                 </a>
             </div>
         </div>

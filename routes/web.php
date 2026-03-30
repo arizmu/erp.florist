@@ -82,6 +82,8 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::get('/distribution-to-product/{key}', 'distributionToProduct');
             Route::get('/get-production-detail/{production_id}', 'getDetailBahanBaku');
             Route::post('delete/{id}', 'delete');
+            Route::get('/produksi-details', 'produksiDetails')->name('produksi.details');
+            Route::get('/produksi-detail-json', 'produksiDetailJson');
         });
     });
 
@@ -91,10 +93,13 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         Route::controller(InventoryController::class)->group(function () {
             Route::get('invetory-data', 'index')->name('inventory.index');
             Route::get('invetory-form', 'formInventory')->name('inventory.form');
+            Route::get('details', 'details')->name('inventory.details');
             Route::get('get-barang-data', 'getBarang');
             Route::post('inventory-store-data', 'storeInvetory');
             Route::get('get-inventory-data', 'IndexJsonInventory');
             Route::get('get-detail-inventory', 'detailInventory');
+            Route::get('get-referensi-barang', 'referensiBarang');
+            Route::get('get-detail-json', 'detailJson');
         });
     });
 

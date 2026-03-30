@@ -286,6 +286,36 @@ class ProduksiController extends Controller
         return getResponseJson('ok', 200, 'Data detail bahan baku', $mergedDetails, false);
     }
 
+    public function produksiDetails()
+    {
+        return view('Pages.Products.produksi-details');
+    }
+
+    public function produksiDetailJson()
+    {
+        $query = ProductionBarangDetail::query()->with('barang');
+
+        if (request()->estimasi) {
+            $tanggal = request()->estimasi ? explode("to", request()->estimasi) : [Carbon::now()->toDateString()];
+            $tanggalStart = Carbon::parse($tanggal[0])->format('Y-m-d');
+            $tanggalEnd = isset($tanggal[1]) ? Carbon::parse($tanggal[1])->format('Y-m-d') : $tanggalStart;
+            $query->whereHas('production', function ($productionQuery) use ($tanggalStart, $tanggalEnd) {
+                $productionQuery->whereBetween('production_date', [$tanggalStart, $tanggalEnd]);
+            });
+        }
+
+        if (request()->barang_id) {
+            $query->where('barang_id', request()->barang_id);
+        }
+
+        return response()->json([
+            'status' => 'Ok',
+            'data' => $query->paginate(request()->range ? request()->range : 15),
+            'message' => 'Data retrieved successfully.',
+            'request' => request()->all()
+        ]);
+    }
+
     public function delete($key)
     {
         DB::beginTransaction();
