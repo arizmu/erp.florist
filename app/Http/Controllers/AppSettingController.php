@@ -1,20 +1,19 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\AppSetting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class AppSettingController extends Controller implements HasMiddleware
 {
     public static function middleware(): array
     {
         return [
-            new Middleware('role_or_permission:app-setting', only: ['index', 'appFirst', 'storeOrUpdate', 'udpateLogo', 'updateIcon'])
+            new Middleware('role_or_permission:app-setting', only: ['index', 'appFirst', 'storeOrUpdate', 'udpateLogo', 'updateIcon']),
         ];
     }
 
@@ -27,10 +26,10 @@ class AppSettingController extends Controller implements HasMiddleware
     {
         $query = AppSetting::first();
         return response()->json([
-            'status' => 'success',
-            'code' => 200,
+            'status'  => 'success',
+            'code'    => 200,
             'message' => 'Data berhasil diambil',
-            'data' => $query
+            'data'    => $query,
         ]);
     }
 
@@ -38,14 +37,14 @@ class AppSettingController extends Controller implements HasMiddleware
     {
         DB::beginTransaction();
         try {
-            $query = AppSetting::first();
+            $query        = AppSetting::first();
             $arrayRequest = [
-                'app_name' => $request->appName,
+                'app_name'  => $request->appName,
                 'sub_title' => $request->sub_title,
-                'comment' => $request->comment,
-                'alamat' => $request->address,
-                'telpon' => $request->phone,
-                'email' => $request->email,
+                'comment'   => $request->comment,
+                'alamat'    => $request->address,
+                'telpon'    => $request->phone,
+                'email'     => $request->email,
             ];
             if ($query) {
                 $query->update($arrayRequest);
@@ -54,18 +53,18 @@ class AppSettingController extends Controller implements HasMiddleware
             }
             DB::commit();
             return response()->json([
-                'status' => 'success',
-                'code' => 200,
+                'status'  => 'success',
+                'code'    => 200,
                 'message' => 'Data berhasil diupdate',
-                'data' => $arrayRequest
+                'data'    => $arrayRequest,
             ]);
         } catch (\Throwable $th) {
             DB::rollback();
             return response()->json([
-                'status' => 'error',
-                'code' => 500,
+                'status'  => 'error',
+                'code'    => 500,
                 'message' => 'Data gagal diupdate',
-                'detail' => $th->getMessage()
+                'detail'  => $th->getMessage(),
             ], 500);
         }
     }
@@ -78,24 +77,24 @@ class AppSettingController extends Controller implements HasMiddleware
 
         if ($validasiData->fails()) {
             return response()->json([
-                'status' => 'error',
-                'code' => 400,
+                'status'  => 'error',
+                'code'    => 400,
                 'message' => 'Validasi gagal',
-                'errors' => $validasiData->errors()
+                'errors'  => $validasiData->errors(),
             ], 400);
         }
 
         try {
             $logoFile = request()->file('file_logo');
-            if (!$logoFile->isValid()) {
+            if (! $logoFile->isValid()) {
                 return response()->json([
-                    'status' => 'error',
-                    'code' => 400,
-                    'message' => 'File logo tidak valid'
+                    'status'  => 'error',
+                    'code'    => 400,
+                    'message' => 'File logo tidak valid',
                 ], 400);
             }
-            $filePath = FileUpload($logoFile, "logo/", "app-logo");
-            $setting = AppSetting::first();
+            $filePath      = FileUpload($logoFile, "logo/", "app-logo");
+            $setting       = AppSetting::first();
             $setting->foto = $filePath;
             $setting->save();
 
@@ -114,37 +113,54 @@ class AppSettingController extends Controller implements HasMiddleware
 
         if ($validasiData->fails()) {
             return response()->json([
-                'status' => 'error',
-                'code' => 400,
+                'status'  => 'error',
+                'code'    => 400,
                 'message' => 'Validasi gagal',
-                'errors' => $validasiData->errors()
+                'errors'  => $validasiData->errors(),
             ], 400);
         }
 
         $iconFile = request()->file('icon');
 
-        if (!$iconFile->isValid()) {
+        if (! $iconFile->isValid()) {
             return response()->json([
-                'status' => 'error',
-                'code' => 400,
-                'message' => 'File icon tidak valid'
+                'status'  => 'error',
+                'code'    => 400,
+                'message' => 'File icon tidak valid',
             ], 400);
         }
-        $filePath = FileUpload($iconFile, "icon/", "app-icon");
-        $setting = AppSetting::first();
+        $filePath      = FileUpload($iconFile, "icon/", "app-icon");
+        $setting       = AppSetting::first();
         $setting->icon = $filePath;
         $setting->save();
         return response()->json([
-            'status' => 'success',
-            'code' => 200,
+            'status'  => 'success',
+            'code'    => 200,
             'message' => 'Icon berhasil diupdate',
-            'data' => $filePath // jika ada file icon, masukkan file_path ke field ini
+            'data'    => $filePath, // jika ada file icon, masukkan file_path ke field ini
         ]);
     }
 
     public function publicJson()
     {
         $query = AppSetting::first();
-        return getResponseJson('ok', 200, 'success', $query, false);
+        // return getResponseJson('ok', 200, 'success', $query, false);
+        try {
+            return response()->json([
+                'status'  => 'success',
+                'code'    => 200,
+                'message' => 'success',
+                'data'    => $query,
+                'errors'  => '',
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status'  => 'error',
+                'code'    => 500,
+                'message' => 'error',
+                'data'    => '',
+                'errors'  => $th->getMessage(),
+            ], 500);
+        }
     }
 }
