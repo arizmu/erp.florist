@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Penjualan;
 
 use App\Http\Controllers\Controller;
@@ -23,12 +22,12 @@ class KasirController extends Controller
     {
         $query = Transaction::where('deleted_status', 0)->with('details')->orderBy('created_at', 'desc');
         return view('Pages.penjualan.transaksi-index', [
-            'data' => $query->paginate(15),
+            'data'  => $query->paginate(15),
             'chart' => [
                 'pendapatan' => 0,
-                'paid' => 0,
-                'unpaid' => 0
-            ]
+                'paid'       => 0,
+                'unpaid'     => 0,
+            ],
         ]);
     }
 
@@ -67,21 +66,21 @@ class KasirController extends Controller
                         });
                 });
             })->when(in_array($request->status, ['d', 's', 'p']), function ($subQuery) use ($request) {
-                $subQuery->where('transactions.status_transaction', $request->status);
-            });
+            $subQuery->where('transactions.status_transaction', $request->status);
+        });
 
-        $tanggal = $request->estimasi ? explode("to", $request->estimasi) : [Carbon::now()->toDateString()];
+        $tanggal      = $request->estimasi ? explode("to", $request->estimasi) : [Carbon::now()->toDateString()];
         $tanggalStart = Carbon::parse($tanggal[0])->format('Y-m-d');
-        $tanggalEnd = isset($tanggal[1]) ? Carbon::parse($tanggal[1])->format('Y-m-d') : $tanggalStart;
+        $tanggalEnd   = isset($tanggal[1]) ? Carbon::parse($tanggal[1])->format('Y-m-d') : $tanggalStart;
         $query->whereBetween('transactions.transaction_date', [$tanggalStart, $tanggalEnd])
             ->orderBy('transactions.created_at', 'desc')
             ->orderBy('payment_transactions.created_at', 'desc');
 
         return response()->json([
-            'status' => 'success',
-            'code' => 200,
+            'status'  => 'success',
+            'code'    => 200,
             'message' => 'Data fetch successfully',
-            'data' => $query->paginate($request->range ?? 15)
+            'data'    => $query->paginate($request->range ?? 15),
         ]);
     }
 
@@ -89,7 +88,6 @@ class KasirController extends Controller
     {
         return view('Pages.penjualan.kasir.kasir-index');
     }
-
 
     public function proudctJson(Request $request)
     {
@@ -101,10 +99,10 @@ class KasirController extends Controller
             });
         });
         return response()->json([
-            'status' => 'success',
-            'code' => 200,
+            'status'  => 'success',
+            'code'    => 200,
             'message' => 'Data fetch successfully',
-            'data' => $query->paginate($request->range ?? 15)
+            'data'    => $query->paginate($request->range ?? 15),
         ]);
     }
 
@@ -113,36 +111,36 @@ class KasirController extends Controller
         // return $request->all();
         DB::beginTransaction();
         try {
-            $detailsTransaksi = $request['items'];
+            $detailsTransaksi    = $request['items'];
             $datailOnTransaction = [];
-            $subtotalPembayaran = 0;
+            $subtotalPembayaran  = 0;
             foreach ($detailsTransaksi as $item) {
-                $product = Product::find($item['product_id']);
-                $datailOnTransaction[] = [
-                    'order_status' => false,
+                $product                = Product::find($item['product_id']);
+                $datailOnTransaction[]  = [
+                    'order_status'                => false,
                     'production_id_or_product_id' => $item['product_id'],
-                    'item_name' => $item['product_name'],
-                    'amount_item' => $item['product_qty'],
-                    'costume_status' => $item['product_costume'],
-                    'costume_total' => $item['costume_total'],
-                    'cost_item' => $item['product_price'],
-                    'total_cost' => $item['total_price'],
-                    'status' => false,
-                    'code_product' => $product->code,
-                    'details' => $item['product_costume_details']
+                    'item_name'                   => $item['product_name'],
+                    'amount_item'                 => $item['product_qty'],
+                    'costume_status'              => $item['product_costume'],
+                    'costume_total'               => $item['costume_total'],
+                    'cost_item'                   => $item['product_price'],
+                    'total_cost'                  => $item['total_price'],
+                    'status'                      => false,
+                    'code_product'                => $product->code,
+                    'details'                     => $item['product_costume_details'],
                 ];
-                $costumeTotal = intval($item['costume_total']);
-                $productPrice = intval($item['product_price']);
-                $productQty = intval($item['product_qty']);
-                $productTotal = $costumeTotal + $productPrice;
-                $totalPrice = $productTotal * $productQty;
+                $costumeTotal        = intval($item['costume_total']);
+                $productPrice        = intval($item['product_price']);
+                $productQty          = intval($item['product_qty']);
+                $productTotal        = $costumeTotal + $productPrice;
+                $totalPrice          = $productTotal * $productQty;
                 $subtotalPembayaran += $totalPrice;
 
                 if ($product->qty < $item['product_qty']) {
                     return response()->json([
-                        'status' => 'Info',
-                        'code' => 422,
-                        'message' => 'Stok barang *' . $item['product_name'] . '* tidak mencukupi!.'
+                        'status'  => 'Info',
+                        'code'    => 422,
+                        'message' => 'Stok barang *' . $item['product_name'] . '* tidak mencukupi!.',
                     ], 422);
                 }
                 $product->qty -= $item['product_qty'];
@@ -150,11 +148,11 @@ class KasirController extends Controller
             }
 
             $transaksiArray = [
-                'code' => $this->genereateCodeTransaksi(),
+                'code'             => $this->genereateCodeTransaksi(),
                 'transaction_date' => Carbon::now()->format('Y-m-d H:i:s'),
-                'total_payment' => $subtotalPembayaran,
-                'total_paid' => 0,
-                'total_unpaid' => $subtotalPembayaran
+                'total_payment'    => $subtotalPembayaran,
+                'total_paid'       => 0,
+                'total_unpaid'     => $subtotalPembayaran,
             ];
 
             $queryTransaksi = Transaction::create($transaksiArray);
@@ -162,31 +160,31 @@ class KasirController extends Controller
             // return $datailOnTransaction;
             foreach ($datailOnTransaction as $value) {
                 $details = DetailsTransaction::create([
-                    'transaction_id' => $queryTransaksi->id,
-                    'order_status' => $value['order_status'],
+                    'transaction_id'              => $queryTransaksi->id,
+                    'order_status'                => $value['order_status'],
                     'production_id_or_product_id' => $value['production_id_or_product_id'],
-                    'item_name' => $value['item_name'],
-                    'code_product' => $value['code_product'],
-                    'amount_item' => $value['amount_item'],
-                    'costume_status' => $value['costume_status'],
-                    'costume_total' => $value['costume_total'],
-                    'cost_item' => $value['cost_item'],
-                    'total_cost' => $value['total_cost'],
+                    'item_name'                   => $value['item_name'],
+                    'code_product'                => $value['code_product'],
+                    'amount_item'                 => $value['amount_item'],
+                    'costume_status'              => $value['costume_status'],
+                    'costume_total'               => $value['costume_total'],
+                    'cost_item'                   => $value['cost_item'],
+                    'total_cost'                  => $value['total_cost'],
                 ]);
 
                 foreach ($value['details'] as $val) {
                     CostumeDetailTransaction::create([
                         'details_transactions_id' => $details->id,
-                        'status_item' => $val['status'],
-                        'code_item' => $val['item_id'] ?? "",
-                        'item_name' => $val['item_name'],
-                        'comment' => $val['comment'],
-                        'qty' => $val['item_qty'],
-                        'price' => $val['item_price'],
-                        'total_price' => $val['total'],
+                        'status_item'             => $val['status'],
+                        'code_item'               => $val['item_id'] ?? "",
+                        'item_name'               => $val['item_name'],
+                        'comment'                 => $val['comment'],
+                        'qty'                     => $val['item_qty'],
+                        'price'                   => $val['item_price'],
+                        'total_price'             => $val['total'],
                     ]);
-                    if (!$val['status']) {
-                        $barang = Barang::find($val['item_id']);
+                    if (! $val['status']) {
+                        $barang         = Barang::find($val['item_id']);
                         $barang->stock -= $val['item_qty'];
                         $barang->save();
                     }
@@ -196,33 +194,33 @@ class KasirController extends Controller
             // create payment transaction
             $arrayForPaymentTransaction = [
                 'transaction_id' => $queryTransaksi->id,
-                'total_payment' => $transaksiArray['total_payment'],
-                'total_paid' => 0,
-                'total_unpaid' => $transaksiArray['total_payment'],
+                'total_payment'  => $transaksiArray['total_payment'],
+                'total_paid'     => 0,
+                'total_unpaid'   => $transaksiArray['total_payment'],
                 'total_cashback' => 0,
                 'payment_amount' => 0,
-                'factur_number' =>  $this->generateFactur(),
-                'payment_method' => 't'
+                'factur_number'  => $this->generateFactur(),
+                'payment_method' => 't',
             ];
-            $payment = createPaymentData($arrayForPaymentTransaction);
+            $payment = $this->createPaymentData($arrayForPaymentTransaction);
             DB::commit();
             return response()->json([
-                'status' => 'success',
-                'code' => 200,
+                'status'  => 'success',
+                'code'    => 200,
                 'message' => 'Processing data is success.',
-                'data' => [
+                'data'    => [
                     'transaction_id' => $queryTransaksi->id,
-                    'code' => $queryTransaksi->code,
-                    'payment_id' => $payment
-                ]
+                    'code'           => $queryTransaksi->code,
+                    'payment_id'     => $payment,
+                ],
             ], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json([
-                'status' => 'Errors',
-                'code' => 500,
+                'status'  => 'Errors',
+                'code'    => 500,
                 'message' => 'Error processing transaction',
-                'details' => $th->getMessage()
+                'details' => $th->getMessage(),
             ], 500);
         }
     }
@@ -254,7 +252,7 @@ class KasirController extends Controller
             ->where('payment_transactions.id', $key)->first();
         return view('Pages.penjualan.kasir.kasir-pembayaran', [
             'data' => $query,
-            'key' => $key
+            'key'  => $key,
         ]);
     }
 
@@ -284,20 +282,20 @@ class KasirController extends Controller
             'costumer',
             'payment' => function ($query) use ($invoice_id) {
                 $query->where('id', $invoice_id);
-            }
+            },
         ])->find($transaksi_id);
 
-        $app = AppSetting::first();
+        $app     = AppSetting::first();
         $headers = [
-            'toko' => $app->app_name,
+            'toko'   => $app->app_name,
             'alamat' => $app->alamat,
             'telpon' => $app->telpon,
-            'logo' => $app->foto
+            'logo'   => $app->foto,
         ];
 
         return view('Pages.penjualan.invoice', [
-            'data' =>   $queryTransaksi,
-            'headers' => $headers
+            'data'    => $queryTransaksi,
+            'headers' => $headers,
         ]);
     }
 
@@ -308,7 +306,7 @@ class KasirController extends Controller
         })->get()->take(25);
         return response()->json([
             'status' => 'ok',
-            'data' => $queryData
+            'data'   => $queryData,
         ]);
     }
 
@@ -327,18 +325,18 @@ class KasirController extends Controller
                         $costumeDetail = CostumeDetailTransaction::where('details_transactions_id', $value->id)->where('status_item', false)->get();
 
                         foreach ($costumeDetail as $costume) {
-                            $barang = Barang::find($costume->code_item);
+                            $barang         = Barang::find($costume->code_item);
                             $barang->stock += $costume->qty;
                             $barang->save();
                         }
                     }
-                    $returnProduct = Product::find($value->production_id_or_product_id);
+                    $returnProduct      = Product::find($value->production_id_or_product_id);
                     $returnProduct->qty += $value->amount_item;
                     $returnProduct->save();
                 }
             }
-            $queryTransaksi->deleted_status = true;
-            $queryTransaksi->deleted_at = Carbon::now();
+            $queryTransaksi->deleted_status  = true;
+            $queryTransaksi->deleted_at      = Carbon::now();
             $queryTransaksi->deleted_by_user = Auth::user()->name;
             $queryTransaksi->save();
             DB::commit();
@@ -356,31 +354,30 @@ class KasirController extends Controller
             ->isDelete(false)
             ->where('qty', '>=', 1)
             ->first();
-        if (!$query) {
+        if (! $query) {
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'Barang tidak ditemukan',
             ], 404);
         }
         return response()->json([
             'status' => 'success',
-            'data' => $query,
+            'data'   => $query,
         ], 200);
     }
-
 
     public function dashTransactions(Request $request)
     {
         $query = Transaction::query()->isDelete(false)->where(function ($result) use ($request) {
-            $tanggal = $request->estimasi ? explode("to", $request->estimasi) : [Carbon::now()->toDateString()];
+            $tanggal      = $request->estimasi ? explode("to", $request->estimasi) : [Carbon::now()->toDateString()];
             $tanggalStart = Carbon::parse($tanggal[0])->format('Y-m-d');
-            $tanggalEnd = isset($tanggal[1]) ? Carbon::parse($tanggal[1])->format('Y-m-d') : $tanggalStart;
+            $tanggalEnd   = isset($tanggal[1]) ? Carbon::parse($tanggal[1])->format('Y-m-d') : $tanggalStart;
             $result->whereBetween('transaction_date', [$tanggalStart, $tanggalEnd]);
         })->get();
 
         $data = [
-            'total_paid' => $query->sum('total_paid'),
-            'total_unpaid' => $query->sum('total_unpaid'),
+            'total_paid'      => $query->sum('total_paid'),
+            'total_unpaid'    => $query->sum('total_unpaid'),
             'total_penjualan' => $query->sum('total_payment'),
         ];
         return response()->json($data);
@@ -393,21 +390,21 @@ class KasirController extends Controller
             if ($transaksiQuery->point > 0) {
                 // if true, the transaction can't use point costumer
                 return response()->json([
-                    'status' => 'error',
-                    'message' => 'Maaf, transaksi ini dapat menggunakan poin kustomer'
+                    'status'  => 'error',
+                    'message' => 'Maaf, transaksi ini dapat menggunakan poin kustomer',
                 ], 403);
             } else {
                 // if false, point member cant use to pay
                 return response()->json([
-                    'status' => 'success',
-                    'message' => 'Point Members dapat digunakan!'
+                    'status'  => 'success',
+                    'message' => 'Point Members dapat digunakan!',
                 ], 200);
             }
         } catch (\Throwable $th) {
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'Terjadi kesalahan',
-                'details' => $th->getMessage()
+                'details' => $th->getMessage(),
             ], 500);
         }
     }
@@ -416,11 +413,11 @@ class KasirController extends Controller
     {
         // return $request->all();
         $validasi = Validator::make($request->all(), [
-            'metode_bayar' => 'required',
-            'jumlah_bayar' => 'required|numeric',
-            'kembali' => 'required|numeric',
-            'costumer.nama' => 'required|string',
-            'costumer.telpon' => 'required|numeric'
+            'metode_bayar'    => 'required',
+            'jumlah_bayar'    => 'required|numeric',
+            'kembali'         => 'required|numeric',
+            'costumer.nama'   => 'required|string',
+            'costumer.telpon' => 'required|numeric',
         ]);
         if ($validasi->fails()) {
             return getResponseJson('error', 400, 'bad Reqeust', $request->all(), $validasi->errors());
@@ -430,40 +427,40 @@ class KasirController extends Controller
         try {
             $payment = [
                 'payment_id' => $request->pembayaran['payment_id'],
-                'metode' => $request->metode_bayar,
-                'total' => $request->pembayaran['subtotal'],
-                'paid' => 0,
-                'unpaid' => $request->pembayaran['total_bayar'],
-                'pay' => intval($request->jumlah_bayar),
+                'metode'     => $request->metode_bayar,
+                'total'      => $request->pembayaran['subtotal'],
+                'paid'       => 0,
+                'unpaid'     => $request->pembayaran['total_bayar'],
+                'pay'        => intval($request->jumlah_bayar),
             ];
 
             $discounts = [
-                'status' => $request->pembayaran['discount']['status'] == true ? true : false,
+                'status'  => $request->pembayaran['discount']['status'] == true ? true : false,
                 'percent' => $request->pembayaran['discount']['persen'] ?? 0,
-                'value' => $request->pembayaran['discount']['nilai'] ?? 0,
+                'value'   => $request->pembayaran['discount']['nilai'] ?? 0,
             ];
 
             $costumer = [
-                'name' => $request->costumer['nama'],
-                'jk' => 'L',
-                'telpon' => $request->costumer['telpon'],
-                'alamat' => $request->costumer['alamat'],
-                'email' => $request->costumer['email'] ?? '',
-                'status' => false,
-                'point' => $request->pembayaran['point']['nilai'],
+                'name'      => $request->costumer['nama'],
+                'jk'        => 'L',
+                'telpon'    => $request->costumer['telpon'],
+                'alamat'    => $request->costumer['alamat'],
+                'email'     => $request->costumer['email'] ?? '',
+                'status'    => false,
+                'point'     => $request->pembayaran['point']['nilai'],
                 'point_use' => $request->pembayaran['point']['status'] == true ? true : false,
             ];
 
-            $transaksi = Transaction::find($key);
+            $transaksi      = Transaction::find($key);
             $transaksiPoint = $transaksi->point > 0 ? false : true; // check point use
-            $costumerData = $this->costumerMembers($costumer, $transaksiPoint, $payment['total']);
+            $costumerData   = $this->costumerMembers($costumer, $transaksiPoint, $payment['total']);
 
             // return $costumerData;
-            $subtotal = $transaksi->total_payment;
-            $paid = $transaksi->total_paid;
-            $unpaid = intval($transaksi->total_unpaid);
-            $bayar = $payment['pay'];
-            $discount = intval($discounts['value']);
+            $subtotal    = $transaksi->total_payment;
+            $paid        = $transaksi->total_paid;
+            $unpaid      = intval($transaksi->total_unpaid);
+            $bayar       = $payment['pay'];
+            $discount    = intval($discounts['value']);
             $pointMember = intval($costumer['point']);
 
             if ($transaksi->discount > 0) {
@@ -475,11 +472,11 @@ class KasirController extends Controller
             }
 
             $totalTerbayar = $discount + $pointMember + $bayar;
-            $sisaBayar = $unpaid - $totalTerbayar;
+            $sisaBayar     = $unpaid - $totalTerbayar;
 
-            $trTerbayar = $paid + $totalTerbayar;
-            $status = $subtotal <= $trTerbayar ? "s" : "p";
-            $discountVal = $discounts['status'] ? $discount : $transaksi->discount;
+            $trTerbayar       = $paid + $totalTerbayar;
+            $status           = $subtotal <= $trTerbayar ? "s" : "p";
+            $discountVal      = $discounts['status'] ? $discount : $transaksi->discount;
             $pointCostumerUse = intval($pointMember ?? 0);
 
             $queryPayment = PaymentTransaction::query()
@@ -487,66 +484,65 @@ class KasirController extends Controller
                 ->where('transaction_id', $transaksi->id)
                 ->first();
 
-
-            if (!$queryPayment) {
+            if (! $queryPayment) {
                 return response()->json([
-                    'status' => 'Not Found',
-                    'code' => 404,
-                    'message' => 'Pembayaran tidak ditemukan'
+                    'status'  => 'Not Found',
+                    'code'    => 404,
+                    'message' => 'Pembayaran tidak ditemukan',
                 ], 404);
             }
 
             $updatePayment = [
-                'pembayaran_id' => $queryPayment->id,
+                'pembayaran_id'  => $queryPayment->id,
                 'payment_amount' => $bayar,
-                'discount' => $discountVal,
-                'point' => $pointCostumerUse,
+                'discount'       => $discountVal,
+                'point'          => $pointCostumerUse,
                 'payment_method' => $payment['metode'],
-                'total_cashback' => $bayar > $queryPayment->total_payment ? $bayar - $queryPayment->total_payment : 0
+                'total_cashback' => $bayar > $queryPayment->total_payment ? $bayar - $queryPayment->total_payment : 0,
             ];
             prosesPembayaranTransaksi($updatePayment);
 
             $transaksi->update([
-                'costumer_id' => $costumerData,
-                'total_paid' => $trTerbayar >= $subtotal ? $subtotal : $trTerbayar,
-                'total_unpaid' => $sisaBayar > 0 ? $sisaBayar : 0,
-                'discount' => $transaksi->discount ? $transaksi->discount + $discountVal : $discountVal,
-                'point' => $transaksi->point ? $pointCostumerUse + $transaksi->point : $pointCostumerUse,
-                'status_transaction' =>  $status
+                'costumer_id'        => $costumerData,
+                'total_paid'         => $trTerbayar >= $subtotal ? $subtotal : $trTerbayar,
+                'total_unpaid'       => $sisaBayar > 0 ? $sisaBayar : 0,
+                'discount'           => $transaksi->discount ? $transaksi->discount + $discountVal : $discountVal,
+                'point'              => $transaksi->point ? $pointCostumerUse + $transaksi->point : $pointCostumerUse,
+                'status_transaction' => $status,
             ]);
 
             if ($transaksi->total_unpaid > 0) {
                 $rePayment = [
                     'transaction_id' => $transaksi->id,
-                    'total_payment' => $transaksi->total_unpaid,
-                    'total_paid' => 0,
-                    'total_unpaid' => $transaksi['total_unpaid'],
+                    'total_payment'  => $transaksi->total_unpaid,
+                    'total_paid'     => 0,
+                    'total_unpaid'   => $transaksi['total_unpaid'],
                     'total_cashback' => 0,
                     'payment_amount' => 0,
-                    'factur_number' =>  generateFactur(),
-                    'payment_method' => 't'
+                    'factur_number'  => generateFactur(),
+                    'payment_method' => 't',
                 ];
-                createPaymentData($rePayment);
+                $this->createPaymentData($rePayment);
             }
 
             DB::commit();
             return response()->json([
-                'status' => 'success',
-                'code' => 200,
+                'status'  => 'success',
+                'code'    => 200,
                 'message' => 'proses pembayaran berhasil',
-                'data' => [
-                    'transaksi_id' => $transaksi->id,
-                    'payment_id' => $queryPayment->id,
+                'data'    => [
+                    'transaksi_id'  => $transaksi->id,
+                    'payment_id'    => $queryPayment->id,
                     'factur_number' => $queryPayment->factur_number,
-                ]
+                ],
             ], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json([
-                'status' => 'error',
-                'code' => 500,
+                'status'  => 'error',
+                'code'    => 500,
                 'message' => 'proses pembayaran gagal',
-                'details' => $th->getMessage()
+                'details' => $th->getMessage(),
             ], 500);
         }
     }
@@ -554,25 +550,25 @@ class KasirController extends Controller
     public function costumerMembers($data, $statusPoint, $totalTransaction)
     {
         $costumer = Costumer::where('no_telp', $data['telpon'])->first();
-        if (!$costumer) {
+        if (! $costumer) {
             $query = Costumer::create([
-                'name' => $data['name'],
+                'name'          => $data['name'],
                 'jenis_kelamin' => $data['jk'],
-                'alamat' => $data['alamat'],
-                'no_telp' => $data['telpon'],
-                'email' => $data['email'] ?? '',
-                'status' => false,
-                'point_member' => $this->createPointMembers($totalTransaction)
+                'alamat'        => $data['alamat'],
+                'no_telp'       => $data['telpon'],
+                'email'         => $data['email'] ?? '',
+                'status'        => false,
+                'point_member'  => $this->createPointMembers($totalTransaction),
             ]);
             return $query->id;
         } else {
             if ($statusPoint && $data['point_use']) {
                 $costumer->update([
-                    'point_member' => 0
+                    'point_member' => 0,
                 ]);
             } else {
                 $costumer->update([
-                    'point_member' => $costumer->point_members + $this->createPointMembers($totalTransaction)
+                    'point_member' => $costumer->point_members + $this->createPointMembers($totalTransaction),
                 ]);
             }
             return $costumer->id;
@@ -581,10 +577,10 @@ class KasirController extends Controller
 
     public function createPointMembers($totalTransaction)
     {
-        $point = 2500;
-        $kelipatan = 100000;
+        $point          = 2500;
+        $kelipatan      = 100000;
         $totalTransaksi = intval($totalTransaction);
-        $pointTotal = 0;
+        $pointTotal     = 0;
         if ($totalTransaksi < $kelipatan) {
             return $pointTotal;
         } else {
@@ -599,30 +595,49 @@ class KasirController extends Controller
             $query = Transaction::find($id);
             if ($query->discount > 0) {
                 $data = [
-                    'status' => true,
+                    'status'   => true,
                     'discount' => $query->discount,
-                    'info' => 'Potongan discount tidak dapat diproses!!!',
+                    'info'     => 'Potongan discount tidak dapat diproses!!!',
                 ];
             } else {
                 $data = [
-                    'status' => false,
+                    'status'   => false,
                     'discount' => 0,
-                    'info' => 'Potongan discount dapat diproses!!!',
+                    'info'     => 'Potongan discount dapat diproses!!!',
                 ];
             }
 
             return response()->json([
                 'status' => 'success',
-                'code' => 200,
-                'data' => $data
+                'code'   => 200,
+                'data'   => $data,
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
-                'status' => 'error',
-                'code' => 500,
+                'status'  => 'error',
+                'code'    => 500,
                 'message' => 'gagal mengambil data',
-                'details' => $th->getMessage()
+                'details' => $th->getMessage(),
             ], 500);
         }
+    }
+
+    public function createPaymentData($arrayData)
+    {
+        $query = PaymentTransaction::create([
+            "transaction_id" => $arrayData['transaction_id'],
+            "total_payment"  => $arrayData['total_payment'],
+            "total_paid"     => $arrayData['total_paid'],
+            "discount"       => 0,
+            "point"          => 0,
+            "total_unpaid"   => $arrayData['total_unpaid'],
+            "total_cashback" => $arrayData['total_cashback'],
+            "payment_amount" => $arrayData['payment_amount'],
+            "factur_number"  => $arrayData['factur_number'],
+            "payment_method" => $arrayData['payment_method'],
+            "is_status"      => false,
+        ]);
+
+        return $query->id;
     }
 }
