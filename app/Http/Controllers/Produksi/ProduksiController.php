@@ -293,7 +293,7 @@ class ProduksiController extends Controller
 
     public function produksiDetailJson()
     {
-        $query = ProductionBarangDetail::query()->with('barang');
+        $query = ProductionBarangDetail::query()->with('barang', 'production.crafter');
 
         if (request()->estimasi) {
             $tanggal = request()->estimasi ? explode("to", request()->estimasi) : [Carbon::now()->toDateString()];

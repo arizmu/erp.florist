@@ -72,13 +72,11 @@
                                         Jumlah</th>
                                     <th
                                         class="px-6 py-3.5 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
-                                        Satuan</th>
+                                        Code Produksi</th>
                                     <th
                                         class="px-6 py-3.5 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
-                                        Harga</th>
-                                    <th
-                                        class="px-6 py-3.5 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
-                                        Total</th>
+                                        Crafter    
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
@@ -103,22 +101,15 @@
                                                 x-text="item.amount_item">-</span>
                                         </td>
                                         <td class="px-6 py-4">
-                                            <span
-                                                class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
-                                                x-text="item.barang && item.barang.satuan ? item.barang.satuan.nama_satuan : '-'">-</span>
-                                        </td>
-                                        <td class="px-6 py-4">
                                             <div
                                                 class="flex items-center gap-1.5 text-gray-900 dark:text-white font-semibold">
-                                                <span class="text-gray-400">Rp</span>
-                                                <span x-text="formatRupiah(item.cost_item)">-</span>
+                                                <span x-text="item.production.code_production">-</span>
                                             </div>
                                         </td>
                                         <td class="px-6 py-4">
                                             <div
                                                 class="flex items-center gap-1.5 text-gray-900 dark:text-white font-semibold">
-                                                <span class="text-gray-400">Rp</span>
-                                                <span x-text="formatRupiah(item.total_cost)">-</span>
+                                                <span x-text="item.production.crafter.pegawai_name">-</span>
                                             </div>
                                         </td>
                                     </tr>
