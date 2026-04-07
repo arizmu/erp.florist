@@ -134,23 +134,49 @@
     <div class="py-2" style="font-size: 10pt">
         <div class="d-flex justify-content-between" style="font-weight: bold;">
             <span>
-                Subtotal
+                Total Pembayaran
             </span>
             <span>
                 {{ number_format($data->total_payment) }}
             </span>
         </div>
-        <div class="d-flex justify-content-between">
+        {{-- <div class="d-flex justify-content-between">
             <span>
                 Payment Amount (pa)
             </span>
             <span>
                 {{ number_format($data->payment->first()->payment_amount) }}
             </span>
+        </div> --}}
+        <div class="d-flex justify-content-between">
+            <span>
+                Diskon
+            </span>
+            <span>
+                {{ number_format($data->payment->first()->discount) }}
+            </span>
         </div>
         <div class="d-flex justify-content-between">
             <span>
-                Method
+                Point 
+            </span>
+            <span>
+                {{ number_format($data->payment->first()->point) }}
+            </span>
+        </div>
+        {{-- <div class="d-flex justify-content-between" style="font-weight: normal;">
+            <span>
+                Total Paid (pa + dc + pt)
+            </span>
+            <span>
+                {{ number_format($data->total_paid) }}
+            </span>
+        </div> --}}
+        <hr>
+        
+        <div class="d-flex justify-content-between">
+            <span>
+                Metode
             </span>
             <span>
                 @if ($data->payment->first()->payment_method === 't')
@@ -164,45 +190,20 @@
                 @endif
             </span>
         </div>
-        <div class="d-flex justify-content-between">
-            <span>
-                Discount (dc)
-            </span>
-            <span>
-                {{ number_format($data->payment->first()->discount) }}
-            </span>
-        </div>
-        <div class="d-flex justify-content-between">
-            <span>
-                Point (pt)
-            </span>
-            <span>
-                {{ number_format($data->payment->first()->point) }}
-            </span>
-        </div>
-        <div class="d-flex justify-content-between" style="font-weight: normal;">
-            <span>
-                Total Paid (pa + dc + pt)
-            </span>
-            <span>
-                {{ number_format($data->total_paid) }}
-            </span>
-        </div>
-        
         <div class="d-flex justify-content-between" style="font-weight: bold;">
             <span>
-                Paid
+                Terbayar
             </span>
-            <span>
-                {{ number_format($data->total_paid - ($data->discount + $data->point)) }}
+            <span style="font-size: 14pt">
+                {{ number_format($data->payment->first()->payment_amount) }}
             </span>
         </div>
         <div class="d-flex justify-content-between">
             <span>
-                Unpaid
+                Sisa Bayar
             </span>
             <span class="">
-                {{ number_format($data->total_unpaid) }}
+                {{ number_format($data->payment->first()->total_payment - $data->payment->first()->payment_amount) }}
             </span>
         </div>
     </div>

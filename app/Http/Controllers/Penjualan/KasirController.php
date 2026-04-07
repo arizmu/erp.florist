@@ -277,7 +277,7 @@ class KasirController extends Controller
 
     public function invoice($transaksi_id, $invoice_id)
     {
-        $queryTransaksi = Transaction::with([
+       $queryTransaksi = Transaction::with([
             'details',
             'costumer',
             'payment' => function ($query) use ($invoice_id) {
