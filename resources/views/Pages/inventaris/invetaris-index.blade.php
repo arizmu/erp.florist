@@ -76,6 +76,10 @@
                                         Comment</th>
                                     <th
                                         class="px-6 py-3.5 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th
+                                        class="px-6 py-3.5 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                                         Date</th>
                                     <th
                                         class="px-6 py-3.5 text-center text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
@@ -105,6 +109,10 @@
                                         <td class="px-6 py-4">
                                             <span class="text-gray-600 dark:text-gray-300 text-sm"
                                                 x-text="val.comment">-</span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="badge" :class="val.status ? 'badge-success' : 'badge-warning'"
+                                                x-text="val.status ? 'barang masuk' : 'barang keluar' ">-</span>
                                         </td>
                                         <td class="px-6 py-4">
                                             <div

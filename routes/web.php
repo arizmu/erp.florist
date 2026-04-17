@@ -18,6 +18,7 @@ use App\Http\Controllers\Products\SatuanController;
 use App\Http\Controllers\Produksi\ProduksiController;
 use App\Http\Controllers\RJasaCraftingController;
 use App\Http\Controllers\RolesPermissionController;
+use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
 use App\Models\Product\Product;
 use Illuminate\Support\Facades\Route;
@@ -88,7 +89,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
     });
 
     Route::group([
-        'prefix' => 'inventory'
+        'prefix' => 'inventory',
     ], function () {
         Route::controller(InventoryController::class)->group(function () {
             Route::get('invetory-data', 'index')->name('inventory.index');
@@ -100,11 +101,15 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::get('get-detail-inventory', 'detailInventory');
             Route::get('get-referensi-barang', 'referensiBarang');
             Route::get('get-detail-json', 'detailJson');
+
+            Route::get('/barang-keluar', 'barang_keluar')->name('barang.keluar');
+            Route::get('/get-pegawai', 'getPegawai');
+            Route::post('/barang-keluar/storing', 'barangKeluar');
         });
     });
 
     Route::group([
-        'prefix' => 'transaksi'
+        'prefix' => 'transaksi',
     ], function () {
         Route::controller(KasirController::class)->group(function () {
             Route::get('/', 'index')->name('transaksi.index');
@@ -134,7 +139,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
     });
 
     Route::group([
-        'prefix' => 'management'
+        'prefix' => 'management',
     ], function () {
         Route::controller(PegawaiController::class)->group(function () {
             Route::get('pegawai', 'index')->name('pegawai.index');
@@ -197,7 +202,6 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         Route::post('costumers/update', 'update');
     });
 
-
     Route::controller(CraftingController::class)->prefix('jasa-crafter')->group(function () {
         Route::get('/', 'index')->name('jasa.crafter.index');
         Route::get('/data-json', 'dataJson');
@@ -205,7 +209,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
 
     Route::group([
         'prefix' => 'laporan',
-        'controller' => LaporanController::class
+        'controller' => LaporanController::class,
     ], function () {
         Route::get('/transaksi-penjualan', 'laporanPenjualanLayout')->name('laporanPenjualanLayout');
         Route::get('/penjualan/export-pdf', 'PdfExportPenjualan');
@@ -217,7 +221,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
 
     Route::group([
         'prefix' => 'role-permission',
-        'controller' => RolesPermissionController::class
+        'controller' => RolesPermissionController::class,
     ], function () {
         Route::get('/', 'index')->name('role.permission.index');
         Route::post('/store', 'store');
@@ -227,15 +231,26 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         Route::get('/permissions', 'permissionJson');
     });
 
+    Route::group(['prefix' => 'stock', 'controller' => StockController::class], function () {
+        Route::get('/view', 'stock')->name('stock.view');
+        Route::get('/stock-berjalan', 'stock_berjalan')->name('stock.berjalan');
+
+        Route::group(['prefix' => 'api'], function () {
+            Route::get('/stock-json', 'stokJson');
+            Route::get('/stock-berjalan-json', 'stokJsonBerjalan');
+        });
+    });
+
     Route::get('/barcode', function () {
         $query = Product::where('code', request()->barcode)->first();
-        if (!$query) {
+        if (! $query) {
             abort(404);
         }
+
         return view('pdf.barcode', [
             'code' => $query->code,
             'price' => $query->price,
-            'name' => $query->product_name
+            'name' => $query->product_name,
         ]);
     });
 });

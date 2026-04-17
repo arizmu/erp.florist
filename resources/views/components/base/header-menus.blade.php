@@ -78,6 +78,33 @@
                     <span class="icon-[tabler--circle-plus] size-4 text-gray-400 dark:text-gray-500 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors"></span>
                     <span class="truncate">Penerimaan Detail</span>
                 </a>
+                
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-amber-100 dark:hover:bg-amber-800/30 hover:text-amber-700 dark:hover:text-amber-300 transition-all duration-200 group"
+                    href="{{ route('barang.keluar') }}">
+                    <span class="icon-[tabler--circle-minus] size-4 text-gray-400 dark:text-gray-500 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors"></span>
+                    <span class="truncate">Barang Keluar</span>
+                </a>
+            </div>
+        </div>
+
+        
+        {{-- Manajemen Product --}}
+        <div class="menu-card bg-gradient-to-br from-blue-50/50 to-indigo-50/50 dark:from-blue-900/10 dark:to-indigo-900/10 rounded-xl p-3 border border-blue-100/50 dark:border-blue-800/30 hover:shadow-lg hover:shadow-blue-100/20 dark:hover:shadow-blue-900/20 transition-all duration-300 hover:-translate-y-0.5">
+            <h4 class="font-semibold text-blue-700 dark:text-blue-400 text-xs mb-2 flex items-center gap-2">
+                <span class="icon-[tabler--package] size-4"></span>
+                Stok
+            </h4>
+            <div class="flex flex-col gap-0.5">
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-800/30 hover:text-blue-700 dark:hover:text-blue-300 transition-all duration-200 group"
+                    href="{{ route('stock.view') }}">
+                    <span class="icon-[tabler--list-details] size-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors"></span>
+                    <span class="truncate">Stok</span>
+                </a>
+                <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-800/30 hover:text-blue-700 dark:hover:text-blue-300 transition-all duration-200 group"
+                    href="{{ route('stock.berjalan') }}">
+                    <span class="icon-[tabler--category] size-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors"></span>
+                    <span class="truncate">Stok Berjalan</span>
+                </a>
             </div>
         </div>
 
@@ -125,13 +152,13 @@
         <div class="menu-card bg-gradient-to-br from-cyan-50/50 to-sky-50/50 dark:from-cyan-900/10 dark:to-sky-900/10 rounded-xl p-3 border border-cyan-100/50 dark:border-cyan-800/30 hover:shadow-lg hover:shadow-cyan-100/20 dark:hover:shadow-cyan-900/20 transition-all duration-300 hover:-translate-y-0.5">
             <h4 class="font-semibold text-cyan-700 dark:text-cyan-400 text-xs mb-2 flex items-center gap-2">
                 <span class="icon-[tabler--box] size-4"></span>
-                Barang
+                Master data
             </h4>
             <div class="flex flex-col gap-0.5">
                 <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-cyan-100 dark:hover:bg-cyan-800/30 hover:text-cyan-700 dark:hover:text-cyan-300 transition-all duration-200 group"
                     href="{{ route('barang.index') }}">
                     <span class="icon-[tabler--package] size-4 text-gray-400 dark:text-gray-500 group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-colors"></span>
-                    <span class="truncate">Bahan Baku</span>
+                    <span class="truncate">Barang</span>
                 </a>
                 <a class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-cyan-100 dark:hover:bg-cyan-800/30 hover:text-cyan-700 dark:hover:text-cyan-300 transition-all duration-200 group"
                     href="{{ route('category.index') }}">

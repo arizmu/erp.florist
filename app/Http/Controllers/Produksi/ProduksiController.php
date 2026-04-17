@@ -9,7 +9,6 @@ use App\Models\Product\JenisProduct;
 use App\Models\Product\Product;
 use App\Models\Production\Production;
 use App\Models\Production\ProductionBarangDetail;
-use App\Models\production\ProductionOtherDetail;
 use App\Models\Production\RefSeviceCharge;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -28,28 +27,30 @@ class ProduksiController extends Controller
         return view('Pages.produksi.produksi-form');
     }
 
-    function getBahanBaku()
+    public function getBahanBaku()
     {
         $query = Barang::query()->with('satuan');
         $query->when(request()->key, function ($query) {
-            $query->where('nama_barang', 'like', '%' . request()->key . '%');
+            $query->where('nama_barang', 'like', '%'.request()->key.'%');
         });
+
         return response()->json([
             'code' => '200',
             'status' => 'Ok',
             'message' => 'data fetch',
-            'data' => $query->take(15)->get()
+            'data' => $query->take(15)->get(),
         ]);
     }
 
     public function getPegawai()
     {
         $query = Pegawai::select('id', 'pegawai_name');
+
         return response()->json([
             'status' => 'Ok',
             'code' => 200,
             'message' => 'Data fetch',
-            'data' => $query->get()
+            'data' => $query->get(),
         ]);
     }
 
@@ -75,7 +76,7 @@ class ProduksiController extends Controller
         DB::beginTransaction();
         try {
             $production = $request->detail;
-            $tanggal = explode("to", $production['estimasi']);
+            $tanggal = explode('to', $production['estimasi']);
             $tanggalStart = Carbon::parse($tanggal[0]);
             $tanggalEnd = count($tanggal) > 1 ? Carbon::parse($tanggal[1]) : $tanggalStart;
             $jasa = RefSeviceCharge::find($request->jasa);
@@ -104,27 +105,41 @@ class ProduksiController extends Controller
                     'cost_item' => $value['price'],
                     'total_cost' => $value['total_price'],
                     'item_name' => $value['item'],
-                    'status' => false
+                    'status' => false,
                 ]);
-                if (!$value['status']) {
-                    Barang::where('id', $value['id'])->decrement('stock', $value['qty']);
+                if (! $value['status']) {
+                    $qb = Barang::where('id', $value['id'])->first();
+                    $arrayData = [
+                        'barang_id' => $qb->id,
+                        'qty' => $value['qty'],
+                        'qty_awal' => $qb->stock,
+                        'qty_akhir' => $qb->stock - $value['qty'],
+                        'type' => false,
+                        'keterangan' => 'Produksi Barang | code : '.$productionQuery->code_production,
+                        'pegawai_id' => $production['crafter'],
+                    ];
+                    StockMovementCreate($arrayData);
+                    $qb->stock = $qb->stock - $value['qty'];
+                    $qb->save();
                 }
             }
 
             DB::commit();
+
             return response()->json([
                 'status' => 'success',
                 'code' => 200,
                 'message' => 'Production data stored successfully',
-                'data' => $productionQuery
+                'data' => $productionQuery,
             ]);
         } catch (\Exception $e) {
             DB::rollback();
+
             return response()->json([
                 'status' => 'Bugs',
                 'code' => 500,
                 'message' => 'Internal server errors',
-                'details' => $e->getMessage()
+                'details' => $e->getMessage(),
             ], 500);
         }
     }
@@ -134,21 +149,22 @@ class ProduksiController extends Controller
         $date = Carbon::now();
         $year = $date->format('y');
         $month = $date->format('m');
-        $latestCode = Production::where('code_production', 'like', $year . $month . '%')->latest()->first();
+        $latestCode = Production::where('code_production', 'like', $year.$month.'%')->latest()->first();
         $increment = 1;
-        $code = "";
+        $code = '';
         if ($latestCode) {
             if (substr($latestCode->code_production, 0, 4) === "$year$month") {
                 $yearMonth = substr($latestCode->code_production, 0, 4);
-                $latestIncrement = (int)substr($latestCode->code_production, 4, 8);
+                $latestIncrement = (int) substr($latestCode->code_production, 4, 8);
                 $numberIncrement = $latestIncrement + 1;
-                $code = $yearMonth . str_pad($numberIncrement, 4, 0, STR_PAD_LEFT);
+                $code = $yearMonth.str_pad($numberIncrement, 4, 0, STR_PAD_LEFT);
             } else {
-                $code = $year . $month . str_pad($increment, 4, '0', STR_PAD_LEFT);
+                $code = $year.$month.str_pad($increment, 4, '0', STR_PAD_LEFT);
             }
         } else {
-            $code = $year . $month . str_pad($increment, 4, '0', STR_PAD_LEFT);
+            $code = $year.$month.str_pad($increment, 4, '0', STR_PAD_LEFT);
         }
+
         return $code;
     }
 
@@ -161,26 +177,25 @@ class ProduksiController extends Controller
         // Filter keywords
         $query->when($request->keywords, function ($q) use ($request) {
             $q->where(function ($subQuery) use ($request) {
-                $subQuery->where('code_production', 'LIKE', '%' . $request->keywords . '%')
-                    ->orWhere('production_title', 'LIKE', '%' . $request->keywords . '%');
+                $subQuery->where('code_production', 'LIKE', '%'.$request->keywords.'%')
+                    ->orWhere('production_title', 'LIKE', '%'.$request->keywords.'%');
             });
         });
 
-
-        if ($request->status === "y") {
-            $query->when($request->status, function ($q) use ($request) {
+        if ($request->status === 'y') {
+            $query->when($request->status, function ($q) {
                 $q->where('production_status', 1);
             });
         }
 
         if ($request->status === 'n') {
-            $query->when($request->status, function ($q) use ($request) {
+            $query->when($request->status, function ($q) {
                 $q->where('production_status', 0);
             });
         }
 
         if ($request->estimasi) {
-            $tanggal = explode("to", $request->estimasi);
+            $tanggal = explode('to', $request->estimasi);
             $tanggalStart = Carbon::parse($tanggal[0]);
             $tanggalEnd = count($tanggal) > 1 ? Carbon::parse($tanggal[1]) : $tanggalStart;
             $query->whereBetween('production_date', [$tanggalStart->format('Y-m-d'), $tanggalEnd->format('Y-m-d')]);
@@ -198,7 +213,7 @@ class ProduksiController extends Controller
             'code' => 200,
             'message' => 'Data fetch successfully.',
             'data' => $query->paginate($request->range ?? 15),
-            'request' => $request->all()
+            'request' => $request->all(),
         ]);
     }
 
@@ -209,22 +224,24 @@ class ProduksiController extends Controller
         try {
             $query = Production::find($key);
             $query->update([
-                'production_status' => true
+                'production_status' => true,
             ]);
             DB::commit();
+
             return response()->json([
                 'status' => 'success',
                 'code' => '200',
                 'message' => 'Updated successfully.',
-                'data' => $query
+                'data' => $query,
             ]);
         } catch (\Throwable $th) {
             DB::rollback();
+
             return response()->json([
                 'status' => 'Bugs',
                 'code' => 500,
                 'message' => 'internal server errors',
-                'details' => $th->getMessage()
+                'details' => $th->getMessage(),
             ]);
         }
     }
@@ -236,7 +253,7 @@ class ProduksiController extends Controller
         try {
             $productionQuery = Production::find($key);
             if ($productionQuery->distribution_status) {
-                return getResponseJson('Opps', 405, "Product sudah selesai distribusi", $productionQuery, false);
+                return getResponseJson('Opps', 405, 'Product sudah selesai distribusi', $productionQuery, false);
             }
 
             $jeniQuery = JenisProduct::first();
@@ -248,23 +265,24 @@ class ProduksiController extends Controller
                 'cost_production' => $productionQuery->production_cost,
                 'jenis_product_id' => $jeniQuery->id,
                 'ref_production_id' => $productionQuery->id,
-                'price' => $productionQuery->price_for_sale
+                'price' => $productionQuery->price_for_sale,
             ]);
             $productionQuery->update(['distribution_status' => true]);
 
             DB::commit();
+
             return response()->json([
                 'status' => 'success',
                 'code' => 200,
                 'message' => 'Distribution product successfully.',
-                'data'  => $productionQuery
+                'data' => $productionQuery,
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'Bugs',
                 'code' => 500,
-                'message' => "Internal server error",
-                'errors' => $th->getMessage()
+                'message' => 'Internal server error',
+                'errors' => $th->getMessage(),
             ], 500);
         }
     }
@@ -279,10 +297,11 @@ class ProduksiController extends Controller
                 'harga' => $value->cost_item,
                 'jumlah' => $value->amount_item,
                 'total' => $value->total_cost,
-                'status' => $value->item_status
+                'status' => $value->item_status,
             ];
         }
         $mergedDetails = array_merge($materialDetails);
+
         return getResponseJson('ok', 200, 'Data detail bahan baku', $mergedDetails, false);
     }
 
@@ -296,7 +315,7 @@ class ProduksiController extends Controller
         $query = ProductionBarangDetail::query()->with('barang', 'production.crafter');
 
         if (request()->estimasi) {
-            $tanggal = request()->estimasi ? explode("to", request()->estimasi) : [Carbon::now()->toDateString()];
+            $tanggal = request()->estimasi ? explode('to', request()->estimasi) : [Carbon::now()->toDateString()];
             $tanggalStart = Carbon::parse($tanggal[0])->format('Y-m-d');
             $tanggalEnd = isset($tanggal[1]) ? Carbon::parse($tanggal[1])->format('Y-m-d') : $tanggalStart;
             $query->whereHas('production', function ($productionQuery) use ($tanggalStart, $tanggalEnd) {
@@ -312,7 +331,7 @@ class ProduksiController extends Controller
             'status' => 'Ok',
             'data' => $query->paginate(request()->range ? request()->range : 15),
             'message' => 'Data retrieved successfully.',
-            'request' => request()->all()
+            'request' => request()->all(),
         ]);
     }
 
@@ -321,37 +340,50 @@ class ProduksiController extends Controller
         DB::beginTransaction();
         try {
             $production = Production::find($key);
-            if (!$production) {
-                return getResponseJson('errors', 404, 'Data produksi tidak ditemukan', "", false);
+            if (! $production) {
+                return getResponseJson('errors', 404, 'Data produksi tidak ditemukan', '', false);
             }
             if ($production->production_status !== 0 && $production->production_status !== false) {
                 return getResponseJson(
                     'errors',
                     400,
                     'Hanya data dengan status produksi belum selesai yang bisa dihapus',
-                    "",
+                    '',
                     false
                 );
             }
             $production->update([
                 'delete_status' => true,
-                'deleted_at' => Carbon::now()
+                'deleted_at' => Carbon::now(),
             ]);
             ProductionBarangDetail::where('production_id', $production->id)
                 ->where('item_status', false)
-                ->each(function ($detail) {
-                    Barang::where('id', $detail->barang_id)
-                        ->increment('stock', $detail->amount_item);
+                ->each(function ($detail) use ($production) {
+                    $qb = Barang::where('id', $detail->barang_id)->first();
+                    $qb->stock = $qb->stock + $detail->amount_item;
+                    $qb->save();
+                    $arrayData = [
+                        'barang_id' => $qb->id,
+                        'qty' => $detail->amount_item,
+                        'qty_awal' => $qb->stock - $detail->amount_item,
+                        'qty_akhir' => $qb->stock,
+                        'type' => true,
+                        'keterangan' => 'Pembatalan Produksi | code : '.$production->code_production,
+                        'pegawai_id' => $production->pegawai_id,
+                    ];
+                    StockMovementCreate($arrayData);
                 });
             DB::commit();
-            return getResponseJson('ok', 200, 'Produk berhasil dihapus', "", false);
+
+            return getResponseJson('ok', 200, 'Produk berhasil dihapus', '', false);
         } catch (\Throwable $th) {
             DB::rollBack();
+
             return getResponseJson(
                 'errors',
                 500,
                 'Terdapat kesalahan internal',
-                "",
+                '',
                 $th->getMessage()
             );
         }

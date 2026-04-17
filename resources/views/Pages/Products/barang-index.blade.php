@@ -605,7 +605,6 @@
                             keywords: this.search.keyword,
                         });
                         url = `/master-barang/barang-json?${params.toString()}`;
-                        console.log('Final URL:', url);
                         this.getData(url);
                     },
 
