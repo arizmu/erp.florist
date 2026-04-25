@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Transaction\Transaction;
 
 class HomeController extends Controller
 {
@@ -20,24 +20,34 @@ class HomeController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => $count
+            'data' => $count,
         ]);
     }
 
     public function dailyRevenue()
     {
-        $total = \App\Models\Transaction\PaymentTransaction::whereHas('transaction', function ($q) {
-            $q->whereDate('created_at', today())
-                ->where('deleted_status', false);
-        })
-            ->sum('total_paid');
+        $query = Transaction::whereDate('created_at', today())->where('deleted_status', false)->sum('total_paid');
 
         return response()->json([
             'status' => 'success',
-            'data' => $total
+            'data' => $query,
         ]);
     }
 
+    /**
+     * Statistik penjualan untuk chart dashboard.
+     *
+     * ALUR DATA:
+     *   1. Frontend mengirim query param `period` (week | month | year).
+     *   2. Backend menghitung sum(total_paid) langsung dari tabel `transactions`
+     *      dengan filter deleted_status = false — konsisten dengan dailyRevenue().
+     *   3. Hasil sum dibagi 1.000.000 → nilai dalam satuan JUTA ke frontend.
+     *
+     * PERIOD:
+     *   - week  : 7 hari terakhir, label = nama hari singkat (Mon, Tue, …)
+     *   - month : 4 minggu dalam bulan berjalan, label = Minggu 1–4
+     *   - year  : 12 bulan terakhir, label = nama bulan singkat (Jan, Feb, …)
+     */
     public function forStatistics(\Illuminate\Http\Request $request)
     {
         $period = $request->get('period', 'week');
@@ -45,38 +55,41 @@ class HomeController extends Controller
         $data = [];
 
         if ($period === 'week') {
-            // Last 7 days
+            // 7 hari terakhir — per hari
             for ($i = 6; $i >= 0; $i--) {
                 $date = today()->subDays($i);
                 $labels[] = $date->format('D');
-                $data[] = \App\Models\Transaction\PaymentTransaction::whereHas('transaction', function ($q) use ($date) {
-                    $q->whereDate('created_at', $date)
-                        ->where('deleted_status', false);
-                })
-                    ->sum('total_paid') / 1000000; // Convert to millions
+                $data[] = Transaction::whereDate('created_at', $date)
+                    ->where('deleted_status', false)
+                    ->sum('total_paid') / 1000000;
             }
         } elseif ($period === 'month') {
-            // Last 30 days grouped by week
-            for ($i = 3; $i >= 0; $i--) {
-                $startDate = today()->subWeeks($i + 1)->startOfWeek();
-                $endDate = today()->subWeeks($i)->endOfWeek();
-                $labels[] = 'Week ' . (4 - $i);
-                $data[] = \App\Models\Transaction\PaymentTransaction::whereHas('transaction', function ($q) use ($startDate, $endDate) {
-                    $q->whereBetween('created_at', [$startDate, $endDate])
-                        ->where('deleted_status', false);
-                })
+            // 4 minggu dalam bulan berjalan, dimulai dari hari pertama bulan ini
+            $monthStart = today()->copy()->startOfMonth();
+            $monthEnd   = today()->copy()->endOfMonth();
+
+            for ($i = 0; $i < 4; $i++) {
+                $weekStart = $monthStart->copy()->addDays($i * 7);
+                $weekEnd   = $weekStart->copy()->addDays(6)->endOfDay();
+
+                // Clamp: pastikan tidak melebihi akhir bulan
+                if ($weekEnd->gt($monthEnd)) {
+                    $weekEnd = $monthEnd->copy();
+                }
+
+                $labels[] = 'Minggu '.($i + 1);
+                $data[] = Transaction::whereBetween('created_at', [$weekStart, $weekEnd])
+                    ->where('deleted_status', false)
                     ->sum('total_paid') / 1000000;
             }
         } else {
-            // Last 12 months
+            // 12 bulan terakhir — per bulan
             for ($i = 11; $i >= 0; $i--) {
                 $date = today()->subMonths($i);
                 $labels[] = $date->format('M');
-                $data[] = \App\Models\Transaction\PaymentTransaction::whereHas('transaction', function ($q) use ($date) {
-                    $q->whereYear('created_at', $date->year)
-                        ->whereMonth('created_at', $date->month)
-                        ->where('deleted_status', false);
-                })
+                $data[] = Transaction::whereYear('created_at', $date->year)
+                    ->whereMonth('created_at', $date->month)
+                    ->where('deleted_status', false)
                     ->sum('total_paid') / 1000000;
             }
         }
@@ -85,8 +98,8 @@ class HomeController extends Controller
             'status' => 'success',
             'data' => [
                 'labels' => $labels,
-                'values' => $data
-            ]
+                'values' => $data,
+            ],
         ]);
     }
 
@@ -99,7 +112,7 @@ class HomeController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => $count
+            'data' => $count,
         ]);
     }
 
@@ -111,7 +124,7 @@ class HomeController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => $count
+            'data' => $count,
         ]);
     }
 }

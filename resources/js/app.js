@@ -1,5 +1,4 @@
-import './bootstrap';
-import './global';
+import "./global";
+import "./bootstrap";
 
-import "flyonui/flyonui"
-
+import "flyonui/flyonui";

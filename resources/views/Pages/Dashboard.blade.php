@@ -1,190 +1,186 @@
 <x-base-layout>
     <div class="space-y-6 animate-fade-in-up" x-data="dashboardData()">
-        <!-- Header & Breadcrumbs -->
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-                <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                    <span class="icon-[tabler--dashboard] text-primary size-7"></span>
-                    Dashboard
-                </h1>
+                <h1 class="text-xl font-bold text-gray-800 tracking-tight">Dashboard</h1>
+                <p class="text-sm text-gray-400 mt-0.5">Ringkasan aktivitas bisnis Anda hari ini</p>
             </div>
-            <div class="flex items-center gap-3">
-                <span class="text-sm text-gray-500 bg-white px-3 py-1.5 rounded-lg shadow-sm border border-gray-100">
-                    <span class="icon-[tabler--calendar] me-1 relative top-0.5"></span>
-                    {{ now()->format('l, d F Y') }}
-                </span>
+            <div class="flex items-center gap-2 text-xs text-gray-400 bg-white border border-gray-100 shadow-sm px-3 py-2 rounded-xl w-fit">
+                <span class="icon-[tabler--calendar-event] size-4 text-indigo-400"></span>
+                {{ now()->format('l, d F Y') }}
             </div>
         </div>
 
         <!-- Welcome Banner -->
-        <div
-            class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
-            <div
-                class="absolute top-0 right-0 -mr-8 -mt-8 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none">
-            </div>
-            <div
-                class="absolute bottom-0 left-0 -ml-8 -mb-8 w-48 h-48 bg-black/10 rounded-full blur-3xl pointer-events-none">
-            </div>
+        <div class="relative rounded-2xl overflow-hidden shadow-lg"
+            style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 40%, #3730a3 100%);">
 
-            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                <div class="flex items-center gap-5">
-                    <div class="avatar online">
-                        <div
-                            class="w-16 h-16 rounded-full border-2 border-white/30 shadow-lg bg-white/20 backdrop-blur-sm flex items-center justify-center text-xl font-bold">
-                            {{ substr(auth()->user()->name, 0, 1) }}
-                        </div>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-bold">Selamat Datang, {{ auth()->user()->name }}! 👋</h2>
-                        <p class="text-blue-100 mt-1 opacity-90">Senang melihat Anda kembali. Berikut ringkasan
-                            aktivitas hari ini.</p>
-                        <div class="flex gap-2 mt-3">
-                            <span class="badge badge-soft bg-white/20 text-white border-none">
-                                <span class="icon-[tabler--shield] me-1"></span>
-                                {{ auth()->user()->roles->first()->name ?? 'User' }}
-                            </span>
-                            <span class="badge badge-soft bg-white/20 text-white border-none">
-                                <span class="icon-[tabler--mail] me-1"></span>
-                                {{ auth()->user()->email }}
-                            </span>
-                        </div>
-                    </div>
+            <!-- Decorative shapes -->
+            <div class="absolute -top-10 -right-10 w-52 h-52 bg-white/5 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="absolute -bottom-8 -left-8 w-40 h-40 bg-indigo-400/20 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="absolute top-1/2 right-24 -translate-y-1/2 w-24 h-24 bg-white/5 rounded-full pointer-events-none"></div>
+
+            <div class="relative z-10 flex flex-col sm:flex-row items-center sm:items-center gap-5 px-7 py-6">
+                <!-- Avatar -->
+                <div class="shrink-0 w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 shadow-inner flex items-center justify-center text-2xl font-bold text-white">
+                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                </div>
+
+                <!-- Text -->
+                <div class="text-center sm:text-left">
+                    <p class="text-indigo-200 text-xs font-medium tracking-widest uppercase mb-0.5">Selamat Datang</p>
+                    <h2 class="text-xl sm:text-2xl font-bold text-white leading-tight">
+                        {{ auth()->user()->name }} 👋
+                    </h2>
+                    <p class="text-indigo-200/80 text-sm mt-1">
+                        <span class="icon-[tabler--mail] size-3.5 relative top-px me-1"></span>
+                        {{ auth()->user()->email }}
+                    </p>
+                </div>
+
+                <!-- Right side indicator -->
+                <div class="sm:ms-auto flex items-center gap-2 bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white text-sm backdrop-blur-sm">
+                    <span class="relative flex size-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full size-2 bg-emerald-400"></span>
+                    </span>
+                    Sistem Aktif
                 </div>
             </div>
         </div>
 
         <!-- Stats Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+
             <!-- Stat Card 1 - Daily Transactions -->
-            <div class="card bg-white shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="card-body p-5">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="p-3 bg-blue-50 text-blue-600 rounded-xl">
-                            <span class="icon-[tabler--shopping-cart] size-6"></span>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 overflow-hidden">
+                <div class="flex items-stretch">
+                    <!-- Left accent bar -->
+                    <div class="w-1.5 bg-gradient-to-b from-blue-400 to-blue-600 rounded-l-2xl shrink-0"></div>
+                    <div class="flex-1 p-5">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="p-2.5 bg-blue-50 rounded-xl">
+                                <span class="icon-[tabler--shopping-cart] size-5 text-blue-500"></span>
+                            </div>
+                            <span class="text-xs font-medium text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full"
+                                x-show="stats.transactions > 0">Aktif</span>
                         </div>
-                        <span class="badge badge-soft badge-success text-xs"
-                            x-show="stats.transactions > 0">Active</span>
+                        <p class="text-2xl font-bold text-gray-800" x-text="stats.transactions">0</p>
+                        <p class="text-xs text-gray-400 mt-1 font-medium">Transaksi Hari Ini</p>
                     </div>
-                    <h3 class="text-3xl font-bold text-gray-800" x-text="stats.transactions">0</h3>
-                    <p class="text-gray-500 text-sm mt-1">Transaksi Hari Ini</p>
                 </div>
             </div>
 
             <!-- Stat Card 2 - Daily Revenue -->
-            <div class="card bg-white shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="card-body p-5">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
-                            <span class="icon-[tabler--currency-dollar] size-6"></span>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 overflow-hidden">
+                <div class="flex items-stretch">
+                    <div class="w-1.5 bg-gradient-to-b from-emerald-400 to-emerald-600 rounded-l-2xl shrink-0"></div>
+                    <div class="flex-1 p-5">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="p-2.5 bg-emerald-50 rounded-xl">
+                                <span class="icon-[tabler--currency-dollar] size-5 text-emerald-500"></span>
+                            </div>
+                            <span class="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Hari Ini</span>
                         </div>
-                        <span class="badge badge-soft badge-success text-xs">Today</span>
+                        <p class="text-2xl font-bold text-gray-800">
+                            Rp <span x-text="formatRupiah(stats.revenue)">0</span>
+                        </p>
+                        <p class="text-xs text-gray-400 mt-1 font-medium">Pendapatan Harian</p>
                     </div>
-                    <h3 class="text-3xl font-bold text-gray-800" x-text="formatCurrency(stats.revenue)">Rp 0</h3>
-                    <p class="text-gray-500 text-sm mt-1">Pendapatan Harian</p>
                 </div>
             </div>
 
             <!-- Stat Card 3 - Daily Production -->
-            <div class="card bg-white shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="card-body p-5">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="p-3 bg-amber-50 text-amber-600 rounded-xl">
-                            <span class="icon-[tabler--box] size-6"></span>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 overflow-hidden">
+                <div class="flex items-stretch">
+                    <div class="w-1.5 bg-gradient-to-b from-amber-400 to-orange-500 rounded-l-2xl shrink-0"></div>
+                    <div class="flex-1 p-5">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="p-2.5 bg-amber-50 rounded-xl">
+                                <span class="icon-[tabler--box] size-5 text-amber-500"></span>
+                            </div>
+                            <span class="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">Hari Ini</span>
                         </div>
-                        <span class="badge badge-soft badge-warning text-xs">Today</span>
+                        <p class="text-2xl font-bold text-gray-800" x-text="stats.production">0</p>
+                        <p class="text-xs text-gray-400 mt-1 font-medium">Produksi Bucket Harian</p>
                     </div>
-                    <h3 class="text-3xl font-bold text-gray-800" x-text="stats.production">0</h3>
-                    <p class="text-gray-500 text-sm mt-1">Produksi Harian</p>
                 </div>
             </div>
 
-            <!-- Stat Card 4 - Total Customers -->
-            <div class="card bg-white shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="card-body p-5">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="p-3 bg-purple-50 text-purple-600 rounded-xl">
-                            <span class="icon-[tabler--users] size-6"></span>
-                        </div>
-                        <span class="badge badge-soft badge-info text-xs">Total</span>
-                    </div>
-                    <h3 class="text-3xl font-bold text-gray-800" x-text="stats.customers">0</h3>
-                    <p class="text-gray-500 text-sm mt-1">Pelanggan</p>
-                </div>
-            </div>
         </div>
 
         <!-- Layout Grid: Quick Actions & Chart -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
             <!-- Quick Actions -->
-            <div class="card bg-white shadow-lg border border-gray-100 lg:col-span-1 h-fit">
-                <div class="card-header bg-white border-b border-gray-100 px-6 py-4">
-                    <h3 class="font-bold text-gray-800 flex items-center gap-2">
-                        <span class="icon-[tabler--lightning] text-amber-500"></span>
-                        Aksi Cepat
-                    </h3>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 lg:col-span-1 h-fit">
+                <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-2">
+                    <span class="icon-[tabler--zap] size-4 text-amber-500"></span>
+                    <h3 class="font-semibold text-gray-700 text-sm">Aksi Cepat</h3>
                 </div>
-                <div class="card-body p-6">
-                    <div class="grid grid-cols-2 gap-4">
+                <div class="p-5">
+                    <div class="grid grid-cols-2 gap-3">
+
                         <a href="{{ route('transaksi.index') }}"
-                            class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 hover:bg-blue-50 text-gray-600 hover:text-blue-600 border border-transparent hover:border-blue-100 transition-all duration-300 group">
-                            <div
-                                class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                                <span class="icon-[tabler--cash] size-6"></span>
+                            class="group flex flex-col items-center gap-2.5 p-4 rounded-xl bg-blue-50 hover:bg-blue-100 transition-all duration-200">
+                            <div class="w-10 h-10 rounded-xl bg-blue-500 group-hover:bg-blue-600 shadow flex items-center justify-center transition-colors">
+                                <span class="icon-[tabler--cash] size-5 text-white"></span>
                             </div>
-                            <span class="text-xs font-semibold">Kasir</span>
+                            <span class="text-xs font-semibold text-blue-700">Kasir</span>
                         </a>
 
-                        <a href="{{ route('inventory.index') }}"
-                            class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 hover:bg-emerald-50 text-gray-600 hover:text-emerald-600 border border-transparent hover:border-emerald-100 transition-all duration-300 group">
-                            <div
-                                class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                                <span class="icon-[tabler--building-warehouse] size-6"></span>
+                        <a href="{{ route('stock.view') }}"
+                            class="group flex flex-col items-center gap-2.5 p-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 transition-all duration-200">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-500 group-hover:bg-emerald-600 shadow flex items-center justify-center transition-colors">
+                                <span class="icon-[tabler--building-warehouse] size-5 text-white"></span>
                             </div>
-                            <span class="text-xs font-semibold">Stok</span>
+                            <span class="text-xs font-semibold text-emerald-700">Stok</span>
                         </a>
 
                         <a href="{{ route('laporanPenjualanLayout') }}"
-                            class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 hover:bg-purple-50 text-gray-600 hover:text-purple-600 border border-transparent hover:border-purple-100 transition-all duration-300 group">
-                            <div
-                                class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                                <span class="icon-[tabler--report-analytics] size-6"></span>
+                            class="group flex flex-col items-center gap-2.5 p-4 rounded-xl bg-violet-50 hover:bg-violet-100 transition-all duration-200">
+                            <div class="w-10 h-10 rounded-xl bg-violet-500 group-hover:bg-violet-600 shadow flex items-center justify-center transition-colors">
+                                <span class="icon-[tabler--report-analytics] size-5 text-white"></span>
                             </div>
-                            <span class="text-xs font-semibold">Laporan</span>
+                            <span class="text-xs font-semibold text-violet-700">Laporan</span>
                         </a>
 
                         <a href="{{ route('pegawai.index') }}"
-                            class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 hover:bg-orange-50 text-gray-600 hover:text-orange-600 border border-transparent hover:border-orange-100 transition-all duration-300 group">
-                            <div
-                                class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                                <span class="icon-[tabler--users-group] size-6"></span>
+                            class="group flex flex-col items-center gap-2.5 p-4 rounded-xl bg-orange-50 hover:bg-orange-100 transition-all duration-200">
+                            <div class="w-10 h-10 rounded-xl bg-orange-500 group-hover:bg-orange-600 shadow flex items-center justify-center transition-colors">
+                                <span class="icon-[tabler--users-group] size-5 text-white"></span>
                             </div>
-                            <span class="text-xs font-semibold">Pegawai</span>
+                            <span class="text-xs font-semibold text-orange-700">Pegawai</span>
                         </a>
+
                     </div>
                 </div>
             </div>
 
-            <!-- Chart / Recent Activity Placeholder -->
-            <div class="card bg-white shadow-lg border border-gray-100 lg:col-span-2">
-                <div class="card-header bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
-                    <h3 class="font-bold text-gray-800 flex items-center gap-2">
-                        <span class="icon-[tabler--chart-bar] text-blue-500"></span>
-                        Statistik Penjualan
-                    </h3>
-                    <select class="select select-sm select-bordered w-32" x-model="chartPeriod"
-                        @change="loadChartData()">
+            <!-- Chart: Statistik Penjualan -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 lg:col-span-2">
+                <div class="px-5 py-4 border-b border-gray-50 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-indigo-500"></div>
+                        <h3 class="font-semibold text-gray-700 text-sm">Statistik Penjualan</h3>
+                    </div>
+                    <select class="text-xs text-gray-500 bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1.5 outline-none cursor-pointer focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 transition"
+                        x-model="chartPeriod" @change="loadChartData()">
                         <option value="week">Minggu Ini</option>
                         <option value="month">Bulan Ini</option>
                         <option value="year">Tahun Ini</option>
                     </select>
                 </div>
-                <div class="card-body p-6">
-                    <canvas id="salesChart" class="w-full h-80 max-h-80"></canvas>
+                <div class="p-5">
+                    <canvas id="salesChart" class="w-full h-72 max-h-72"></canvas>
                 </div>
             </div>
+
         </div>
     </div>
+
 
     @push('js')
         <script>
@@ -193,8 +189,7 @@
                     stats: {
                         transactions: 0,
                         revenue: 0,
-                        production: 0,
-                        customers: 0
+                        production: 0
                     },
                     chartPeriod: 'week',
                     chart: null,
@@ -206,17 +201,15 @@
 
                     async loadStats() {
                         try {
-                            const [transactions, revenue, production, customers] = await Promise.all([
+                            const [transactions, revenue, production] = await Promise.all([
                                 fetch('/api/dashboard/daily-transaksi').then(r => r.json()),
                                 fetch('/api/dashboard/daily-revenue').then(r => r.json()),
-                                fetch('/api/dashboard/count-produksi').then(r => r.json()),
-                                fetch('/api/dashboard/count-customers').then(r => r.json())
+                                fetch('/api/dashboard/count-produksi').then(r => r.json())
                             ]);
 
                             this.stats.transactions = transactions.data || 0;
                             this.stats.revenue = revenue.data || 0;
                             this.stats.production = production.data || 0;
-                            this.stats.customers = customers.data || 0;
                         } catch (error) {
                             console.error('Error loading stats:', error);
                         }
@@ -235,6 +228,11 @@
                         }
                     },
 
+                    /**
+                     * Render atau update chart Chart.js.
+                     * Nilai `data` yang diterima sudah dalam satuan JUTA
+                     * (dikonversi di backend: sum / 1_000_000).
+                     */
                     updateChart(labels, data) {
                         const ctx = document.getElementById('salesChart');
 
@@ -248,7 +246,7 @@
                                 data: {
                                     labels: labels,
                                     datasets: [{
-                                        label: 'Penjualan (Juta)',
+                                        label: 'Pendapatan',
                                         data: data,
                                         borderColor: '#4f46e5',
                                         backgroundColor: 'rgba(79, 70, 229, 0.1)',
@@ -279,8 +277,17 @@
                                             padding: 10,
                                             displayColors: false,
                                             callbacks: {
+                                                /**
+                                                 * context.parsed.y sudah dalam satuan juta.
+                                                 * Tampilkan dengan 2 desimal, misal: Rp 1.25 jt
+                                                 */
                                                 label: function(context) {
-                                                    return 'Rp ' + context.parsed.y.toFixed(2) + ' Juta';
+                                                    const val = context.parsed.y;
+                                                    if (val >= 1) {
+                                                        return 'Rp ' + val.toFixed(2) + ' jt';
+                                                    }
+                                                    // Jika nilai < 1 juta, tampilkan dalam ribuan
+                                                    return 'Rp ' + (val * 1000).toFixed(0) + ' rb';
                                                 }
                                             }
                                         }
@@ -293,8 +300,15 @@
                                                 drawBorder: false,
                                             },
                                             ticks: {
+                                                /**
+                                                 * Nilai y sudah dalam satuan juta dari backend.
+                                                 * Tampilkan sebagai: 0 jt, 1 jt, 2.5 jt, dst.
+                                                 */
                                                 callback: function(value) {
-                                                    return 'Rp ' + value + 'jt';
+                                                    if (value >= 1) {
+                                                        return value + ' jt';
+                                                    }
+                                                    return (value * 1000).toFixed(0) + ' rb';
                                                 },
                                                 font: {
                                                     family: "'Inter', sans-serif",
@@ -323,9 +337,9 @@
 
                     formatCurrency(value) {
                         if (value >= 1000000) {
-                            return 'Rp ' + (value / 1000000).toFixed(1) + 'jt';
+                            return 'Rp ' + (value / 1000000).toFixed(1) + ' jt';
                         } else if (value >= 1000) {
-                            return 'Rp ' + (value / 1000).toFixed(0) + 'rb';
+                            return 'Rp ' + (value / 1000).toFixed(0) + ' rb';
                         }
                         return 'Rp ' + value;
                     }

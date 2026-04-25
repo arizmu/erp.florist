@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\Pegawai;
 use App\Models\StokMovement;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+// use Illuminate\Support\Facades\DB;
 
 class StockController extends Controller
 {
@@ -24,6 +28,7 @@ class StockController extends Controller
             ->join('satuan_barangs as s', 'barangs.satuan_barang_id', 's.id')
             ->join('category_barangs as c', 'barangs.category_barang_id', 'c.id')
             ->select('barangs.id', 'barangs.nama_barang', 'barangs.stock', 'barangs.price', 'c.category_name as category', 's.nama_satuan as satuan', 'barangs.updated_at')
+            ->where('barangs.is_deleted', false)
             ->when($request->keyword, function ($query) use ($request) {
                 $query->where('barangs.nama_barang', 'like', '%'.$request->keyword.'%')
                     ->orWhere('c.category_name', 'like', '%'.$request->keyword.'%')
@@ -88,5 +93,44 @@ class StockController extends Controller
             'message' => 'Data retrieved successfully.',
             'request' => request()->all(),
         ]);
+    }
+
+    public function kosongkanStok(Request $request, $key)
+    {
+        DB::beginTransaction();
+        try {
+            $query = Barang::where('id', $key)->first();
+            if ($query) {
+                $pegawai = Pegawai::where('id', Auth::user()->pegawai_id)->first();
+                $qty_awal = $query->stock;
+                StockMovementCreate([
+                    'barang_id' => $query->id,
+                    'qty' => 0,
+                    'qty_awal' => $qty_awal,
+                    'qty_akhir' => 0,
+                    'type' => false,
+                    'keterangan' => 'Pengosongan Stok | '.$request->alasan,
+                    'pegawai_id' => $pegawai->id,
+                ]);
+
+                $query->update([
+                    'stock' => 0,
+                ]);
+                DB::commit();
+
+                return response()->json([
+                    'status' => 'Ok',
+                    'data' => $query,
+                    'message' => 'Data retrieved successfully.',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return response()->json([
+                'status' => 'Failed',
+                'message' => $th->getMessage(),
+            ], 500);
+        }
     }
 }

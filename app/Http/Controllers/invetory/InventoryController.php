@@ -9,8 +9,8 @@ use App\Models\invetory\InventoryDetail;
 use App\Models\Pegawai;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class InventoryController extends Controller
 {
@@ -28,7 +28,8 @@ class InventoryController extends Controller
     {
         $query = Barang::query()->with('satuan');
         $query->when(request()->key, function ($query) {
-            $query->where('nama_barang', 'like', '%'.request()->key.'%');
+            $query->where('nama_barang', 'like', '%'.request()->key.'%')
+                ->where('is_bahan_baku', request()->status ?? 0);
         });
 
         return response()->json([
@@ -166,6 +167,7 @@ class InventoryController extends Controller
     public function referensiBarang()
     {
         $query = Barang::query();
+
         if (request()->search) {
             $query->where('nama_barang', 'like', '%'.request()->search.'%');
         }

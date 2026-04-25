@@ -135,6 +135,8 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::get('/get-referensi-jasa', 'getReferensiJasa');
             Route::post('/pre-order-action', 'preOrderStore');
             Route::get('/find-costumer/{tlp}', 'findCostumer');
+            Route::get('/pre-order-data', 'preorderLayout')->name('preorder.data.layout');
+            Route::get('/pre-order-json', 'perOrderDataJson');
         });
     });
 
@@ -238,6 +240,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
         Route::group(['prefix' => 'api'], function () {
             Route::get('/stock-json', 'stokJson');
             Route::get('/stock-berjalan-json', 'stokJsonBerjalan');
+            Route::post('/kosongkan-stok/{key}', 'kosongkanStok');
         });
     });
 

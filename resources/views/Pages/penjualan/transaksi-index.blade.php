@@ -195,8 +195,8 @@
                                         class="text-xs text-gray-400">(PT)</span></th>
                                 <th class="font-semibold text-gray-600">
                                     Jumlah Bayar
-                                     <span class="text-xs text-gray-400">(PD)</span>
-                                    </th>
+                                    <span class="text-xs text-gray-400">(PD)</span>
+                                </th>
                                 <th class="font-semibold text-gray-600">Status</th>
                                 <th class="font-semibold text-gray-600 text-right">Action</th>
                             </tr>
@@ -220,8 +220,7 @@
                                     <td class="text-gray-600" x-text="formatRupiah(parseInt(item.point))"></td>
 
                                     <td class="text-gray-600">
-                                        Rp. <span
-                                            x-text="formatRupiah(parseInt(item.payment_amount))"></span>
+                                        Rp. <span x-text="formatRupiah(parseInt(item.payment_amount))"></span>
                                     </td>
                                     <td>
                                         <div class="flex flex-wrap gap-1.5">
@@ -258,10 +257,10 @@
                                             </button>
                                             <template x-if="!item.is_status">
                                                 <a class="btn btn-circle btn-sm btn-soft btn-warning hover:scale-110 transition-transform"
-                                                x-show="item.status_transaction == 'd' || item.status_transaction == 'p'"
-                                                @click="toPayment(item.payment_id)" title="Process Payment">
-                                                <span class="icon-[mingcute--wallet-line] size-4"></span>
-                                            </a>
+                                                    x-show="item.status_transaction == 'd' || item.status_transaction == 'p'"
+                                                    @click="toPayment(item.payment_id)" title="Process Payment">
+                                                    <span class="icon-[mingcute--wallet-line] size-4"></span>
+                                                </a>
                                             </template>
                                         </div>
                                     </td>

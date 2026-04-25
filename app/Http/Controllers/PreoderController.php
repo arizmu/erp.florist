@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Penjualan\KasirController;
 use App\Models\Barang;
 use App\Models\Costumer;
-use App\Models\Pegawai;
-use App\Models\Product\JenisProduct;
 use App\Models\Product\Product;
 use App\Models\Production\Production;
 use App\Models\Production\ProductionBarangDetail;
@@ -20,7 +19,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-class PreoderController extends Controller
+class PreoderController extends KasirController
 {
     public function formLayout()
     {
@@ -30,20 +29,24 @@ class PreoderController extends Controller
     public function getMaterial()
     {
         $query = Barang::query()->when(request()->key, function ($iresult) {
-            $iresult->where('nama_barang', 'like', '%' . request()->key . '%');
+            $iresult->where('nama_barang', 'like', '%'.request()->key.'%')
+                ->where('is_bahan_baku', 0);
         })->take(request()->key ? 15 : 5)->get();
+
         return getResponseJson('success', 200, 'data fetch successfully', $query, 0);
     }
 
     public function getCrafter()
     {
         $query = getPegawai()->get();
+
         return getResponseJson('success', 200, 'data fetch successfully', $query, 0);
     }
 
     public function getReferensiJasa()
     {
         $query = getReferensiJasa()->get();
+
         return getResponseJson('success', 200, 'data fetch successfully', $query, 0);
     }
 
@@ -70,13 +73,12 @@ class PreoderController extends Controller
             return getResponseJson('error', 400, 'validation failed', $request->all(), $validation->errors()->all());
         }
 
-
         DB::beginTransaction();
         try {
-            //produksi
+            // produksi
             $productionFunc = $this->produksi([
                 'xproduksi' => $request->production,
-                'xitems' => $request->items
+                'xitems' => $request->items,
             ]);
             $productionId = $productionFunc['produksi_id'];
             $productionName = $productionFunc['produk_name'];
@@ -90,16 +92,16 @@ class PreoderController extends Controller
             $pointStatus = $costumerFunc['point_status'];
             $point = $costumerFunc['point'];
 
-            // transaksi 
+            // transaksi
             $queryTransaksi = Transaction::create([
-                "costumer_id" => $costumerId,
+                'costumer_id' => $costumerId,
                 'code' => generateCodeTransaksi(),
                 'transaction_date' => Carbon::now()->format('Y-m-d'),
                 'total_payment' => intval($subtotalBiaya),
                 'total_paid' => intval($point) ?? 0,
                 'total_unpaid' => $pointStatus ? intval($subtotalBiaya) - intval($point) : intval($subtotalBiaya),
                 'status_transaction' => 'd',
-                'preorder_status' => true
+                'preorder_status' => true,
             ]);
 
             // detail transaksi
@@ -112,10 +114,11 @@ class PreoderController extends Controller
                 'amount_item' => $jumlahItem,
                 'cost_item' => $productionBiaya,
                 'total_cost' => $jumlahItem * $productionBiaya,
-                'status' => false
+                'status' => false,
             ]);
 
             DB::commit();
+
             return getResponseJson('success', 200, 'insert successfully!', [
                 'transaction_id' => $queryTransaksi->id,
                 'jumlah_item' => $jumlahItem,
@@ -139,10 +142,10 @@ class PreoderController extends Controller
             // 'costumer.*' => ['required'],
             'costumer.name' => ['required'],
             'costumer.phone' => ['required', 'numeric'],
-            'costumer.point_use' =>'',
+            'costumer.point_use' => '',
             'costumer.point' => '',
             'product' => ['required', 'array'],
-            'estimasi' => ['required', 'string']
+            'estimasi' => ['required', 'string'],
         ]);
         if ($formValidasi->fails()) {
             return getResponseJson('error', 400, 'validation failed', $request->all(), $formValidasi->errors()->all());
@@ -156,7 +159,7 @@ class PreoderController extends Controller
             $point = $costumerFunc['point'];
 
             // fungsi crate proudotion barang
-            $tanggal = explode("to", $request['estimasi']);
+            $tanggal = explode('to', $request['estimasi']);
             $tanggalStart = Carbon::parse($tanggal[0]);
             $tanggalEnd = count($tanggal) > 1 ? Carbon::parse($tanggal[1]) : $tanggalStart;
             $production = $this->productionOrdering($request->product, $tanggalStart, $tanggalEnd);
@@ -188,7 +191,7 @@ class PreoderController extends Controller
                 'total_paid' => 0,
                 'total_unpaid' => $totalPrice,
                 'status_transaction' => 'd',
-                'preorder_status' => true
+                'preorder_status' => true,
             ];
 
             $queryTransaksi = Transaction::create($transaksiData);
@@ -200,16 +203,17 @@ class PreoderController extends Controller
                 'total_unpaid' => $transaksiData['total_payment'],
                 'total_cashback' => 0,
                 'payment_amount' => 0,
-                'factur_number' =>  generateFactur(),
-                'payment_method' => 't'
+                'factur_number' => generateFactur(),
+                'payment_method' => 't',
             ];
             $payment = createPaymentData($arrayForPaymentTransaction);
 
             DB::commit();
+
             return getResponseJson('success', 200, 'insert successfully!', [
                 'transaction_id' => $queryTransaksi->id,
                 'total_price' => $totalPrice,
-                'payment_id' => $payment
+                'payment_id' => $payment,
             ], false);
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -219,6 +223,7 @@ class PreoderController extends Controller
                 'error_exception' => $th->getMessage(),
                 'error_line' => $th->getLine(),
             ]);
+
             return getResponseJson('errors', 500, 'internal server error', $request->all(), [
                 'error_id' => $errorId,
                 'error_message' => $th->getMessage(),
@@ -235,7 +240,7 @@ class PreoderController extends Controller
             $materials = [];
             $totalPrice = 0;
             foreach ($product['metarials'] as $material) {
-                if (!$material['item_status']) {
+                if (! $material['item_status']) {
                     Barang::where('id', $material['item_code'])->decrement('stock', $material['item_qty']);
                 }
 
@@ -246,7 +251,7 @@ class PreoderController extends Controller
                     'cost_item' => $material['item_price'],
                     'total_cost' => $material['item_total'],
                     'item_name' => $material['item_name'],
-                    'status' => false
+                    'status' => false,
                 ];
                 $totalPrice += intval($material['item_total']);
             }
@@ -266,7 +271,7 @@ class PreoderController extends Controller
                 'price_for_sale' => $product['total_cost'],
                 'jasa_reference' => $jasaCrafter->id,
                 'nilai_jasa_crafter' => $jasaCrafter->salary,
-                'preorder' => true
+                'preorder' => true,
             ]);
             $queryProduction->detail()->createMany($materials);
             $productData[] = [
@@ -275,9 +280,10 @@ class PreoderController extends Controller
                 'name' => $queryProduction->production_title,
                 'qty' => $queryProduction->amount_items,
                 'harga' => $queryProduction->price_for_sale,
-                'total' => $queryProduction->amount_items * $queryProduction->price_for_sale
+                'total' => $queryProduction->amount_items * $queryProduction->price_for_sale,
             ];
         }
+
         return [
             'product_data' => $productData,
             'status' => 'success',
@@ -287,12 +293,13 @@ class PreoderController extends Controller
     public function findCostumer($key)
     {
         $query = Costumer::where('no_telp', $key)->first();
+
         return getResponseJson('ok', 200, 'costumer found', $query, false);
     }
 
     public function costumer($costumer)
     {
-        $costumerID = "";
+        $costumerID = '';
         $point = 0;
         $point_use = $costumer['point_use'] ?? false;
 
@@ -306,21 +313,22 @@ class PreoderController extends Controller
         } else {
             $costumerStore = Costumer::create([
                 'name' => $costumer['name'],
-                'jenis_kelamin' => $costumer['gender'] ? "L" : "P",
+                'jenis_kelamin' => $costumer['gender'] ? 'L' : 'P',
                 'alamat' => $costumer['address'],
                 'no_telp' => $costumer['phone'],
                 'email' => $costumer['email'],
                 'status' => false,
                 'point_member' => 0,
-                'sosmed' => $costumer['sosmed']
+                'sosmed' => $costumer['sosmed'],
             ]);
             $costumerID = $costumerStore->id;
         }
+
         return [
             'status' => $costumer['status'],
             'point' => $point,
             'point_status' => $point_use,
-            'costumer_id' => $costumerID
+            'costumer_id' => $costumerID,
         ];
     }
 
@@ -338,19 +346,19 @@ class PreoderController extends Controller
             'production_start' => $estimasi['startDate'],
             'production_end' => $estimasi['endDate'],
             'production_cost' => $biayaMaterialProduksi,
-            'pegawai_id' => $detail['crafter']
+            'pegawai_id' => $detail['crafter'],
         ]);
 
         $items = $xproduction['xitems'];
         foreach ($items as $value) {
-            if (!$value['item_status']) {
+            if (! $value['item_status']) {
                 ProductionBarangDetail::create([
                     'production_id' => $queryProduksi->id,
                     'barang_id' => $value['item_code'],
                     'amount_item' => $value['item_qty'],
                     'cost_item' => $value['item_price'],
                     'total_cost' => $value['item_total'],
-                    'status' => false
+                    'status' => false,
                 ]);
             } else {
                 ProductionOtherDetail::create([
@@ -360,7 +368,7 @@ class PreoderController extends Controller
                     'qty' => $value['item_qty'],
                     'cost' => $value['item_price'],
                     'total_cost' => $value['item_total'],
-                    'comment' => $value['comment']
+                    'comment' => $value['comment'],
                 ]);
             }
         }
@@ -368,7 +376,7 @@ class PreoderController extends Controller
         return [
             'produksi_id' => $queryProduksi->id,
             'biaya_produksi' => $biayaMaterialProduksi,
-            'produk_name' => $queryProduksi->production_title
+            'produk_name' => $queryProduksi->production_title,
         ];
     }
 
@@ -377,28 +385,91 @@ class PreoderController extends Controller
         $date = Carbon::now();
         $year = $date->format('y');
         $month = $date->format('m');
-        $latestCode = Production::where('code_production', 'like', $year . $month . '%')->latest()->first();
+        $latestCode = Production::where('code_production', 'like', $year.$month.'%')->latest()->first();
         $increment = 1;
-        $code = "";
+        $code = '';
         if ($latestCode) {
             if (substr($latestCode->code_production, 0, 4) === "$year$month") {
                 $yearMonth = substr($latestCode->code_production, 0, 4);
-                $latestIncrement = (int)substr($latestCode->code_production, 4, 8);
+                $latestIncrement = (int) substr($latestCode->code_production, 4, 8);
                 $numberIncrement = $latestIncrement + 1;
-                $code = $yearMonth . str_pad($numberIncrement, 4, 0, STR_PAD_LEFT);
+                $code = $yearMonth.str_pad($numberIncrement, 4, 0, STR_PAD_LEFT);
             } else {
-                $code = $year . $month . str_pad($increment, 4, '0', STR_PAD_LEFT);
+                $code = $year.$month.str_pad($increment, 4, '0', STR_PAD_LEFT);
             }
         } else {
-            $code = $year . $month . str_pad($increment, 4, '0', STR_PAD_LEFT);
+            $code = $year.$month.str_pad($increment, 4, '0', STR_PAD_LEFT);
         }
+
         return $code;
     }
 
-
     public function genereateCodeTransaksi()
     {
-        $code = 'TRX' . Carbon::now()->format('ym') . '-' . rand(000000, 999999);
+        $code = 'TRX'.Carbon::now()->format('ym').'-'.rand(000000, 999999);
+
         return $code;
+    }
+
+    public function preorderLayout()
+    {
+        return view('Pages.penjualan.pre-order.pre-order-data');
+    }
+
+    public function perOrderDataJson(Request $request)
+    {
+        $query = Transaction::query()->isDelete(false)->with('details', 'costumer')
+            ->select(
+                'transactions.id',
+                'transactions.code',
+                'transactions.transaction_date',
+                'transactions.status_transaction',
+                'transactions.preorder_status',
+                'transactions.deleted_status',
+                'transactions.costumer_id',
+                'payment_transactions.total_payment',
+                'transactions.total_paid',
+                'transactions.total_unpaid',
+                'payment_transactions.total_unpaid as sisa_bayar',
+                'payment_transactions.total_cashback',
+                'payment_transactions.payment_amount',
+                'payment_transactions.point',
+                'payment_transactions.discount',
+                'payment_transactions.factur_number',
+                'payment_transactions.payment_method',
+                'payment_transactions.is_status',
+                'payment_transactions.id as payment_id'
+            )
+            ->leftJoin('payment_transactions', 'transactions.id', 'payment_transactions.transaction_id')
+            ->where('transactions.preorder_status', true)
+            ->when($request->keywords, function ($q) use ($request) {
+                $q->where(function ($subQuery) use ($request) {
+                    $subQuery->where('code', 'LIKE', '%'.$request->keywords.'%')
+                        ->orWhereHas('costumer', function ($costumerQuery) use ($request) {
+                            $costumerQuery->where('name', 'LIKE', '%'.$request->keywords.'%')
+                                ->orWhere('no_telp', 'LIKE', '%'.$request->keywords.'%');
+                        });
+                });
+            })->when(in_array($request->status, ['d', 's', 'p']), function ($subQuery) use ($request) {
+                $subQuery->where('transactions.status_transaction', $request->status);
+            });
+
+        $query->when($request->estimasi, function ($q) use ($request) {
+            $tanggal = $request->estimasi ? explode('to', $request->estimasi) : [Carbon::now()->toDateString()];
+            $tanggalStart = Carbon::parse($tanggal[0])->format('Y-m-d');
+            $tanggalEnd = isset($tanggal[1]) ? Carbon::parse($tanggal[1])->format('Y-m-d') : $tanggalStart;
+            $q->whereBetween('transactions.transaction_date', [$tanggalStart, $tanggalEnd]);
+        });
+
+        $data = $query->orderBy('transactions.created_at', 'desc')
+            ->orderBy('payment_transactions.created_at', 'desc')
+            ->paginate($request->range ?? 15);
+
+        return response()->json([
+            'status' => 'success',
+            'code' => 200,
+            'message' => 'Data fetch successfully',
+            'data' => $data,
+        ]);
     }
 }

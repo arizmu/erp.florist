@@ -19,25 +19,39 @@ class BarangController extends Controller
     {
         try {
             $query = Barang::find($key);
-            $query->delete();
+            if ($query->stock > 0) {
+                return response()->json([
+                    'code' => 400,
+                    'status' => 'error',
+                    'message' => 'Barang tidak bisa dihapus karena stock masih ada',
+                    'data' => [],
+                ], 400);
+            }
+
+            $query->update([
+                'is_deleted' => true,
+                'deleted_at' => now(),
+            ]);
+
             return response()->json([
                 'code' => 200,
                 'status' => 'success',
                 'message' => 'Record destroy is successfully',
-                'data' => []
+                'data' => [],
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'code' => 500,
                 'status' => 'Error',
                 'message' => 'Internal server Error',
-                'data' => []
+                'data' => [],
             ], 500);
         }
     }
 
     public function store(Request $request)
     {
+
         DB::beginTransaction();
         try {
             $query = Barang::create([
@@ -45,29 +59,33 @@ class BarangController extends Controller
                 'category_barang_id' => $request->category_id,
                 'comment' => $request->comment,
                 'price' => $request->harga,
-                'satuan_barang_id' => $request->satuan_id
+                'satuan_barang_id' => $request->satuan_id,
+                'is_bahan_baku' => $request->is_bahan_baku ?? 0,
             ]);
             DB::commit();
+
             return response()->json([
                 'code' => 201,
                 'status' => 'success',
                 'message' => 'Stored is succesfully',
-                'data' => $request->all()
+                'data' => $request->all(),
             ], 201);
         } catch (\Throwable $th) {
             DB::rollBack();
+
             return response()->json([
                 'code' => 500,
                 'status' => 'errors',
                 'message' => 'Opss internal server error',
                 'error' => $th->getMessage(),
-                'data' => $request->all()
+                'data' => $request->all(),
             ], 500);
         }
     }
 
     public function update(Request $request, $keyID)
     {
+
         DB::beginTransaction();
         try {
             $query = Barang::find($keyID);
@@ -76,23 +94,26 @@ class BarangController extends Controller
                 'category_barang_id' => $request->category_id,
                 'comment' => $request->comment,
                 'price' => intval($request->harga),
-                'satuan_barang_id' => $request->satuan
+                'satuan_barang_id' => $request->satuan,
+                'is_bahan_baku' => $request->is_bahan_baku ?? 0,
             ]);
 
             DB::commit();
+
             return response()->json([
                 'code' => 200,
                 'status' => 'success',
                 'message' => 'Update success!',
-                'data' => $request->all()
+                'data' => $request->all(),
             ]);
         } catch (\Throwable $th) {
             DB::rollBack();
+
             return response()->json([
                 'code' => 500,
                 'status' => 'error',
                 'message' => 'Update failed!',
-                'details' => $th->getMessage()
+                'details' => $th->getMessage(),
             ], 500);
         }
     }
@@ -100,10 +121,12 @@ class BarangController extends Controller
     public function barangJson(Request $request)
     {
         $query = Barang::with('category', 'satuan')
+            ->where('is_deleted', false)
             ->when($request->keywords, function ($e) use ($request) {
-                $e->where('nama_barang', 'like', '%' . $request->keywords . '%');
+                $e->where('nama_barang', 'like', '%'.$request->keywords.'%');
             })
             ->latest()->paginate(15);
+
         return response()->json([
             'code' => 200,
             'status' => 'Ok',
@@ -115,11 +138,12 @@ class BarangController extends Controller
     public function getSatuan()
     {
         $query = SatuanBarang::get();
+
         return response()->json([
             'status' => 'success',
             'code' => 200,
             'message' => 'data fetch successfully',
-            'data' => $query
+            'data' => $query,
         ]);
     }
 }

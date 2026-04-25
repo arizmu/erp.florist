@@ -113,8 +113,11 @@
                                 <td x-text="item.satuan"
                                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                 </td>
-                                <td x-text="item.stock"
+                                <td
                                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-center">
+                                    <button class="btn btn-soft btn-sm px-2 py-1" @click="edit(item.id)"
+                                        x-text="item.stock"
+                                        :class="item.stock <= 0 ? 'btn-error' : 'btn-info'"></button>
                                 </td>
                                 <td x-text="formatTanggal(item.updated_at)"
                                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
@@ -286,6 +289,68 @@
                             pages.push(i);
                         }
                         return pages;
+                    },
+
+                    edit(key) {
+                        Swal.fire({
+                            title: "Konfirmasi",
+                            html: `
+                            <div class="flex flex-col gap-0">
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Apakah anda yakin ingin mengosongkan stock? jika ya wajib mengisi keterangan dan password</p>
+                                <div class="flex flex-col gap-2 p-4">
+                                    <textarea name="alasan" id="alasan" placeholder="Masukan Alasan" class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all duration-200"></textarea>
+                                    <input class="input w-full text-sm border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all duration-200" type="password" name="pass" id="pass" placeholder="masukan password">
+                                </div>
+                            </div>
+                            `,
+                            icon: "info",
+                            showCancelButton: true,
+                            confirmButtonText: "Ya, Kosongkan",
+                            cancelButtonText: "Batal",
+                            reverseButtons: true
+                        }).then(async (result) => {
+                            if (result.isConfirmed) {
+                                const alasan = document.getElementById('alasan').value;
+                                const pass = document.getElementById('pass').value;
+                                if (alasan === "" || pass === "") {
+                                    Swal.fire({
+                                        title: "Gagal",
+                                        text: "Alasan dan Password tidak boleh kosong",
+                                        icon: "error"
+                                    })
+                                    return;
+                                }
+                                const response = await fetch(
+                                    `/stock/api/kosongkan-stok/${key}`, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'Accept': 'application/json',
+                                            'X-CSRF-TOKEN': document.querySelector(
+                                                'meta[name="csrf-token"]').getAttribute(
+                                                'content'),
+                                        },
+                                        body: JSON.stringify({
+                                            alasan: alasan,
+                                            pass: pass,
+                                        })
+                                    });
+                                if (response.status === 200) {
+                                    Swal.fire({
+                                        title: "Berhasil",
+                                        text: "Stock berhasil dikosongkan",
+                                        icon: "success"
+                                    });
+                                    this.dataLoad();
+                                } else {
+                                    Swal.fire({
+                                        title: "Gagal",
+                                        text: "Stock gagal dikosongkan",
+                                        icon: "error"
+                                    });
+                                }
+                            }
+                        });
                     },
 
                     formatTanggal(date) {

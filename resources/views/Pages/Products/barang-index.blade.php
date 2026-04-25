@@ -25,7 +25,8 @@
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Barang | Bahan Baku</h1>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Kelola data barang, Bahan baku product</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Kelola data barang, Bahan baku product
+                        </p>
                     </div>
                 </div>
             </div>
@@ -88,7 +89,8 @@
                                     Kategori</th>
                                 <th
                                     class="px-6 py-3.5 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
-                                    Stok</th>
+                                    Jenis
+                                </th>
                                 <th
                                     class="px-6 py-3.5 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                                     Tanggal</th>
@@ -99,7 +101,8 @@
                         </thead>
                         <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                             <template x-for="barang in data" :key="barang.id">
-                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150">
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150"
+                                    :class="barang.stock <= 0 ? 'bg-red-100 dark:bg-red-900/30' : ''">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
                                             <div
@@ -132,20 +135,9 @@
                                             x-text="barang.category.category_name">-</span>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <template x-if="barang.stock > 0">
-                                            <span
-                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">
-                                                <span class="icon-[tabler--check] size-3"></span>
-                                                <span x-text="barang.stock">Ready</span>
-                                            </span>
-                                        </template>
-                                        <template x-if="barang.stock < 1">
-                                            <span
-                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300">
-                                                <span class="icon-[tabler--x] size-3"></span>
-                                                <span x-text="barang.stock">Kosong</span>
-                                            </span>
-                                        </template>
+                                        <span class="badge badge-soft"
+                                            :class="barang.is_bahan_baku ? 'badge-error' : 'badge-primary'"
+                                            x-text="barang.is_bahan_baku ? 'Bahan Non Produksi' : 'Barang Produksi'">Produk</span>
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-2 text-gray-600 dark:text-gray-300 text-sm">
@@ -295,6 +287,26 @@
                                 </span>
                             </div>
                         </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <span class="flex items-center gap-2">
+                                    <span class="icon-[tabler--category] size-4 text-gray-400"></span>
+                                    Jenis
+                                </span>
+                            </label>
+                            <div class="relative">
+                                <select x-model="sForm.is_bahan_baku"
+                                    class="w-full px-4 py-3 text-sm border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer transition-all duration-200">
+                                    <option value="">Pilih Jenis...</option>
+                                    <option :value="0" x-text="'Barang Produksi'"></option>
+                                    <option :value="1" x-text="'Bahan Non Produksi'"></option>
+                                </select>
+                                <span
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                                    <span class="icon-[tabler--chevron-down] size-5"></span>
+                                </span>
+                            </div>
+                        </div>
 
                         <!-- Comment -->
                         <div>
@@ -375,17 +387,20 @@
                         category_id: '',
                         satuan_id: '',
                         comment: '',
+                        is_bahan_baku: '',
                     },
                     isAction: false,
                     isUpdated: false,
                     getEdit(item) {
+                        // console.log(item);
                         this.isUpdated = true;
                         this.sForm.nama_barang = item.nama_barang;
-                        this.sForm.satuan_id = '';
                         this.sForm.category_id = item.category_barang_id;
-                        this.sForm.comment = '';
+                        this.sForm.comment = item.comment;
                         this.sForm.id = item.id;
                         this.sForm.harga = item.price;
+                        this.sForm.is_bahan_baku = item.is_bahan_baku;
+                        this.sForm.satuan_id = item.satuan.id;
                     },
 
                     async postUpdate() {
@@ -409,6 +424,7 @@
                             category_id: item.category_id,
                             satuan: item.satuan_id,
                             comment: item.comment,
+                            is_bahan_baku: item.is_bahan_baku,
                         };
                         try {
                             const response = await axios.post(url, data);
@@ -443,6 +459,14 @@
                                 try {
                                     const response = await fetch(url);
                                     const res = await response.json();
+                                    if (res.code === 400) {
+                                        Swal.fire({
+                                            title: "Error!",
+                                            text: res.message,
+                                            icon: "error"
+                                        });
+                                        return;
+                                    }
                                     this.getData();
                                     Swal.fire({
                                         title: "Deleted!",
@@ -459,6 +483,7 @@
                             }
                         });
                     },
+
                     async storeBarang() {
                         this.isAction = true;
                         try {
@@ -513,6 +538,7 @@
                             category_id: '',
                             satuan_id: '',
                             comment: '',
+                            is_bahan_aku: '',
                         }
 
                         this.isAction = false;

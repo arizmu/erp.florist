@@ -31,7 +31,8 @@ class ProduksiController extends Controller
     {
         $query = Barang::query()->with('satuan');
         $query->when(request()->key, function ($query) {
-            $query->where('nama_barang', 'like', '%'.request()->key.'%');
+            $query->where('nama_barang', 'like', '%'.request()->key.'%')
+                ->where('is_bahan_baku', 0);
         });
 
         return response()->json([

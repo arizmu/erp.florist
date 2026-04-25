@@ -284,7 +284,7 @@
 
                         try {
                             const res = await fetch(
-                                `/inventory/get-barang-data?key=${encodeURIComponent(keyword)}`, {
+                                `/inventory/get-barang-data?key=${encodeURIComponent(keyword)}&status=1`, {
                                     headers: {
                                         'Accept': 'application/json'
                                     }
