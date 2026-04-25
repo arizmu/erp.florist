@@ -7,8 +7,7 @@ use App\Models\Pegawai;
 use App\Models\StokMovement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-// use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\DB;
 
 class StockController extends Controller
 {
