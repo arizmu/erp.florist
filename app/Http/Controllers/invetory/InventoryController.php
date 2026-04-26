@@ -40,6 +40,21 @@ class InventoryController extends Controller
         ]);
     }
 
+    public function getBarangMasuk()
+    {
+        $query = Barang::query()->with('satuan');
+        $query->when(request()->key, function ($query) {
+            $query->where('nama_barang', 'like', '%'.request()->key.'%');
+        });
+
+        return response()->json([
+            'code' => '200',
+            'status' => 'Ok',
+            'message' => 'data fetch',
+            'data' => $query->take(15)->get(),
+        ]);
+    }
+
     public function storeInvetory(Request $request)
     {
         DB::beginTransaction();

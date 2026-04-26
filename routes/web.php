@@ -101,6 +101,7 @@ Route::group(['middleware' => 'auth.manuals'], function () {
             Route::get('get-detail-inventory', 'detailInventory');
             Route::get('get-referensi-barang', 'referensiBarang');
             Route::get('get-detail-json', 'detailJson');
+            Route::get('get-barang-masuk', 'getBarangMasuk');
 
             Route::get('/barang-keluar', 'barang_keluar')->name('barang.keluar');
             Route::get('/get-pegawai', 'getPegawai');

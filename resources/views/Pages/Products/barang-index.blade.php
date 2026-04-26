@@ -237,8 +237,10 @@
                                 </span>
                             </label>
                             <div class="relative">
-                                <input x-model="sForm.nama_barang" type="text" placeholder="Masukkan nama barang"
-                                    class="w-full px-4 py-3 text-sm border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all duration-200" />
+                                <input x-model="sForm.nama_barang" x-bind:disabled="isUpdated ? true : false"
+                                    type="text" placeholder="Masukkan nama barang"
+                                    class="w-full px-4 py-3 text-sm border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all duration-200"
+                                    :class="isUpdated ? 'bg-gray-100 dark:bg-gray-700' : ''" />
                             </div>
                         </div>
 

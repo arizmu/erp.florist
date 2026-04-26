@@ -1,704 +1,619 @@
 <x-base-layout class="bg-gray-50">
     <div x-data="kasirIndex" x-init="init()">
-        <div class="mb-6">
-            <!-- Breadcrumbs -->
-            <div class="breadcrumbs mb-4 text-sm">
-                <ol>
-                    <li>
-                        <a href="#" class="flex items-center gap-2 hover:text-primary transition-colors">
-                            <span class="icon-[tabler--home] size-5"></span>
-                            Home
-                        </a>
-                    </li>
-                    <li class="breadcrumbs-separator rtl:rotate-180">
-                        <span class="icon-[tabler--chevron-right]"></span>
-                    </li>
-                    <li>
-                        <a href="#" aria-label="Penjualan" class="hover:text-primary transition-colors">
-                            <span class="icon-[tabler--shopping-cart]"></span>
-                            Penjualan
-                        </a>
-                    </li>
-                    <li class="breadcrumbs-separator rtl:rotate-180">
-                        <span class="icon-[tabler--chevron-right]"></span>
-                    </li>
-                    <li aria-current="page" class="font-medium text-primary">
-                        <span class="icon-[tabler--cash-register] me-1 size-5"></span>
-                        Kasir
-                    </li>
-                </ol>
-            </div>
-
-            <!-- Page Title -->
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div>
-                    <h1 class="text-xl md:text-3x1xl font-bold text-gray-800 flex items-center gap-3">
-                        <span
-                            class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl p-2.5 shadow-lg shadow-emerald-500/30">
-                            <span class="icon-[tabler--cash-register] size-5 text-white"></span>
-                        </span>
-                        Point of Sale
-                    </h1>
-                    <p class="text-gray-500 mt-2 ml-1">Manage sales transactions and product orders</p>
-                </div>
-                <div class="flex gap-2">
-                    <button class="btn btn-outline btn-primary gap-2" @click="searchFunc">
-                        <span class="icon-[tabler--refresh] size-5"></span>
-                        Refresh Products
-                    </button>
+        <!-- Header -->
+        <div class="mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+                <div class="flex items-center gap-2.5">
+                    <div
+                        class="w-9 h-9 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-sm">
+                        <span class="icon-[tabler--cash-register] size-5 text-white"></span>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-gray-800 leading-none">Point of Sale</h1>
+                        <p class="text-xs text-gray-400 mt-0.5">Transaksi penjualan langsung</p>
+                    </div>
                 </div>
             </div>
+            <button class="btn btn-sm btn-outline btn-primary gap-2 w-fit" @click="searchFunc">
+                <span class="icon-[tabler--refresh] size-4"></span>
+                Refresh
+            </button>
         </div>
 
         <!-- Main Content Grid -->
-        <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 xl:grid-cols-4 gap-5">
             <!-- Products Section -->
             <div class="xl:col-span-3">
-                <!-- Search & Filters Card -->
-                <div class="card mb-6 sticky top-0 z-10">
-                    <div class="card-body p-4">
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <!-- Search Input -->
-                            <div class="flex-1">
-                                <div class="relative flex items-center">
-                                    <span class="absolute left-3 text-gray-400 pointer-events-none">
-                                        <span class="icon-[tabler--search] size-5"></span>
-                                    </span>
-                                    <input type="search" x-model="search.keyword" @keyup.enter="searchFunc"
-                                        class="input input-bordered pl-10 w-full py-2.5"
-                                        placeholder="Search products..." />
-                                </div>
-                            </div>
-
-                            <!-- Action Buttons -->
-                            <div class="flex gap-2">
-                                <button type="button" @click="searchFunc" class="btn btn-primary gap-2">
-                                    <span class="icon-[ci--note-search] size-5"></span>
-                                    Search
-                                </button>
-                                <button class="btn btn-info gap-2" aria-haspopup="dialog" aria-expanded="false"
-                                    aria-controls="modal-barcode-add-item" data-overlay="#modal-barcode-add-item">
-                                    <span class="icon-[material-symbols--barcode-scanner-rounded] size-5"></span>
-                                    Scan Barcode
-                                </button>
-                            </div>
+                <!-- Search Bar -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-3 mb-4 sticky top-0 z-10">
+                    <div class="flex justify-between items-center flex-wrap gap-2">
+                        <div class="relative flex items-center gap-2">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none">
+                                <span class="icon-[tabler--search] size-4"></span>
+                            </span>
+                            <input type="search" x-model="search.keyword" @keyup.enter="searchFunc"
+                                class="min-w-96 pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/10 transition-all"
+                                placeholder="Cari produk..." />
+                        </div>
+                        <div class="flex justify-between flex-wrap items-center gap-2">
+                            <button type="button" @click="searchFunc"
+                                class="btn btn-soft min-w-40 btn-primary gap-1.5 px-4">
+                                <span class="icon-[tabler--search] size-4"></span>
+                                Filter
+                            </button>
+                            <button class="btn btn-soft min-w-40 btn-info px-4 flex items-center gap-2"
+                                aria-haspopup="dialog" aria-expanded="false" aria-controls="modal-barcode-add-item"
+                                data-overlay="#modal-barcode-add-item">
+                                <span class="icon-[material-symbols--barcode-scanner-rounded] size-4"></span>
+                                Scan Barcode
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Products Grid -->
-                <div
-                    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-4 overflow-y-auto max-h-screen">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mb-4">
                     <template x-for="item in dataTable" :key="item.id">
-                        <div class="card hover:shadow-xl transition-shadow duration-300 border-0 overflow-hidden group">
+                        <div
+                            class="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden group">
                             <!-- Product Image -->
-                            <figure class="relative h-48 bg-gray-100">
+                            <div class="relative h-36 bg-gray-50">
                                 <template x-if="item.img">
                                     <img :src="item.img"
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                         alt="Product" />
                                 </template>
                                 <span x-show="!item.img" class="absolute inset-0 flex items-center justify-center">
-                                    <span class="icon-[fxemoji--whiteflower] size-24 text-gray-300"></span>
+                                    <span class="icon-[fxemoji--whiteflower] size-16 text-gray-200"></span>
                                 </span>
-                                <!-- Quick Add Badge -->
                                 <div
                                     class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <button x-on:click="addItem(item)"
-                                        class="btn btn-circle btn-sm btn-primary shadow-lg">
-                                        <span class="icon-[tabler--plus] size-4"></span>
+                                        class="w-7 h-7 bg-emerald-500 hover:bg-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                                        <span class="icon-[tabler--plus] size-4 text-white"></span>
                                     </button>
-                                </div>
-                            </figure>
-
-                            <!-- Product Details -->
-                            <div class="card-body p-4">
-                                <h3 class="font-semibold text-gray-800 truncate text-sm" :title="item.product_name">
-                                    <span x-text="item.product_name ?? '[404]'" class="capitalize"></span>
-                                </h3>
-
-                                <!-- Price & Stock -->
-                                <div class="flex items-center justify-between flex-wrap gap-2 mt-2">
-                                    <span class="badge badge-soft text-xs badge-sm badge-info gap-1.5">
-                                        <span class="icon-[hugeicons--discount-01] size-3.5"></span>
-                                        <span class="font-semibold" x-text="item.qty + ' pcs'"></span>
-                                    </span>
-                                    <span class="badge badge-soft text-xs badge-sm badge-success gap-1.5">
-                                        <span class="icon-[hugeicons--money-bag-02] size-3.5"></span>
-                                        <span class="font-semibold" x-text="formatRupiah(item.price)"></span>
-                                    </span>
-                                </div>
-
-                                <!-- Product Code -->
-                                <div class="mt-2 flex justify-end">
-                                    <span class="badge badge-soft text-xs badge-sm badge-primary gap-1.5 text-xs">
-                                        <span class="icon-[streamline--qr-code-solid] size-3.5"></span>
-                                        <span x-text="item.code"></span>
-                                    </span>
                                 </div>
                             </div>
 
-                            <!-- Card Footer -->
-                            <div class="card-footer px-4 py-3 bg-gray-50 border-t border-gray-100">
-                                <div class="flex gap-2">
-                                    <button class="btn btn-soft btn-warning flex-1 gap-1.5 btn-sm"
-                                        x-on:click="openCostumeModal(item)">
-                                        <span class="icon-[tabler--settings] size-4"></span>
-                                        Custom
-                                    </button>
-                                    <button class="btn btn-primary flex-1 gap-1.5 btn-sm" x-on:click="addItem(item)">
-                                        <span class="icon-[tabler--shopping-cart-plus] size-4"></span>
-                                        Add
-                                    </button>
+                            <!-- Product Info -->
+                            <div class="p-3">
+                                <p class="font-semibold text-gray-800 truncate text-xs capitalize"
+                                    x-text="item.product_name ?? '[404]'"></p>
+                                <div class="flex items-center justify-between mt-1.5">
+                                    <span class="text-[10px] text-gray-400" x-text="item.qty + ' pcs'"></span>
+                                    <span class="text-xs font-bold text-emerald-600"
+                                        x-text="formatRupiah(item.price)"></span>
+                                </div>
+                                <div class="flex gap-1.5 mt-2">
+                                    <button
+                                        class="flex-1 py-1.5 text-[11px] font-semibold rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors"
+                                        x-on:click="openCostumeModal(item)">Custom</button>
+                                    <button
+                                        class="flex-1 py-1.5 text-[11px] font-semibold rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors"
+                                        x-on:click="addItem(item)">+ Keranjang</button>
                                 </div>
                             </div>
                         </div>
                     </template>
 
                     <!-- Empty State -->
-                    <div x-show="dataTable.length === 0" class="col-span-full py-12 text-center">
-                        <div class="flex flex-col items-center gap-3">
-                            <div class="bg-gray-100 rounded-full p-4">
-                                <span class="icon-[tabler--box] size-12 text-gray-400"></span>
-                            </div>
-                            <p class="text-gray-500 font-medium">No products found</p>
-                            <p class="text-gray-400 text-sm">Try adjusting your search criteria</p>
-                        </div>
+                    <div x-show="dataTable.length === 0" class="col-span-full py-16 text-center">
+                        <span class="icon-[tabler--box-off] size-12 text-gray-200 mx-auto"></span>
+                        <p class="text-gray-400 text-sm mt-3">Produk tidak ditemukan</p>
                     </div>
                 </div>
 
                 <!-- Pagination -->
-                <div class="flex justify-start gap-2 mt-4">
-                    <button type="button" class="btn btn-outline gap-2" @click="prevPageFunc" :disabled="!prevPage"
-                        :class="{ 'opacity-50 cursor-not-allowed': !prevPage }">
-                        <span class="icon-[heroicons-outline--arrow-circle-left] size-4"></span>
-                        Previous
+                <div class="flex gap-2 mt-4">
+                    <button type="button" class="btn btn-sm btn-outline gap-1.5" @click="prevPageFunc"
+                        :disabled="!prevPage" :class="{ 'opacity-40 cursor-not-allowed': !prevPage }">
+                        <span class="icon-[tabler--chevron-left] size-4"></span> Prev
                     </button>
-                    <button type="button" class="btn btn-outline  gap-2" :disabled="!nextPage"
-                        @click="nextPageFunc" :class="{ 'opacity-50 cursor-not-allowed': !nextPage }">
-                        Next
-                        <span class="icon-[heroicons-outline--arrow-circle-right] size-4"></span>
+                    <button type="button" class="btn btn-sm btn-outline gap-1.5" @click="nextPageFunc"
+                        :disabled="!nextPage" :class="{ 'opacity-40 cursor-not-allowed': !nextPage }">
+                        Next <span class="icon-[tabler--chevron-right] size-4"></span>
                     </button>
                 </div>
             </div>
 
             <!-- Shopping Cart Sidebar -->
             <div class="xl:col-span-1">
-                <div class="card shadow-xl border-0">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <!-- Cart Header -->
-                    <div class="card-header bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-4">
-                        <div class="flex items-center gap-3 text-white">
-                            <span class="icon-[tabler--shopping-cart] size-6"></span>
-                            <h3 class="text-xl font-bold">Shopping Cart</h3>
-                        </div>
+                    <div class="px-5 py-4 border-b border-gray-100 flex items-center gap-2.5"
+                        style="background: linear-gradient(135deg,#059669,#0d9488)">
+                        <span class="icon-[tabler--shopping-cart] size-5 text-white"></span>
+                        <h3 class="text-base font-bold text-white">Keranjang</h3>
+                        <span class="ms-auto bg-white/20 text-white text-xs font-bold px-2 py-0.5 rounded-full"
+                            x-text="items.length + ' item'"></span>
                     </div>
 
                     <!-- Cart Items -->
-                    <div class="card-body p-0">
-                        <div class="overflow-y-auto h-[440px]">
-                            <!-- Empty State -->
-                            <div x-show="!items || items.length === 0"
-                                class="flex flex-col items-center justify-center py-12 text-gray-400">
-                                <span class="icon-[tabler--shopping-cart-off] size-16 mb-3"></span>
-                                <p class="font-medium">Cart is empty</p>
-                                <p class="text-sm">Add items to start your transaction</p>
-                            </div>
+                    <div class="overflow-y-auto min-h-[550px]">
+                        <!-- Empty State -->
+                        <div x-show="!items || items.length === 0"
+                            class="flex flex-col items-center justify-center h-full text-gray-300 py-10">
+                            <span class="icon-[tabler--shopping-cart-off] size-12 mb-2"></span>
+                            <p class="text-sm">Keranjang kosong</p>
+                        </div>
 
-                            <!-- Cart Items List -->
-                            <div class="divide-y divide-gray-100">
-                                <template x-for="item in items" :key="item.product_id">
-                                    <div class="p-4 hover:bg-gray-50 transition-colors">
-                                        <div class="flex gap-3">
-                                            <!-- Item Image -->
-                                            <div
-                                                class="w-20 h-20 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
-                                                <template x-if="item.img_url">
-                                                    <img :src='item.img_url' class="w-full h-full object-cover" />
-                                                </template>
-                                                <span x-show="!item.img_url"
-                                                    class="w-full h-full flex items-center justify-center">
-                                                    <span
-                                                        class="icon-[fxemoji--whiteflower] size-10 text-gray-300"></span>
-                                                </span>
+                        <!-- Cart Items List -->
+                        <div class="divide-y divide-gray-50">
+                            <template x-for="item in items" :key="item.product_id">
+                                <div class="p-3 hover:bg-gray-50 transition-colors">
+                                    <div class="flex gap-2.5">
+                                        <!-- Item Image -->
+                                        <div class="w-14 h-14 bg-gray-100 rounded-xl flex-shrink-0 overflow-hidden">
+                                            <template x-if="item.img_url">
+                                                <img :src='item.img_url' class="w-full h-full object-cover" />
+                                            </template>
+                                            <span x-show="!item.img_url"
+                                                class="w-full h-full flex items-center justify-center">
+                                                <span class="icon-[fxemoji--whiteflower] size-8 text-gray-200"></span>
+                                            </span>
+                                        </div>
+
+                                        <!-- Item Details -->
+                                        <div class="flex-1 min-w-0">
+                                            <p class="font-semibold text-xs text-gray-700 truncate capitalize"
+                                                x-text="shortText(item.product_name, 22)"></p>
+
+                                            <!-- Price -->
+                                            <div class="flex gap-1 flex-wrap mt-1">
+                                                <span class="text-[10px] text-gray-400"
+                                                    x-text="formatRupiah(item.product_price)"></span>
+                                                <span class="text-[10px] text-amber-500" x-show="item.product_costume"
+                                                    x-text="'+ ' + formatRupiah(item.costume_total)"></span>
                                             </div>
 
-                                            <!-- Item Details -->
-                                            <div class="flex-1 min-w-0">
-                                                <h4 class="font-semibold text-sm font-poppins text-gray-600 truncate">
-                                                    <span class="capitalize"
-                                                        x-text="shortText(item.product_name, 25)"></span>
-                                                </h4>
+                                            <button type="button" x-on:click="removeItem(item.product_id)"
+                                                class="mt-1 text-[10px] font-semibold text-red-400 hover:text-red-600 flex items-center gap-0.5 transition-colors">
+                                                <span class="icon-[tabler--trash] size-3"></span> Hapus
+                                            </button>
+                                        </div>
 
-                                                <!-- Price Badges -->
-                                                <div class="flex gap-1.5 flex-wrap mt-1.5 text-xs">
-                                                    <span class="badge badge-xs text-xs badge-soft badge-info">
-                                                        <span x-text="formatRupiah(item.product_price)"></span>
-                                                    </span>
-                                                    <span class="badge badge-xs text-xs badge-soft badge-warning"
-                                                        x-show="item.product_costume">
-                                                        Custom: <span x-text="formatRupiah(item.costume_total)"></span>
-                                                    </span>
-                                                </div>
+                                        <!-- Quantity & Total -->
+                                        <div class="flex flex-col items-end gap-2">
+                                            <h5 class="font-bold text-sm text-gray-800">
+                                                Rp. <span x-text="formatRupiah(item.total_price)"></span>
+                                            </h5>
 
-                                                <!-- Remove Button -->
-                                                <button type="button" x-on:click="removeItem(item.product_id)"
-                                                    class="mt-2 text-xs font-semibold text-red-500 hover:text-red-700 flex items-center gap-1 transition-colors">
-                                                    <span class="icon-[uil--trash-alt] size-4"></span>
-                                                    Remove
+                                            <!-- Quantity Controls -->
+                                            <div class="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+                                                <button x-on:click="reduceQty(item.product_id)" type="button"
+                                                    class="btn btn-ghost btn-sm w-8 h-8 hover:bg-white rounded-md"
+                                                    aria-label="Decrement">
+                                                    <span class="icon-[tabler--minus] size-3.5"></span>
+                                                </button>
+                                                <input :value="item.product_qty"
+                                                    class="input text-center w-12 h-8 bg-transparent border-0 text-sm font-semibold"
+                                                    type="text" data-input-number-input readonly />
+                                                <button x-on:click="addQty(item.product_id)" type="button"
+                                                    class="btn btn-ghost btn-sm w-8 h-8 hover:bg-white rounded-md"
+                                                    aria-label="Increment">
+                                                    <span class="icon-[tabler--plus] size-3.5"></span>
                                                 </button>
                                             </div>
-
-                                            <!-- Quantity & Total -->
-                                            <div class="flex flex-col items-end gap-2">
-                                                <h5 class="font-bold text-sm text-gray-800">
-                                                    Rp. <span x-text="formatRupiah(item.total_price)"></span>
-                                                </h5>
-
-                                                <!-- Quantity Controls -->
-                                                <div class="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-                                                    <button x-on:click="reduceQty(item.product_id)" type="button"
-                                                        class="btn btn-ghost btn-sm w-8 h-8 hover:bg-white rounded-md"
-                                                        aria-label="Decrement">
-                                                        <span class="icon-[tabler--minus] size-3.5"></span>
-                                                    </button>
-                                                    <input :value="item.product_qty"
-                                                        class="input text-center w-12 h-8 bg-transparent border-0 text-sm font-semibold"
-                                                        type="text" data-input-number-input readonly />
-                                                    <button x-on:click="addQty(item.product_id)" type="button"
-                                                        class="btn btn-ghost btn-sm w-8 h-8 hover:bg-white rounded-md"
-                                                        aria-label="Increment">
-                                                        <span class="icon-[tabler--plus] size-3.5"></span>
-                                                    </button>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
-                                </template>
-                            </div>
+                                </div>
+                            </template>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Cart Footer -->
-                    <div class="card-footer p-6 bg-gray-50 border-t border-gray-200 rounded-b-xl">
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center text-lg">
-                                <span class="font-semibold text-gray-600">Subtotal</span>
-                                <span class="font-bold text-gray-800">
-                                    Rp. <span x-text="subtotal"></span>
+                <!-- Cart Footer -->
+                <div class="border-t border-gray-100 p-4 bg-gray-50/50 mt-4 shadow-md rounded-xl">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-sm font-medium text-gray-500">Total</span>
+                        <span class="text-lg font-bold text-gray-800">
+                            Rp <span x-text="subtotal">0</span>
+                        </span>
+                    </div>
+                    <button type="button"
+                        class="w-full py-3 rounded-xl text-white text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 hover:opacity-90 active:scale-[0.99] shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                        style="background: linear-gradient(135deg,#059669,#0d9488)" :disabled="isLoadTrasaction"
+                        x-on:click="transaksiProsses">
+                        <span class="icon-[tabler--cash-register] size-5"></span>
+                        <span x-text="isLoadTrasaction ? 'Memproses...' : 'Proses Transaksi'"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal: Custom Product -->
+    <button type="button" class="btn btn-primary hidden" aria-haspopup="dialog" aria-expanded="false"
+        aria-controls="modal-costume-product" data-overlay="#modal-costume-product" id="open-modal-costume-product">
+        Open modal
+    </button>
+
+    <div id="modal-costume-product" class="overlay modal overlay-open:opacity-100 hidden" role="dialog"
+        tabindex="-1">
+        <div class="modal-dialog modal-dialog-lg overlay-open:opacity-100 modal-dialog-centered">
+            <div class="modal-content rounded-2xl shadow-2xl">
+                <!-- Modal Header -->
+                <div class="modal-header px-6 py-4 border-b border-gray-100">
+                    <div class="w-full flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl p-2">
+                                <span class="icon-[ant-design--product-outlined] size-6 text-white"></span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-800">Custom Product</h3>
+                                <p class="text-sm text-gray-500">Add custom materials or items</p>
+                            </div>
+                        </div>
+                        <button type="button"
+                            class="btn btn-ghost btn-circle btn-sm hover:bg-red-50 hover:text-red-600"
+                            aria-label="Close" data-overlay="#modal-costume-product"
+                            id="close-modal-costume-product">
+                            <span class="icon-[tabler--x] size-5"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body p-6">
+                    <!-- Product Preview -->
+                    <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-4 mb-6 flex gap-6 items-start">
+                        <div class="flex flex-col gap-3 flex-1">
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs text-gray-400 uppercase tracking-wide">Product</span>
+                                <span class="font-semibold text-lg text-gray-800 capitalize"
+                                    x-text="costumeForm.product_name">
+                                    Product Name
                                 </span>
                             </div>
-
-                            <button type="button" class="btn btn-error btn-soft w-full gap-2 font-semibold"
-                                :disabled="isLoadTrasaction"
-                                :class="{ 'opacity-50 cursor-not-allowed': isLoadTrasaction }"
-                                x-text="isLoadTrasaction ? 'Processing...' : 'Process Transaction'"
-                                x-on:click="transaksiProsses">
-                                <span class="icon-[tabler--check] size-5"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal: Custom Product -->
-        <button type="button" class="btn btn-primary hidden" aria-haspopup="dialog" aria-expanded="false"
-            aria-controls="modal-costume-product" data-overlay="#modal-costume-product"
-            id="open-modal-costume-product">
-            Open modal
-        </button>
-
-        <div id="modal-costume-product" class="overlay modal overlay-open:opacity-100 hidden" role="dialog"
-            tabindex="-1">
-            <div class="modal-dialog modal-dialog-lg overlay-open:opacity-100 modal-dialog-centered">
-                <div class="modal-content rounded-2xl shadow-2xl">
-                    <!-- Modal Header -->
-                    <div class="modal-header px-6 py-4 border-b border-gray-100">
-                        <div class="w-full flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <div class="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl p-2">
-                                    <span class="icon-[ant-design--product-outlined] size-6 text-white"></span>
-                                </div>
-                                <div>
-                                    <h3 class="text-lg font-bold text-gray-800">Custom Product</h3>
-                                    <p class="text-sm text-gray-500">Add custom materials or items</p>
-                                </div>
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs text-gray-400 uppercase tracking-wide">Quantity</span>
+                                <span class="font-semibold text-xl text-gray-800"
+                                    x-text="costumeForm.product_qty + ' Pcs'">
+                                    1 Pcs
+                                </span>
                             </div>
-                            <button type="button"
-                                class="btn btn-ghost btn-circle btn-sm hover:bg-red-50 hover:text-red-600"
-                                aria-label="Close" data-overlay="#modal-costume-product"
-                                id="close-modal-costume-product">
-                                <span class="icon-[tabler--x] size-5"></span>
-                            </button>
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs text-gray-400 uppercase tracking-wide">Price</span>
+                                <span class="font-bold text-2xl text-emerald-600">
+                                    Rp. <span x-text="costumeForm.price_rupiah_view"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="w-48 h-48 bg-gray-300 rounded-xl overflow-hidden flex-shrink-0">
+                            <img src="https://ik.imagekit.io/tvlk/blog/2024/08/shutterstock_2373316383.jpg"
+                                alt="Product" class="w-full h-full object-cover" />
                         </div>
                     </div>
 
-                    <!-- Modal Body -->
-                    <div class="modal-body p-6">
-                        <!-- Product Preview -->
-                        <div
-                            class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-4 mb-6 flex gap-6 items-start">
-                            <div class="flex flex-col gap-3 flex-1">
-                                <div class="flex flex-col gap-1">
-                                    <span class="text-xs text-gray-400 uppercase tracking-wide">Product</span>
-                                    <span class="font-semibold text-lg text-gray-800 capitalize"
-                                        x-text="costumeForm.product_name">
-                                        Product Name
-                                    </span>
-                                </div>
-                                <div class="flex flex-col gap-1">
-                                    <span class="text-xs text-gray-400 uppercase tracking-wide">Quantity</span>
-                                    <span class="font-semibold text-xl text-gray-800"
-                                        x-text="costumeForm.product_qty + ' Pcs'">
-                                        1 Pcs
-                                    </span>
-                                </div>
-                                <div class="flex flex-col gap-1">
-                                    <span class="text-xs text-gray-400 uppercase tracking-wide">Price</span>
-                                    <span class="font-bold text-2xl text-emerald-600">
-                                        Rp. <span x-text="costumeForm.price_rupiah_view"></span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="w-48 h-48 bg-gray-300 rounded-xl overflow-hidden flex-shrink-0">
-                                <img src="https://ik.imagekit.io/tvlk/blog/2024/08/shutterstock_2373316383.jpg"
-                                    alt="Product" class="w-full h-full object-cover" />
-                            </div>
-                        </div>
+                    <!-- Tabs -->
+                    <nav class="tabs overflow-x-auto space-x-1 rtl:space-x-reverse p-1 mb-4" aria-label="Tabs"
+                        role="tablist" aria-orientation="horizontal">
+                        <button type="button"
+                            class="btn btn-text active-tab:bg-primary active-tab:text-white hover:text-primary active hover:bg-primary/20 px-4 py-2"
+                            id="tabs-pill-icon-item-1" data-tab="#tabs-pill-icon-1" aria-controls="tabs-pill-icon-1"
+                            role="tab" aria-selected="false">
+                            <span class="icon-[carbon--product] size-5 shrink-0"></span>
+                            <span class="hidden sm:inline ml-2">Materials</span>
+                        </button>
+                        <button type="button"
+                            class="btn btn-text active-tab:bg-primary active-tab:text-white hover:text-primary active hover:bg-primary/20 px-4 py-2"
+                            id="tabs-pill-icon-item-2" data-tab="#tabs-pill-icon-2" aria-controls="tabs-pill-icon-2"
+                            role="tab" aria-selected="false">
+                            <span class="icon-[ph--paper-plane-tilt-bold] size-5 shrink-0"></span>
+                            <span class="hidden sm:inline ml-2">Others</span>
+                        </button>
+                    </nav>
 
-                        <!-- Tabs -->
-                        <nav class="tabs overflow-x-auto space-x-1 rtl:space-x-reverse p-1 mb-4" aria-label="Tabs"
-                            role="tablist" aria-orientation="horizontal">
-                            <button type="button"
-                                class="btn btn-text active-tab:bg-primary active-tab:text-white hover:text-primary active hover:bg-primary/20 px-4 py-2"
-                                id="tabs-pill-icon-item-1" data-tab="#tabs-pill-icon-1"
-                                aria-controls="tabs-pill-icon-1" role="tab" aria-selected="false">
-                                <span class="icon-[carbon--product] size-5 shrink-0"></span>
-                                <span class="hidden sm:inline ml-2">Materials</span>
-                            </button>
-                            <button type="button"
-                                class="btn btn-text active-tab:bg-primary active-tab:text-white hover:text-primary active hover:bg-primary/20 px-4 py-2"
-                                id="tabs-pill-icon-item-2" data-tab="#tabs-pill-icon-2"
-                                aria-controls="tabs-pill-icon-2" role="tab" aria-selected="false">
-                                <span class="icon-[ph--paper-plane-tilt-bold] size-5 shrink-0"></span>
-                                <span class="hidden sm:inline ml-2">Others</span>
-                            </button>
-                        </nav>
+                    <!-- Tab Content -->
+                    <div class="mt-4">
+                        <!-- Materials Tab -->
+                        <div id="tabs-pill-icon-1" role="tabpanel" aria-labelledby="tabs-pill-icon-item-1">
+                            <div
+                                class="bg-gradient-to-br from-slate-50 to-gray-100 rounded-2xl p-6 shadow-sm border border-gray-200/50">
+                                <div class="flex flex-col gap-2">
+                                    <!-- Material Selection -->
+                                    <div class="flex flex-col gap-3">
+                                        <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                            <span class="icon-[carbon--product] size-4 text-primary"></span>
+                                            Select Material
+                                        </label>
 
-                        <!-- Tab Content -->
-                        <div class="mt-4">
-                            <!-- Materials Tab -->
-                            <div id="tabs-pill-icon-1" role="tabpanel" aria-labelledby="tabs-pill-icon-item-1">
-                                <div
-                                    class="bg-gradient-to-br from-slate-50 to-gray-100 rounded-2xl p-6 shadow-sm border border-gray-200/50">
-                                    <div class="flex flex-col gap-2">
-                                        <!-- Material Selection -->
-                                        <div class="flex flex-col gap-3">
-                                            <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                                                <span class="icon-[carbon--product] size-4 text-primary"></span>
-                                                Select Material
-                                            </label>
-
-                                            <!-- Modern Dropdown Select -->
-                                            <div class="relative" x-data="{ isOpen: false }">
-                                                <div @click="isOpen = !isOpen" @click.outside="isOpen = false"
-                                                    class="relative cursor-pointer group">
-                                                    <div
-                                                        class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                                        <span
-                                                            class="icon-[tabler--search] size-5 text-gray-400 group-focus-within:text-primary transition-colors"></span>
-                                                    </div>
-                                                    <input x-model="filtersearch" @keyup="filterbarangcostumer"
-                                                        @focus="isOpen = true" type="text"
-                                                        class="w-full pl-12 pr-12 py-3.5 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 shadow-sm"
-                                                        placeholder="Search or select a material..." />
-                                                    <div
-                                                        class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                                                        <span
-                                                            class="icon-[tabler--chevron-down] size-5 text-gray-400 transition-transform duration-200"
-                                                            :class="isOpen ? 'rotate-180' : ''"></span>
-                                                    </div>
+                                        <!-- Modern Dropdown Select -->
+                                        <div class="relative" x-data="{ isOpen: false }">
+                                            <div @click="isOpen = !isOpen" @click.outside="isOpen = false"
+                                                class="relative cursor-pointer group">
+                                                <div
+                                                    class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                    <span
+                                                        class="icon-[tabler--search] size-5 text-gray-400 group-focus-within:text-primary transition-colors"></span>
                                                 </div>
+                                                <input x-model="filtersearch" @keyup="filterbarangcostumer"
+                                                    @focus="isOpen = true" type="text"
+                                                    class="w-full pl-12 pr-12 py-3.5 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 shadow-sm"
+                                                    placeholder="Search or select a material..." />
+                                                <div
+                                                    class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                                    <span
+                                                        class="icon-[tabler--chevron-down] size-5 text-gray-400 transition-transform duration-200"
+                                                        :class="isOpen ? 'rotate-180' : ''"></span>
+                                                </div>
+                                            </div>
 
-                                                <!-- Dropdown List -->
-                                                <div x-show="isOpen && filterdata.length > 0"
-                                                    x-transition:enter="transition ease-out duration-200"
-                                                    x-transition:enter-start="opacity-0 -translate-y-2"
-                                                    x-transition:enter-end="opacity-100 translate-y-0"
-                                                    x-transition:leave="transition ease-in duration-150"
-                                                    x-transition:leave-start="opacity-100 translate-y-0"
-                                                    x-transition:leave-end="opacity-0 -translate-y-2"
-                                                    class="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden max-h-64 overflow-y-auto">
-                                                    <template x-for="item in filterdata">
-                                                        <div @click="selectBarang(item); isOpen = false"
-                                                            class="px-4 py-3 hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 cursor-pointer transition-all duration-200 border-b border-gray-100 last:border-0 group">
-                                                            <div class="flex items-center justify-between">
-                                                                <span
-                                                                    class="text-gray-800 font-medium group-hover:text-primary transition-colors"
-                                                                    x-text="item.nama_barang"></span>
-                                                                <span
-                                                                    class="icon-[tabler--chevron-right] size-4 text-gray-300 group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all"></span>
-                                                            </div>
+                                            <!-- Dropdown List -->
+                                            <div x-show="isOpen && filterdata.length > 0"
+                                                x-transition:enter="transition ease-out duration-200"
+                                                x-transition:enter-start="opacity-0 -translate-y-2"
+                                                x-transition:enter-end="opacity-100 translate-y-0"
+                                                x-transition:leave="transition ease-in duration-150"
+                                                x-transition:leave-start="opacity-100 translate-y-0"
+                                                x-transition:leave-end="opacity-0 -translate-y-2"
+                                                class="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden max-h-64 overflow-y-auto">
+                                                <template x-for="item in filterdata">
+                                                    <div @click="selectBarang(item); isOpen = false"
+                                                        class="px-4 py-3 hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 cursor-pointer transition-all duration-200 border-b border-gray-100 last:border-0 group">
+                                                        <div class="flex items-center justify-between">
+                                                            <span
+                                                                class="text-gray-800 font-medium group-hover:text-primary transition-colors"
+                                                                x-text="item.nama_barang"></span>
+                                                            <span
+                                                                class="icon-[tabler--chevron-right] size-4 text-gray-300 group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all"></span>
                                                         </div>
-                                                    </template>
-                                                </div>
-
-                                                <!-- Empty State -->
-                                                <div x-show="isOpen && filterdata.length === 0 && filtersearch.length > 0"
-                                                    class="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl p-6 text-center">
-                                                    <span
-                                                        class="icon-[tabler--search-off] size-12 text-gray-300 mx-auto mb-2"></span>
-                                                    <p class="text-gray-500 text-sm">No materials found</p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Price & Quantity -->
-                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                            <!-- Price -->
-                                            <div class="flex flex-col gap-2">
-                                                <label
-                                                    class="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                                                    <span
-                                                        class="icon-[hugeicons--money-bag-02] size-4 text-emerald-500"></span>
-                                                    Price
-                                                </label>
-                                                <div class="relative">
-                                                    <span
-                                                        class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">Rp</span>
-                                                    <input type="text"
-                                                        class="w-full pl-12 pr-4 py-3.5 bg-gray-100 border-0 rounded-xl text-gray-800 font-semibold cursor-not-allowed"
-                                                        x-model="xbarangdata.price" readonly />
-                                                </div>
+                                                    </div>
+                                                </template>
                                             </div>
 
-                                            <!-- Quantity -->
-                                            <div class="flex flex-col gap-2">
-                                                <label
-                                                    class="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                                                    <span class="icon-[tabler--box] size-4 text-blue-500"></span>
-                                                    Quantity
-                                                </label>
-                                                <div class="flex items-center gap-2">
-                                                    <button
-                                                        @click="xbarangdata.qty = Math.max(1, (parseInt(xbarangdata.qty) || 1) - 1)"
-                                                        class="w-12 h-12 flex items-center justify-center bg-white border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all duration-200 text-gray-600 hover:text-primary">
-                                                        <span class="icon-[tabler--minus] size-5"></span>
-                                                    </button>
-                                                    <input type="number" min="1"
-                                                        class="flex-1 text-center py-3.5 bg-white border-2 border-gray-200 rounded-xl text-gray-800 font-semibold focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200"
-                                                        x-model="xbarangdata.qty" />
-                                                    <button
-                                                        @click="xbarangdata.qty = (parseInt(xbarangdata.qty) || 0) + 1"
-                                                        class="w-12 h-12 flex items-center justify-center bg-white border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all duration-200 text-gray-600 hover:text-primary">
-                                                        <span class="icon-[tabler--plus] size-5"></span>
-                                                    </button>
-                                                </div>
+                                            <!-- Empty State -->
+                                            <div x-show="isOpen && filterdata.length === 0 && filtersearch.length > 0"
+                                                class="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl p-6 text-center">
+                                                <span
+                                                    class="icon-[tabler--search-off] size-12 text-gray-300 mx-auto mb-2"></span>
+                                                <p class="text-gray-500 text-sm">No materials found</p>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!-- Add Button -->
-                                    <div class="mt-6 pt-6 border-t border-gray-200">
-                                        <button
-                                            class="w-full btn btn-primary gap-3 text-base font-semibold shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300"
-                                            x-on:click="addItemCostumeBarang">
-                                            <span class="icon-[material-symbols--add-task-rounded] size-6"></span>
-                                            Add Material to Product
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Others Tab -->
-                            <div id="tabs-pill-icon-2" class="hidden" role="tabpanel"
-                                aria-labelledby="tabs-pill-icon-item-2">
-                                <div
-                                    class="bg-gradient-to-br from-slate-50 to-gray-100 rounded-2xl p-6 shadow-sm border border-gray-200/50">
-                                    <div class="flex flex-col gap-2">
-                                        <!-- Item Name -->
+                                    <!-- Price & Quantity -->
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <!-- Price -->
                                         <div class="flex flex-col gap-2">
                                             <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                                                <span class="icon-[tabler--tag] size-4 text-purple-500"></span>
-                                                Item Name
+                                                <span
+                                                    class="icon-[hugeicons--money-bag-02] size-4 text-emerald-500"></span>
+                                                Price
                                             </label>
-                                            <input type="text"
-                                                class="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 shadow-sm"
-                                                x-model="xothercsdata.title" placeholder="Enter item name..." />
+                                            <div class="relative">
+                                                <span
+                                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">Rp</span>
+                                                <input type="text"
+                                                    class="w-full pl-12 pr-4 py-3.5 bg-gray-100 border-0 rounded-xl text-gray-800 font-semibold cursor-not-allowed"
+                                                    x-model="xbarangdata.price" readonly />
+                                            </div>
                                         </div>
 
-                                        <div class="grid grid-cols-2 gap-2">
-                                            <!-- Cost -->
-                                            <div class="col-span-1 flex flex-col gap-2">
-                                                <label
-                                                    class="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                                                    <span
-                                                        class="icon-[hugeicons--money-bag-02] size-4 text-emerald-500"></span>
-                                                    Cost
-                                                </label>
-                                                <div class="relative">
-                                                    <span
-                                                        class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">Rp</span>
-                                                    <input type="number" min="0"
-                                                        class="w-full pl-12 pr-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 shadow-sm"
-                                                        x-model="xothercsdata.price" placeholder="0" />
-                                                </div>
-                                            </div>
-                                            <!-- Quantity -->
-                                            <div class="col-span-1 flex flex-col gap-2">
-                                                <label
-                                                    class="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                                                    <span class="icon-[tabler--box] size-4 text-blue-500"></span>
-                                                    Quantity
-                                                </label>
-                                                <div class="flex items-center gap-2">
-                                                    <button
-                                                        @click="xothercsdata.qty = Math.max(1, (parseInt(xothercsdata.qty) || 1) - 1)"
-                                                        class="w-12 h-12 flex items-center justify-center bg-white border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all duration-200 text-gray-600 hover:text-primary">
-                                                        <span class="icon-[tabler--minus] size-5"></span>
-                                                    </button>
-                                                    <input type="number" min="1"
-                                                        class="flex-1 text-center py-3.5 bg-white border-2 border-gray-200 rounded-xl text-gray-800 font-semibold focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200"
-                                                        x-model="xothercsdata.qty" />
-                                                    <button
-                                                        @click="xothercsdata.qty = (parseInt(xothercsdata.qty) || 0) + 1"
-                                                        class="w-12 h-12 flex items-center justify-center bg-white border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all duration-200 text-gray-600 hover:text-primary">
-                                                        <span class="icon-[tabler--plus] size-5"></span>
-                                                    </button>
-                                                </div>
+                                        <!-- Quantity -->
+                                        <div class="flex flex-col gap-2">
+                                            <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                                <span class="icon-[tabler--box] size-4 text-blue-500"></span>
+                                                Quantity
+                                            </label>
+                                            <div class="flex items-center gap-2">
+                                                <button
+                                                    @click="xbarangdata.qty = Math.max(1, (parseInt(xbarangdata.qty) || 1) - 1)"
+                                                    class="w-12 h-12 flex items-center justify-center bg-white border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all duration-200 text-gray-600 hover:text-primary">
+                                                    <span class="icon-[tabler--minus] size-5"></span>
+                                                </button>
+                                                <input type="number" min="1"
+                                                    class="flex-1 text-center py-3.5 bg-white border-2 border-gray-200 rounded-xl text-gray-800 font-semibold focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200"
+                                                    x-model="xbarangdata.qty" />
+                                                <button @click="xbarangdata.qty = (parseInt(xbarangdata.qty) || 0) + 1"
+                                                    class="w-12 h-12 flex items-center justify-center bg-white border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all duration-200 text-gray-600 hover:text-primary">
+                                                    <span class="icon-[tabler--plus] size-5"></span>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <!-- Add Button -->
-                                    <div class="mt-6 pt-6 border-t border-gray-200">
-                                        <button
-                                            class="w-full btn btn-primary gap-3 text-base font-semibold shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300"
-                                            x-on:click="addItemCostumeOther">
-                                            <span class="icon-[material-symbols--add-task-rounded] size-6"></span>
-                                            Add Custom Item
-                                        </button>
-                                    </div>
+                                <!-- Add Button -->
+                                <div class="mt-6 pt-6 border-t border-gray-200">
+                                    <button
+                                        class="w-full btn btn-primary gap-3 text-base font-semibold shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300"
+                                        x-on:click="addItemCostumeBarang">
+                                        <span class="icon-[material-symbols--add-task-rounded] size-6"></span>
+                                        Add Material to Product
+                                    </button>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Custom Items Table -->
-                        <div class="mt-6">
-                            <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                                <span class="icon-[tabler--list-details] size-4"></span>
-                                Added Items
-                            </h4>
-                            <div class="border border-gray-200 rounded-xl overflow-hidden">
-                                <div class="overflow-x-auto">
-                                    <table class="table table-sm">
-                                        <thead class="bg-gray-50">
-                                            <tr>
-                                                <th class="font-semibold text-gray-600">Item</th>
-                                                <th class="font-semibold text-gray-600">Price</th>
-                                                <th class="font-semibold text-gray-600">Qty</th>
-                                                <th class="font-semibold text-gray-600">Total</th>
-                                                <th class="font-semibold text-gray-600 text-right">Action</th>
+                        <!-- Others Tab -->
+                        <div id="tabs-pill-icon-2" class="hidden" role="tabpanel"
+                            aria-labelledby="tabs-pill-icon-item-2">
+                            <div
+                                class="bg-gradient-to-br from-slate-50 to-gray-100 rounded-2xl p-6 shadow-sm border border-gray-200/50">
+                                <div class="flex flex-col gap-2">
+                                    <!-- Item Name -->
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                            <span class="icon-[tabler--tag] size-4 text-purple-500"></span>
+                                            Item Name
+                                        </label>
+                                        <input type="text"
+                                            class="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 shadow-sm"
+                                            x-model="xothercsdata.title" placeholder="Enter item name..." />
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <!-- Cost -->
+                                        <div class="col-span-1 flex flex-col gap-2">
+                                            <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                                <span
+                                                    class="icon-[hugeicons--money-bag-02] size-4 text-emerald-500"></span>
+                                                Cost
+                                            </label>
+                                            <div class="relative">
+                                                <span
+                                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">Rp</span>
+                                                <input type="number" min="0"
+                                                    class="w-full pl-12 pr-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 shadow-sm"
+                                                    x-model="xothercsdata.price" placeholder="0" />
+                                            </div>
+                                        </div>
+                                        <!-- Quantity -->
+                                        <div class="col-span-1 flex flex-col gap-2">
+                                            <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                                <span class="icon-[tabler--box] size-4 text-blue-500"></span>
+                                                Quantity
+                                            </label>
+                                            <div class="flex items-center gap-2">
+                                                <button
+                                                    @click="xothercsdata.qty = Math.max(1, (parseInt(xothercsdata.qty) || 1) - 1)"
+                                                    class="w-12 h-12 flex items-center justify-center bg-white border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all duration-200 text-gray-600 hover:text-primary">
+                                                    <span class="icon-[tabler--minus] size-5"></span>
+                                                </button>
+                                                <input type="number" min="1"
+                                                    class="flex-1 text-center py-3.5 bg-white border-2 border-gray-200 rounded-xl text-gray-800 font-semibold focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200"
+                                                    x-model="xothercsdata.qty" />
+                                                <button
+                                                    @click="xothercsdata.qty = (parseInt(xothercsdata.qty) || 0) + 1"
+                                                    class="w-12 h-12 flex items-center justify-center bg-white border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all duration-200 text-gray-600 hover:text-primary">
+                                                    <span class="icon-[tabler--plus] size-5"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Add Button -->
+                                <div class="mt-6 pt-6 border-t border-gray-200">
+                                    <button
+                                        class="w-full btn btn-primary gap-3 text-base font-semibold shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300"
+                                        x-on:click="addItemCostumeOther">
+                                        <span class="icon-[material-symbols--add-task-rounded] size-6"></span>
+                                        Add Custom Item
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Items Table -->
+                    <div class="mt-6">
+                        <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                            <span class="icon-[tabler--list-details] size-4"></span>
+                            Added Items
+                        </h4>
+                        <div class="border border-gray-200 rounded-xl overflow-hidden">
+                            <div class="overflow-x-auto">
+                                <table class="table table-sm">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="font-semibold text-gray-600">Item</th>
+                                            <th class="font-semibold text-gray-600">Price</th>
+                                            <th class="font-semibold text-gray-600">Qty</th>
+                                            <th class="font-semibold text-gray-600">Total</th>
+                                            <th class="font-semibold text-gray-600 text-right">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template x-for="item in costumeItem">
+                                            <tr class="hover:bg-gray-50">
+                                                <td>
+                                                    <div class="flex flex-col gap-1">
+                                                        <span x-text="item.item_name"
+                                                            class="text-wrap font-medium text-gray-800"></span>
+                                                        <span x-show="!item.status"
+                                                            class="badge badge-sm badge-soft badge-primary">Material</span>
+                                                        <span x-show="item.status"
+                                                            class="badge badge-sm badge-soft badge-error">Other</span>
+                                                    </div>
+                                                </td>
+                                                <td class="text-gray-600">Rp. <span
+                                                        x-text="formatRupiah(item.item_price)"></span></td>
+                                                <td class="text-gray-600" x-text="item.item_qty"></td>
+                                                <td class="text-gray-600">Rp. <span
+                                                        x-text="formatRupiah(item.total)"></span></td>
+                                                <td class="text-right">
+                                                    <button @click="deleteItemCostumeBarang(item.item_id)"
+                                                        class="btn btn-circle btn-sm btn-soft btn-error hover:scale-110 transition-transform">
+                                                        <span class="icon-[uil--trash-alt] size-4"></span>
+                                                    </button>
+                                                </td>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                            <template x-for="item in costumeItem">
-                                                <tr class="hover:bg-gray-50">
-                                                    <td>
-                                                        <div class="flex flex-col gap-1">
-                                                            <span x-text="item.item_name"
-                                                                class="text-wrap font-medium text-gray-800"></span>
-                                                            <span x-show="!item.status"
-                                                                class="badge badge-sm badge-soft badge-primary">Material</span>
-                                                            <span x-show="item.status"
-                                                                class="badge badge-sm badge-soft badge-error">Other</span>
-                                                        </div>
-                                                    </td>
-                                                    <td class="text-gray-600">Rp. <span
-                                                            x-text="formatRupiah(item.item_price)"></span></td>
-                                                    <td class="text-gray-600" x-text="item.item_qty"></td>
-                                                    <td class="text-gray-600">Rp. <span
-                                                            x-text="formatRupiah(item.total)"></span></td>
-                                                    <td class="text-right">
-                                                        <button @click="deleteItemCostumeBarang(item.item_id)"
-                                                            class="btn btn-circle btn-sm btn-soft btn-error hover:scale-110 transition-transform">
-                                                            <span class="icon-[uil--trash-alt] size-4"></span>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            </template>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        </template>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Modal Footer -->
-                    <div class="modal-footer px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
-                        <div class="flex justify-end gap-3">
-                            <button type="button" class="btn btn-ghost gap-2 hover:bg-gray-200"
-                                data-overlay="#modal-costume-product">
-                                <span class="icon-[tabler--x] size-5"></span>
-                                Cancel
-                            </button>
-                            <button type="button" class="btn btn-primary gap-2 shadow-lg shadow-primary/30"
-                                @click="addItemCostume">
-                                <span class="icon-[tabler--check] size-5"></span>
-                                Add Product
-                            </button>
-                        </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
+                    <div class="flex justify-end gap-3">
+                        <button type="button" class="btn btn-ghost gap-2 hover:bg-gray-200"
+                            data-overlay="#modal-costume-product">
+                            <span class="icon-[tabler--x] size-5"></span>
+                            Cancel
+                        </button>
+                        <button type="button" class="btn btn-primary gap-2 shadow-lg shadow-primary/30"
+                            @click="addItemCostume">
+                            <span class="icon-[tabler--check] size-5"></span>
+                            Add Product
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Modal: Barcode Scanner -->
-        <div id="modal-barcode-add-item"
-            class="overlay modal overlay-open:opacity-100 modal-middle hidden [--overlay-backdrop:static]"
-            role="dialog" tabindex="-1">
-            <div class="modal-dialog overlay-open:opacity-100 max-w-md">
-                <div class="modal-content rounded-2xl shadow-2xl">
-                    <!-- Modal Header -->
-                    <div class="modal-header px-6 py-4 border-b border-gray-100">
-                        <div class="w-full flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl p-2">
-                                    <span
-                                        class="icon-[material-symbols--barcode-scanner-rounded] size-6 text-white"></span>
-                                </div>
-                                <div>
-                                    <h3 class="text-lg font-bold text-gray-800">Barcode Scanner</h3>
-                                    <p class="text-sm text-gray-500">Scan product barcode</p>
-                                </div>
+    <!-- Modal: Barcode Scanner -->
+    <div id="modal-barcode-add-item"
+        class="overlay modal overlay-open:opacity-100 modal-middle hidden [--overlay-backdrop:static]" role="dialog"
+        tabindex="-1">
+        <div class="modal-dialog overlay-open:opacity-100 max-w-md">
+            <div class="modal-content rounded-2xl shadow-2xl">
+                <!-- Modal Header -->
+                <div class="modal-header px-6 py-4 border-b border-gray-100">
+                    <div class="w-full flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl p-2">
+                                <span
+                                    class="icon-[material-symbols--barcode-scanner-rounded] size-6 text-white"></span>
                             </div>
-                            <button type="button"
-                                class="btn btn-ghost btn-circle btn-sm hover:bg-red-50 hover:text-red-600"
-                                aria-label="Close" data-overlay="#modal-barcode-add-item">
-                                <span class="icon-[tabler--x] size-5"></span>
-                            </button>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-800">Barcode Scanner</h3>
+                                <p class="text-sm text-gray-500">Scan product barcode</p>
+                            </div>
                         </div>
+                        <button type="button"
+                            class="btn btn-ghost btn-circle btn-sm hover:bg-red-50 hover:text-red-600"
+                            aria-label="Close" data-overlay="#modal-barcode-add-item">
+                            <span class="icon-[tabler--x] size-5"></span>
+                        </button>
                     </div>
+                </div>
 
-                    <!-- Modal Body -->
-                    <div class="modal-body p-6">
-                        <div class="flex flex-col gap-4">
-                            <input type="text"
-                                class="input input-lg text-center text-gray-800 border-2 border-primary/20 focus:border-primary rounded-xl"
-                                x-model="bInput" :disabled="bAction" @keyup="bInputAct" autofocus id="bInput"
-                                placeholder="Scan or enter barcode..." />
+                <!-- Modal Body -->
+                <div class="modal-body p-6">
+                    <div class="flex flex-col gap-4">
+                        <input type="text"
+                            class="input input-lg text-center text-gray-800 border-2 border-primary/20 focus:border-primary rounded-xl"
+                            x-model="bInput" :disabled="bAction" @keyup="bInputAct" autofocus id="bInput"
+                            placeholder="Scan or enter barcode..." />
 
-                            <button type="button" x-on:click="addItemByBarcode"
-                                class="btn btn-error btn-soft w-full py-3 font-semibold gap-2"
-                                :class="{ 'opacity-50 cursor-not-allowed': bAction }">
-                                <span class="icon-[tabler--barcode] size-5"></span>
-                                <span x-text="bAction ? 'Loading...' : 'Add to Cart'"></span>
-                            </button>
-                        </div>
+                        <button type="button" x-on:click="addItemByBarcode"
+                            class="btn btn-error btn-soft w-full py-3 font-semibold gap-2"
+                            :class="{ 'opacity-50 cursor-not-allowed': bAction }">
+                            <span class="icon-[tabler--barcode] size-5"></span>
+                            <span x-text="bAction ? 'Loading...' : 'Add to Cart'"></span>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     @push('js')

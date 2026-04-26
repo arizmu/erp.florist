@@ -422,7 +422,7 @@
                     barangSearch: '',
                     getBarang() {
                         this.barangData = [];
-                        const url = "/inventory/get-barang-data";
+                        const url = "/inventory/get-barang-masuk";
                         axios.get(url, {
                             params: {
                                 key: this.barangSearch ?? ""

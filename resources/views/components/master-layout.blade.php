@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Naira Gift Florist - ERP</title>
+    <title>Naira | Gift & Florist Shop</title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,7 +18,7 @@
     {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
 
 
-    <link rel="stylesheet" href="{{ asset('build/assets/app-C3toWKe7.css') }}">
+    <link rel="stylesheet" href="{{ asset('build/assets/app-DfoBW5-o.css') }}">
     <script src="{{ asset('build/assets/app-Di8ky6pW.js') }}" defer></script>
 
     <style>
