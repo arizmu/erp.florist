@@ -42,7 +42,7 @@ class InventoryController extends Controller
 
     public function getBarangMasuk()
     {
-        $query = Barang::query()->with('satuan');
+        $query = Barang::query()->with('satuan')->where('is_deleted', false);
         $query->when(request()->key, function ($query) {
             $query->where('nama_barang', 'like', '%'.request()->key.'%');
         });

@@ -241,7 +241,7 @@
                                 </span>
                                 <input id="password" name="password" type="password"
                                     class="w-full pl-10 pr-11 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 text-sm placeholder-gray-300 focus:outline-none focus:bg-white focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200"
-                                    placeholder="Masukkan password Anda" autocomplete="current-password" />
+                                    placeholder="Masukkan password Anda" autocomplete="new-password" />
                                 <button type="button"
                                     class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors"
                                     onclick="togglePassword()">
